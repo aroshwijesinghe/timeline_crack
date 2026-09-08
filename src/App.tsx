@@ -392,7 +392,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Part 3 (Right): How to Export Guide */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden h-full">
+            <div className="flex flex-col justify-between relative overflow-hidden h-full">
               <div>
                 {/* Guide Header & Platform Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
@@ -498,12 +498,6 @@ export const App: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </div>
-
-              {/* Helpful footer hint */}
-              <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center gap-2 text-[11px] text-slate-400">
-                <span className="text-[#a3e635]">💡</span>
-                <span>Google Maps stores timeline on-device. This export gives you your personal raw JSON.</span>
               </div>
             </div>
 
