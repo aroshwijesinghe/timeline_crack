@@ -213,61 +213,63 @@ export const App: React.FC = () => {
         <div className="fixed w-[600px] h-[600px] rounded-full bg-emerald-500/10 blur-[150px] pointer-events-none top-1/3 right-0 animate-eco-glow" style={{ animationDelay: '2s' }} />
         <div className="fixed w-[500px] h-[500px] rounded-full bg-lime-400/8 blur-[130px] pointer-events-none -bottom-20 left-1/4" />
 
-        {/* Content Container (Full Width, Spacious, Beautifully Balanced) */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col my-auto py-6">
+        {/* Content Container (Full Width, Spacious, 3-Column Left-to-Right Panoramic Grid) */}
+        <div className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-8 sm:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-start w-full">
 
-          {/* 1. LEFT CORNER WELCOME SECTION (Open, spacious, left-aligned) */}
-          <div className="w-full flex flex-col items-start text-left mb-8 sm:mb-10">
-            {/* Logo Emblem & Studio Badge */}
-            <div className="flex items-center gap-3.5 mb-4">
-              <div className="relative group">
-                <div className="absolute -inset-2 rounded-2xl bg-lime-400/25 blur-lg group-hover:bg-lime-400/40 transition duration-500 animate-pulse" />
-                <div className="relative w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-b from-[#2a3828] to-[#0c120b] border border-lime-500/50 flex items-center justify-center shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
-                  <MapPin className="w-7 h-7 sm:w-8 sm:h-8 text-[#a3e635] fill-[#a3e635]/20" />
+            {/* Part 1 (Left Corner): The Welcome Part (Unboxed, open, spacious) */}
+            <div className="flex flex-col items-start text-left justify-between py-1 lg:pr-2">
+              <div>
+                {/* Logo Emblem & Studio Badge */}
+                <div className="flex items-center gap-3.5 mb-5">
+                  <div className="relative group">
+                    <div className="absolute -inset-2.5 rounded-2xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/40 transition duration-500 animate-pulse" />
+                    <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#2a3828] to-[#0c120b] border border-lime-500/50 flex items-center justify-center shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
+                      <MapPin className="w-7 h-7 text-[#a3e635] fill-[#a3e635]/20" />
+                    </div>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-extrabold uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
+                    <Sparkles className="w-3.5 h-3.5 text-[#bef264]" />
+                    <span>Personal Timeline Studio</span>
+                  </div>
+                </div>
+
+                {/* Impactful Headline */}
+                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight text-white mb-4 font-heading uppercase leading-[1.05]">
+                  Welcome to <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-[#bef264] to-[#34d399] drop-shadow-[0_0_25px_rgba(163,230,53,0.35)]">
+                    Timeline
+                  </span>
+                </h1>
+
+                {/* Narrative Subtitle */}
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans mb-8 max-w-md">
+                  Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
+                </p>
+              </div>
+
+              {/* Interactive Capability Badges */}
+              <div className="w-full space-y-2.5 pt-6 border-t border-white/10">
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-lime-500/35 text-slate-300 hover:text-white text-xs font-semibold transition-all">
+                  <div className="w-2.5 h-2.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)] shrink-0" />
+                  <span>Directional Vector Corridors</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-emerald-500/35 text-slate-300 hover:text-white text-xs font-semibold transition-all">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0" />
+                  <span>Comprehensive Daily & Period Stats</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-amber-500/35 text-slate-300 hover:text-white text-xs font-semibold transition-all">
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] shrink-0" />
+                  <span>Keyless Satellite, Streets & Dark Maps</span>
                 </div>
               </div>
-
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-extrabold uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
-                <Sparkles className="w-3.5 h-3.5 text-[#bef264]" />
-                <span>Personal Timeline & Route Studio</span>
-              </div>
             </div>
 
-            {/* Impactful Left-Aligned Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-3 font-heading uppercase leading-[1.08]">
-              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-[#bef264] to-[#34d399] drop-shadow-[0_0_25px_rgba(163,230,53,0.35)]">Timeline</span>
-            </h1>
-
-            {/* Narrative Subtitle */}
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans max-w-2xl mb-4">
-              Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
-            </p>
-
-            {/* Interactive Capability Badges (Left-Aligned) */}
-            <div className="flex flex-wrap items-center justify-start gap-2.5">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-lime-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
-                <span>Directional Vector Corridors</span>
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-emerald-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-                <span>Multi-Day Travel Metrics</span>
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-amber-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
-                <span>Free Keyless Vector Basemaps</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 2. THE MAIN INTERACTIVE STAGE: Generous 2-Column Wide Workspace */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch w-full">
-
-            {/* Left Column (7 cols): File Uploading Hub & Client-Side Privacy */}
-            <div className="lg:col-span-7 flex flex-col justify-between gap-4">
-              <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl border border-lime-500/25 flex flex-col justify-between relative overflow-hidden group flex-1">
-                {/* Top specular highlight & subtle ambient orb */}
-                <div className="absolute top-0 left-1/4 w-72 h-32 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
+            {/* Part 2 (Center): File Drop Part & Privacy Guarantee */}
+            <div className="flex flex-col justify-between gap-4">
+              <div className="glass-panel rounded-3xl p-6 sm:p-7 shadow-2xl border border-lime-500/25 flex flex-col justify-between relative overflow-hidden group">
+                <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
 
                 {/* Tactile Large Interactive Dropzone */}
                 <div
@@ -275,7 +277,7 @@ export const App: React.FC = () => {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-3xl p-8 sm:p-12 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative group/drop flex-1 ${
+                  className={`border-2 border-dashed rounded-3xl p-7 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative group/drop ${
                     isDragging
                       ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01] shadow-[0_0_40px_rgba(132,204,22,0.3)]'
                       : 'border-white/15 bg-black/40 hover:border-lime-500/60 hover:bg-black/60 hover:shadow-[0_0_35px_rgba(132,204,22,0.2)]'
@@ -290,54 +292,51 @@ export const App: React.FC = () => {
                   />
 
                   {/* Icon with glowing halo */}
-                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-b from-[#2b3929] to-[#0c120b] text-[#a3e635] border border-lime-500/40 flex items-center justify-center mb-5 shadow-[0_0_25px_rgba(132,204,22,0.3)] group-hover/drop:scale-110 group-hover/drop:border-lime-400 transition-all duration-300">
-                    <FileCode className="w-10 h-10 text-[#bef264]" />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#2b3929] to-[#0c120b] text-[#a3e635] border border-lime-500/40 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(132,204,22,0.3)] group-hover/drop:scale-110 group-hover/drop:border-lime-400 transition-all duration-300">
+                    <FileCode className="w-8 h-8 text-[#bef264]" />
                   </div>
 
-                  <p className="text-lg sm:text-xl font-black text-white mb-2 font-heading uppercase tracking-wide">
-                    Drop your <span className="text-[#a3e635] drop-shadow-[0_0_10px_rgba(163,230,53,0.4)]">Timeline.json</span> file here
+                  <p className="text-base sm:text-lg font-black text-white mb-1.5 font-heading uppercase tracking-wide">
+                    Drop your <span className="text-[#a3e635] drop-shadow-[0_0_10px_rgba(163,230,53,0.4)]">Timeline.json</span> here
                   </p>
-                  <p className="text-xs sm:text-sm text-slate-400 max-w-sm">
-                    Drag and drop your file, or click anywhere inside to browse your computer
+                  <p className="text-xs text-slate-400 max-w-xs">
+                    Drag & drop your file, or click anywhere inside to browse
                   </p>
 
-                  <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                    <span className="text-xs px-3.5 py-1.5 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15 flex items-center gap-1.5">
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+                    <span className="text-[11px] px-3 py-1 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-lime-400" />
                       Google Maps Export (.json)
-                    </span>
-                    <span className="text-xs px-3.5 py-1.5 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15">
-                      Location History Records
                     </span>
                   </div>
                 </div>
 
                 {uploadError && (
-                  <div className="mt-4 flex items-start gap-3 p-4 rounded-2xl bg-rose-950/70 border border-rose-500/50 text-rose-200 text-xs animate-fade-in">
+                  <div className="mt-4 flex items-start gap-3 p-3.5 rounded-2xl bg-rose-950/70 border border-rose-500/50 text-rose-200 text-xs animate-fade-in">
                     <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                     <span>{uploadError}</span>
                   </div>
                 )}
 
                 {/* Bottom Bar: Demo Quick-Start */}
-                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 border-t border-white/10">
-                  <div className="flex flex-col text-center sm:text-left">
-                    <span className="text-xs font-semibold text-white font-heading">Don't have your file ready?</span>
-                    <span className="text-[11px] text-slate-400">Explore instantly with our curated sample trip dataset</span>
+                <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-white/10">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-semibold text-white font-heading">Don't have your file?</span>
+                    <span className="text-[10px] text-slate-400">Explore with sample trip data</span>
                   </div>
 
                   <button
                     onClick={handleLoadDemo}
                     disabled={loading}
-                    className="w-full sm:w-auto py-2.5 px-5 rounded-2xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-black font-black text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(132,204,22,0.35)] cursor-pointer active:scale-95 uppercase tracking-wider font-heading hover:shadow-lime-500/40"
+                    className="py-2 px-4 rounded-xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-black font-black text-xs transition-all flex items-center gap-2 shadow-[0_0_18px_rgba(132,204,22,0.35)] cursor-pointer active:scale-95 uppercase tracking-wider font-heading hover:shadow-lime-500/40 shrink-0"
                   >
-                    <Sparkles className="w-4 h-4 text-black" />
+                    <Sparkles className="w-3.5 h-3.5 text-black" />
                     <span>Try Demo Timeline</span>
                   </button>
                 </div>
               </div>
 
-              {/* 100% Client-Side Privacy Guarantee (Directly docked near upload) */}
+              {/* 100% Client-Side Privacy Guarantee (Directly docked near file upload) */}
               <div className="w-full flex items-start gap-3.5 p-4 rounded-3xl glass-panel border border-lime-500/30 text-slate-300 text-xs shadow-xl backdrop-blur-2xl">
                 <div className="p-2 rounded-2xl bg-lime-500/20 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/40 shadow-[0_0_10px_rgba(132,204,22,0.2)]">
                   <ShieldCheck className="w-5 h-5" />
@@ -346,20 +345,20 @@ export const App: React.FC = () => {
                   <strong className="text-[#a3e635] block mb-1 font-extrabold uppercase tracking-wide font-heading text-sm">
                     100% Client-Side Privacy Guarantee
                   </strong>
-                  Your location history never leaves your device. All GPS calculations, direction vectors, route maps, and analytics run entirely in your local browser with zero cloud storage.
+                  Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser with zero cloud storage.
                 </div>
               </div>
             </div>
 
-            {/* Right Column (5 cols): How To Export Timeline.json Guide */}
-            <div className="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl border border-lime-500/20 flex flex-col justify-between relative overflow-hidden">
+            {/* Part 3 (Right): How to Export Guide */}
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 shadow-2xl border border-lime-500/20 flex flex-col justify-between relative overflow-hidden">
               <div>
                 {/* Guide Header & Platform Switcher */}
-                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-6 border-b border-white/10 pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
                   <div className="flex items-center gap-2">
                     <HelpCircle className="w-4 h-4 text-[#a3e635]" />
                     <h2 className="text-sm font-extrabold text-white font-heading uppercase tracking-wide">
-                      How to Export Timeline.json
+                      How to Export Timeline
                     </h2>
                   </div>
 
@@ -367,7 +366,7 @@ export const App: React.FC = () => {
                   <div className="flex gap-1 bg-black/60 p-1 rounded-xl border border-white/10 text-xs font-bold font-heading">
                     <button
                       onClick={() => setGuideTab('android')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                         guideTab === 'android'
                           ? 'bg-gradient-to-b from-[#2f3b2d] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm font-extrabold'
                           : 'text-slate-400 hover:text-white'
@@ -378,7 +377,7 @@ export const App: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setGuideTab('ios')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                         guideTab === 'ios'
                           ? 'bg-gradient-to-b from-[#2f3b2d] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm font-extrabold'
                           : 'text-slate-400 hover:text-white'
@@ -392,36 +391,36 @@ export const App: React.FC = () => {
 
                 {/* Android Steps with visual step numbers */}
                 {guideTab === 'android' && (
-                  <div className="space-y-3 animate-fade-in text-xs text-slate-300">
+                  <div className="space-y-2.5 animate-fade-in text-xs text-slate-300">
                     <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1">
                       <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                       <span>Android Settings Export</span>
                     </div>
 
-                    <div className="space-y-2.5">
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">01</span>
-                        <p className="leading-snug pt-0.5">Open your phone's <strong>Settings</strong> (gear icon).</p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">01</span>
+                        <p className="leading-snug pt-0.5 text-xs">Open your phone's <strong>Settings</strong> (gear icon).</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">02</span>
-                        <p className="leading-snug pt-0.5">Go to <strong>Location</strong>, then tap <strong>Location Services</strong>.</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">02</span>
+                        <p className="leading-snug pt-0.5 text-xs">Go to <strong>Location</strong> &gt; <strong>Location Services</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">03</span>
-                        <p className="leading-snug pt-0.5">Select <strong>Timeline</strong> (choose your Google account if prompted).</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">03</span>
+                        <p className="leading-snug pt-0.5 text-xs">Select <strong>Timeline</strong> (choose Google account).</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">04</span>
-                        <p className="leading-snug pt-0.5">Scroll down and tap <strong>Export Timeline data</strong>.</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">04</span>
+                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong>Export Timeline data</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">05</span>
-                        <p className="leading-snug pt-0.5">Tap <strong>Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">05</span>
+                        <p className="leading-snug pt-0.5 text-xs">Tap <strong>Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
@@ -429,31 +428,31 @@ export const App: React.FC = () => {
 
                 {/* iOS Steps */}
                 {guideTab === 'ios' && (
-                  <div className="space-y-3 animate-fade-in text-xs text-slate-300">
+                  <div className="space-y-2.5 animate-fade-in text-xs text-slate-300">
                     <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1">
                       <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                       <span>Google Maps iOS App Export</span>
                     </div>
 
-                    <div className="space-y-2.5">
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">01</span>
-                        <p className="leading-snug pt-0.5">Open the <strong>Google Maps</strong> app on your iPhone.</p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">01</span>
+                        <p className="leading-snug pt-0.5 text-xs">Open <strong>Google Maps</strong> app on your iPhone.</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">02</span>
-                        <p className="leading-snug pt-0.5">Tap your <strong>Profile avatar</strong> in the top right &gt; <strong>Settings</strong>.</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">02</span>
+                        <p className="leading-snug pt-0.5 text-xs">Tap your <strong>Profile avatar</strong> &gt; <strong>Settings</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">03</span>
-                        <p className="leading-snug pt-0.5">Scroll down and tap <strong>Personal content</strong>.</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">03</span>
+                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong>Personal content</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[11px] shrink-0">04</span>
-                        <p className="leading-snug pt-0.5">Look for <strong>Export Timeline data</strong> and download your local <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">04</span>
+                        <p className="leading-snug pt-0.5 text-xs">Tap <strong>Export Timeline data</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
@@ -461,11 +460,12 @@ export const App: React.FC = () => {
               </div>
 
               {/* Helpful footer hint */}
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center gap-2 text-[11px] text-slate-400">
+              <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center gap-2 text-[11px] text-slate-400">
                 <span className="text-[#a3e635]">💡</span>
-                <span>Google Maps now saves your timeline on your device. This export gives you raw JSON data.</span>
+                <span>Google Maps stores timeline on-device. This export gives you your personal raw JSON.</span>
               </div>
             </div>
+
           </div>
         </div>
       </div>
