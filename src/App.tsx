@@ -14,7 +14,7 @@ import {
   Sparkles,
   ShieldCheck,
   AlertCircle,
-  MapPin,
+  Leaf,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -201,40 +201,40 @@ export const App: React.FC = () => {
     setIsStatsOpen(true);
   };
 
-  // --- 1. INITIAL LOADING STATE: Atmospheric, Human-Crafted Hero Screen ---
+  // --- 1. INITIAL LOADING STATE: Eco-Dark Hero Screen (Matching Reference Image) ---
   if (!timelineData) {
     return (
-      <div className="min-h-screen w-screen bg-[#070b14] text-slate-100 flex flex-col items-center justify-start p-4 sm:p-8 relative overflow-y-auto selection:bg-indigo-500 selection:text-white">
-        {/* Luminous Ambient Glowing Orbs */}
-        <div className="fixed w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-indigo-600/15 via-violet-600/10 to-transparent blur-[140px] pointer-events-none -top-40 -left-40 animate-pulse-glow" />
-        <div className="fixed w-[600px] h-[600px] rounded-full bg-gradient-to-br from-rose-500/10 via-amber-500/10 to-transparent blur-[140px] pointer-events-none -bottom-40 -right-40 animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
-        <div className="fixed w-[400px] h-[400px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none top-1/3 left-1/2 -translate-x-1/2" />
+      <div className="min-h-screen w-screen bg-[#040704] text-slate-100 flex flex-col items-center justify-start p-4 sm:p-8 relative overflow-y-auto selection:bg-lime-500 selection:text-black font-sans">
+        {/* Luminous Organic Green Ambient Glows */}
+        <div className="fixed w-[600px] h-[600px] rounded-full bg-lime-500/12 blur-[140px] pointer-events-none -top-20 -left-20 animate-eco-glow" />
+        <div className="fixed w-[550px] h-[550px] rounded-full bg-emerald-500/10 blur-[140px] pointer-events-none top-1/4 right-0 animate-eco-glow" style={{ animationDelay: '1.8s' }} />
+        <div className="fixed w-[450px] h-[450px] rounded-full bg-lime-400/8 blur-[120px] pointer-events-none -bottom-20 left-1/3" />
 
         <div className="relative z-10 w-full max-w-2xl flex flex-col items-center my-auto py-8">
-          {/* Main Title & Purpose */}
+          {/* Top Logo & Brand (Matching Leaf in Reference Image) */}
           <div className="flex flex-col items-center text-center mb-8">
             <div className="relative mb-4 group">
-              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-400 opacity-75 blur-md group-hover:opacity-100 transition duration-500" />
-              <div className="relative w-16 h-16 rounded-3xl bg-slate-900 border border-white/20 flex items-center justify-center shadow-2xl">
-                <MapPin className="w-8 h-8 text-cyan-400" />
+              <div className="absolute -inset-2 rounded-3xl bg-lime-400/25 blur-lg group-hover:bg-lime-400/40 transition duration-500" />
+              <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-b from-[#263124] to-[#0c120b] border border-lime-500/40 flex items-center justify-center shadow-[0_0_25px_rgba(132,204,22,0.4)]">
+                <Leaf className="w-8 h-8 text-[#a3e635] fill-[#a3e635]/20" />
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-indigo-500/10 via-violet-500/10 to-cyan-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-3 shadow-inner">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Personal Timeline & Route Visualizer</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-lime-950/60 border border-lime-500/30 text-[#a3e635] text-xs font-bold uppercase tracking-widest mb-3 shadow-inner">
+              <Sparkles className="w-3.5 h-3.5 text-[#bef264]" />
+              <span>Personal Timeline & Route Studio</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
-              Relive Your <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-rose-400 bg-clip-text text-transparent">Journeys</span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2 font-heading uppercase">
+              Welcome to <span className="text-[#a3e635] drop-shadow-[0_0_15px_rgba(163,230,53,0.4)]">Timeline</span>
             </h1>
-            <p className="text-sm text-slate-300 max-w-lg leading-relaxed">
-              Explore visited places, replay paths with directional vectors, and unlock beautiful insights across any selected time period.
+            <p className="text-sm text-slate-300 max-w-lg leading-relaxed font-sans">
+              Visualize your visited paths, replay journeys with directional vectors, and explore travel analytics with crisp precision.
             </p>
           </div>
 
-          {/* Upload Drop Zone Card */}
-          <div className="w-full glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col mb-6 border border-white/10 relative overflow-hidden group">
+          {/* Upload Drop Zone Card (Glossy Smoked Panel) */}
+          <div className="w-full glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col mb-6 border border-lime-500/20 relative overflow-hidden group">
             <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -242,8 +242,8 @@ export const App: React.FC = () => {
               onClick={() => fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${
                 isDragging
-                  ? 'border-cyan-400 bg-cyan-500/10 scale-[1.01]'
-                  : 'border-slate-700/80 bg-slate-950/40 hover:border-indigo-400/60 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]'
+                  ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01]'
+                  : 'border-white/10 bg-black/40 hover:border-lime-500/50 hover:bg-black/60 hover:shadow-[0_0_30px_rgba(132,204,22,0.2)]'
               }`}
             >
               <input
@@ -254,58 +254,58 @@ export const App: React.FC = () => {
                 className="hidden"
               />
 
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600/30 to-violet-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center mb-4 shadow-inner group-hover:scale-105 transition duration-300">
-                <FileCode className="w-8 h-8 text-cyan-300" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#253023] to-[#0c120b] text-[#a3e635] border border-lime-500/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(132,204,22,0.25)] group-hover:scale-105 transition duration-300">
+                <FileCode className="w-8 h-8 text-[#bef264]" />
               </div>
 
-              <p className="text-base font-bold text-white mb-1">
-                Drop your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300 font-extrabold">Timeline.json</span> here
+              <p className="text-base font-extrabold text-white mb-1 font-heading uppercase tracking-wide">
+                Drop your <span className="text-[#a3e635]">Timeline.json</span> file here
               </p>
               <p className="text-xs text-slate-400">
                 Drag and drop your file, or click anywhere to browse
               </p>
               <div className="mt-4 flex items-center gap-2">
-                <span className="text-[11px] px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 font-mono border border-slate-700/60">
+                <span className="text-[11px] px-3 py-1 rounded-full bg-black/60 text-slate-300 font-mono border border-white/10">
                   Google Maps Export (.json)
                 </span>
               </div>
             </div>
 
             {uploadError && (
-              <div className="mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-950/50 border border-rose-500/30 text-rose-300 text-xs animate-fade-in">
+              <div className="mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs animate-fade-in">
                 <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                 <span>{uploadError}</span>
               </div>
             )}
 
-            <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-slate-800/80">
-              <span className="text-xs text-slate-400">Don't have your file yet?</span>
+            <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-white/10">
+              <span className="text-xs text-slate-400">Don't have your file ready?</span>
               <button
                 onClick={handleLoadDemo}
                 disabled={loading}
-                className="py-2 px-4 rounded-xl bg-gradient-to-r from-indigo-600/30 via-violet-600/30 to-pink-600/20 hover:from-indigo-600/50 hover:to-pink-600/40 border border-indigo-500/30 text-xs font-bold text-indigo-200 hover:text-white transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
+                className="py-2 px-4 rounded-xl bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 text-black font-extrabold text-xs transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(132,204,22,0.3)] cursor-pointer active:scale-95 uppercase tracking-wide font-heading"
               >
-                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-                <span>Explore Interactive Demo</span>
+                <Sparkles className="w-3.5 h-3.5 text-black" />
+                <span>Try Demo Timeline</span>
               </button>
             </div>
           </div>
 
-          {/* Guide: How to Get Timeline.json File */}
-          <div className="w-full glass-panel rounded-3xl p-6 shadow-xl border border-white/10">
-            <div className="flex items-center justify-between mb-4 border-b border-slate-800/80 pb-3">
+          {/* Guide: How to Get Timeline.json (Glossy Tab Bar) */}
+          <div className="w-full glass-panel rounded-3xl p-6 shadow-xl border border-lime-500/20">
+            <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-cyan-400" />
-                <h2 className="text-sm font-bold text-white">How to Get Your Timeline.json</h2>
+                <HelpCircle className="w-4 h-4 text-[#a3e635]" />
+                <h2 className="text-sm font-extrabold text-white font-heading uppercase tracking-wide">How to Export Timeline.json</h2>
               </div>
 
-              {/* Platform Tabs */}
-              <div className="flex gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+              {/* Platform Tabs (Glossy Segmented Bar) */}
+              <div className="flex gap-1 bg-black/60 p-1 rounded-xl border border-white/10 text-xs font-bold font-heading">
                 <button
                   onClick={() => setGuideTab('android')}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
                     guideTab === 'android'
-                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md'
+                      ? 'bg-gradient-to-b from-[#2b3629] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -316,7 +316,7 @@ export const App: React.FC = () => {
                   onClick={() => setGuideTab('ios')}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
                     guideTab === 'ios'
-                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md'
+                      ? 'bg-gradient-to-b from-[#2b3629] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -329,8 +329,8 @@ export const App: React.FC = () => {
             {/* Option 1: Android Phone Instructions */}
             {guideTab === 'android' && (
               <div className="text-xs text-slate-300 space-y-2.5 animate-fade-in">
-                <div className="font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#a3e635]" />
                   <span>Android Settings Export</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-2 leading-relaxed text-slate-300">
@@ -338,7 +338,7 @@ export const App: React.FC = () => {
                   <li>Go to <strong>Location</strong>, then tap <strong>Location Services</strong>.</li>
                   <li>Select <strong>Timeline</strong> (choose your Google account if prompted).</li>
                   <li>Scroll down and tap <strong>Export Timeline data</strong>.</li>
-                  <li>Tap <strong>Continue</strong> to download <code className="text-indigo-300 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">Timeline.json</code>.</li>
+                  <li>Tap <strong>Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</li>
                 </ol>
               </div>
             )}
@@ -346,28 +346,28 @@ export const App: React.FC = () => {
             {/* Option 2: iPhone (iOS) Instructions */}
             {guideTab === 'ios' && (
               <div className="text-xs text-slate-300 space-y-2.5 animate-fade-in">
-                <div className="font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#a3e635]" />
                   <span>Google Maps iOS App Export</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-2 leading-relaxed text-slate-300">
                   <li>Open the <strong>Google Maps</strong> app on your iPhone.</li>
                   <li>Tap your <strong>Profile avatar</strong> in the top right &gt; <strong>Settings</strong>.</li>
                   <li>Scroll down and tap <strong>Personal content</strong>.</li>
-                  <li>Look for <strong>Export Timeline data</strong> and download your local <code className="text-indigo-300 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">Timeline.json</code>.</li>
+                  <li>Look for <strong>Export Timeline data</strong> and download your local <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</li>
                 </ol>
               </div>
             )}
           </div>
 
           {/* Privacy Guarantee */}
-          <div className="w-full mt-4 flex items-start gap-3 p-3.5 rounded-2xl glass-panel border border-emerald-500/20 text-slate-300 text-xs">
-            <div className="p-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0 mt-0.5 border border-emerald-500/20">
+          <div className="w-full mt-4 flex items-start gap-3 p-3.5 rounded-2xl glass-panel border border-lime-500/25 text-slate-300 text-xs">
+            <div className="p-1.5 rounded-xl bg-lime-500/15 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/30">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <strong className="text-emerald-400 block mb-0.5 font-bold">100% Private & Client-Side</strong>
-              Your location history never leaves your device. All calculations, route visualizations, and analytics run locally in your browser.
+              <strong className="text-[#a3e635] block mb-0.5 font-bold uppercase tracking-wide font-heading">100% Client-Side Privacy</strong>
+              Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser.
             </div>
           </div>
         </div>
@@ -375,25 +375,25 @@ export const App: React.FC = () => {
     );
   }
 
-  // --- 2. AFTER FILE UPLOADING: Modern Floating Island Header & Full-Screen Canvas ---
+  // --- 2. AFTER FILE UPLOADING: Glossy Dark Smoked Floating Navigation Bar ---
   const dates = timelineData.sortedDates;
   const currentIndex = dates.indexOf(selectedDate);
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex >= 0 && currentIndex < dates.length - 1;
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-[#070b14] text-slate-100 overflow-hidden font-sans relative select-none">
-      {/* Top Floating Control Capsule */}
+    <div className="flex flex-col w-screen h-screen bg-[#040704] text-slate-100 overflow-hidden font-sans relative select-none">
+      {/* Top Floating Control Dock (Smoked Glass Bar with Lime Accents) */}
       <div className="absolute top-4 left-4 right-4 sm:right-auto sm:left-6 z-[450] flex items-center justify-between sm:justify-start gap-2.5 pointer-events-none">
-        <div className="glass-panel p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/10 pointer-events-auto backdrop-blur-2xl">
-          {/* Brand Emblem */}
+        <div className="glass-panel p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-lime-500/20 pointer-events-auto backdrop-blur-2xl">
+          {/* Brand Emblem (Leaf Icon with Radiant Glow) */}
           <div className="flex items-center gap-2 pr-1 sm:pr-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 border border-white/20">
-              <MapPin className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-[#2d382b] to-[#0d130c] text-[#a3e635] flex items-center justify-center shadow-[0_0_15px_rgba(132,204,22,0.4)] border border-lime-500/40">
+              <Leaf className="w-4 h-4 fill-[#a3e635]/20" />
             </div>
             <div className="hidden lg:flex flex-col">
-              <span className="font-extrabold text-xs tracking-tight text-white leading-none">Timeline Crack</span>
-              <span className="text-[9px] text-slate-400 leading-none mt-0.5">Journey Studio</span>
+              <span className="font-extrabold text-xs tracking-wider text-white uppercase font-heading leading-none">Timeline</span>
+              <span className="text-[9px] text-[#a3e635] font-semibold leading-none mt-0.5">Journey Studio</span>
             </div>
           </div>
 
@@ -403,38 +403,38 @@ export const App: React.FC = () => {
               <button
                 onClick={() => hasPrev && handleSelectDate(dates[currentIndex - 1])}
                 disabled={!hasPrev}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-20 transition-all cursor-pointer active:scale-90"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-[#a3e635] hover:bg-white/5 disabled:opacity-20 transition-all cursor-pointer active:scale-90"
                 title="Previous recorded date"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
 
-              {/* Interactive Calendar Trigger Button */}
+              {/* Interactive Calendar Trigger Button (Highlighted like active 'Partners' tab) */}
               <button
                 onClick={() => setIsCalendarOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/70 hover:bg-slate-800/80 text-white border border-white/10 hover:border-indigo-400/50 transition-all shadow-inner cursor-pointer group active:scale-98"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-b from-[#20291e] to-[#0c120b] text-[#a3e635] border border-lime-500/40 hover:border-lime-400/80 transition-all shadow-[0_0_15px_rgba(132,204,22,0.2)] cursor-pointer group active:scale-98"
                 title="Open calendar to choose date or time period"
               >
-                <div className="w-5 h-5 rounded-lg bg-indigo-500/20 text-cyan-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Calendar className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="font-bold text-xs text-white max-w-[150px] sm:max-w-[240px] truncate leading-tight">
+                  <span className="font-bold text-xs text-white max-w-[150px] sm:max-w-[240px] truncate leading-tight font-heading">
                     {periodLabel}
                   </span>
                   {selectedDay && (
-                    <span className="text-[10px] text-slate-400 leading-none font-mono">
-                      <span className="text-emerald-400 font-semibold">{selectedDay.totalDistanceKm} km</span> • {selectedDay.visits.length} stops
+                    <span className="text-[10px] text-slate-300 leading-none font-mono">
+                      <span className="text-[#a3e635] font-bold">{selectedDay.totalDistanceKm} km</span> • {selectedDay.visits.length} stops
                     </span>
                   )}
                 </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors ml-0.5" />
+                <ChevronDown className="w-3.5 h-3.5 text-[#a3e635] group-hover:text-white transition-colors ml-0.5" />
               </button>
 
               <button
                 onClick={() => hasNext && handleSelectDate(dates[currentIndex + 1])}
                 disabled={!hasNext}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-20 transition-all cursor-pointer active:scale-90"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-[#a3e635] hover:bg-white/5 disabled:opacity-20 transition-all cursor-pointer active:scale-90"
                 title="Next recorded date"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -442,20 +442,20 @@ export const App: React.FC = () => {
             </div>
           )}
 
-          {/* Trip Analytics Button */}
+          {/* Trip Analytics Button (Glossy Lime Pill) */}
           <button
             onClick={handleOpenAnalytics}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 shadow-md shadow-indigo-600/30 transition-all cursor-pointer active:scale-95 border border-white/15"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold text-black bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 shadow-[0_0_15px_rgba(132,204,22,0.35)] transition-all cursor-pointer active:scale-95 border border-lime-300/30 uppercase tracking-wide font-heading"
             title="Open Trip & Route Analytics Dashboard"
           >
-            <BarChart3 className="w-3.5 h-3.5 text-cyan-200" />
+            <BarChart3 className="w-3.5 h-3.5 text-black" />
             <span className="hidden sm:inline">Analytics</span>
           </button>
 
           {/* Upload Different File Button */}
           <button
             onClick={() => setTimelineData(null)}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-[#a3e635] hover:bg-white/5 transition-all cursor-pointer"
             title="Upload a different Timeline.json file"
           >
             <UploadCloud className="w-4 h-4" />

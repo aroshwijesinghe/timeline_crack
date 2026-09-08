@@ -173,9 +173,9 @@ export function getActivityStyle(type: string): ActivityStyle {
     case 'ON_BICYCLE':
       return {
         label: 'Cycling',
-        color: '#06b6d4', // cyan-500
-        borderColor: '#0891b2',
-        bgColor: 'rgba(6, 182, 212, 0.15)',
+        color: '#22c55e', // green-500
+        borderColor: '#16a34a',
+        bgColor: 'rgba(34, 197, 94, 0.15)',
         iconName: 'Bike'
       };
     case 'IN_PASSENGER_VEHICLE':
@@ -183,9 +183,9 @@ export function getActivityStyle(type: string): ActivityStyle {
     case 'DRIVING':
       return {
         label: 'Driving',
-        color: '#3b82f6', // blue-500
-        borderColor: '#2563eb',
-        bgColor: 'rgba(59, 130, 246, 0.15)',
+        color: '#84cc16', // lime-500
+        borderColor: '#65a30d',
+        bgColor: 'rgba(132, 204, 22, 0.15)',
         iconName: 'Car'
       };
     case 'MOTORCYCLING':
@@ -584,8 +584,8 @@ export function analyzeActivityDirections(
       directionMap.set(actOut.id, {
         isBidirectional: true,
         role: 'outbound',
-        color: '#06b6d4', // Cyan
-        arrowColor: '#06b6d4',
+        color: '#84cc16', // Electric Lime
+        arrowColor: '#a3e635',
         label: 'Outbound Journey',
         offsetPath: offsetPolyline(actOut.path, 3.5),
         partnerActivityId: pair.returnId
@@ -596,8 +596,8 @@ export function analyzeActivityDirections(
       directionMap.set(actRet.id, {
         isBidirectional: true,
         role: 'return',
-        color: '#f43f5e', // Rose
-        arrowColor: '#f43f5e',
+        color: '#f59e0b', // Golden Amber
+        arrowColor: '#fbbf24',
         label: 'Return Journey',
         offsetPath: offsetPolyline(actRet.path, 3.5),
         partnerActivityId: pair.outboundId
