@@ -4,7 +4,6 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Sparkles,
   Navigation,
   Check
 } from 'lucide-react';
@@ -312,7 +311,6 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
               title="Select all recorded dates combined"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-black bg-gradient-to-r from-lime-500 via-lime-400 to-emerald-400 hover:from-lime-400 hover:to-emerald-300 shadow-md shadow-lime-500/25 transition-all cursor-pointer active:scale-95 border border-lime-300/30"
             >
-              <Sparkles className="w-3.5 h-3.5 text-black" />
               <span>All Dates</span>
             </button>
           </div>

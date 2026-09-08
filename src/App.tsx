@@ -11,7 +11,6 @@ import { sampleTimelineJSON } from './demo/sampleTimeline';
 import {
   UploadCloud,
   FileCode,
-  Sparkles,
   ShieldCheck,
   AlertCircle,
   MapPin,
@@ -230,7 +229,6 @@ export const App: React.FC = () => {
                   </div>
 
                   <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-extrabold uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
-                    <Sparkles className="w-3.5 h-3.5 text-[#bef264]" />
                     <span>Personal Timeline Studio</span>
                   </div>
                 </div>
@@ -330,7 +328,6 @@ export const App: React.FC = () => {
                     disabled={loading}
                     className="py-2 px-4 rounded-xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-black font-black text-xs transition-all flex items-center gap-2 shadow-[0_0_18px_rgba(132,204,22,0.35)] cursor-pointer active:scale-95 uppercase tracking-wider font-heading hover:shadow-lime-500/40 shrink-0"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-black" />
                     <span>Try Demo Timeline</span>
                   </button>
                 </div>
