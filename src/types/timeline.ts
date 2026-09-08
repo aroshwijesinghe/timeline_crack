@@ -85,7 +85,7 @@ export interface ParsedTimeline {
   overallBounds: [LatLng, LatLng] | null;
 }
 
-export type MapTileProvider = 'esri-dark' | 'esri-streets' | 'osm' | 'satellite';
+export type MapTileProvider = 'dark' | 'streets' | 'satellite' | 'osm';
 
 export interface PlaybackState {
   isPlaying: boolean;

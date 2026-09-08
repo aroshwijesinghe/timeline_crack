@@ -24,6 +24,44 @@ interface TimelineMapProps {
   onSelectActivity?: (activity: TimelineActivity) => void;
 }
 
+interface TileConfig {
+  url: string;
+  subdomains?: string | string[];
+  maxZoom: number;
+  maxNativeZoom: number;
+  attribution: string;
+}
+
+const TILE_CONFIGS: Record<MapTileProvider, TileConfig> = {
+  dark: {
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    subdomains: 'abcd',
+    maxZoom: 20,
+    maxNativeZoom: 19,
+    attribution: '&copy; CARTO &copy; OpenStreetMap contributors'
+  },
+  streets: {
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    subdomains: 'abcd',
+    maxZoom: 20,
+    maxNativeZoom: 19,
+    attribution: '&copy; CARTO &copy; OpenStreetMap contributors'
+  },
+  satellite: {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 20,
+    maxNativeZoom: 18, // Caps requests to level 18 so Esri never returns 'Map data not yet available'
+    attribution: '&copy; Esri &copy; Maxar, Earthstar Geographics'
+  },
+  osm: {
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    subdomains: 'abc',
+    maxZoom: 19,
+    maxNativeZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }
+};
+
 export const TimelineMap: React.FC<TimelineMapProps> = ({
   selectedDay,
   focusedItemId,
@@ -39,7 +77,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
   const arrowsLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const rawSignalsLayerGroupRef = useRef<L.LayerGroup | null>(null);
 
-  const [tileProvider, setTileProvider] = useState<MapTileProvider>('esri-dark');
+  const [tileProvider, setTileProvider] = useState<MapTileProvider>('dark');
   const [showRawSignals, setShowRawSignals] = useState(false);
   const [showDirectionArrows, setShowDirectionArrows] = useState(true);
   const [hasBidirectional, setHasBidirectional] = useState(false);
@@ -52,6 +90,8 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     const map = L.map(mapContainerRef.current, {
       center: [6.9271, 79.8612],
       zoom: 12,
+      minZoom: 2,
+      maxZoom: 20,
       zoomControl: false,
       attributionControl: false,
       preferCanvas: true, // Hardware-accelerated Canvas rendering for vector routes & points
@@ -70,17 +110,6 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // Initial tile layer: Esri World Dark Gray (free, no API key, no watermark)
-    const initialUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-    tileLayerRef.current = L.tileLayer(initialUrl, {
-      attribution: 'Tiles &copy; Esri',
-      maxZoom: 16,
-      keepBuffer: 8, // Keep preloaded buffer around viewport for lag-free panning
-      updateWhenZooming: false, // Don't churn DOM during zoom; scale tiles with CSS3 transforms
-      updateWhenIdle: true, // Only fetch new tile resolution once zooming/scrolling pauses
-      updateInterval: 120
-    }).addTo(map);
-
     markersLayerGroupRef.current = L.layerGroup().addTo(map);
     routesLayerGroupRef.current = L.layerGroup().addTo(map);
     arrowsLayerGroupRef.current = L.layerGroup().addTo(map);
@@ -94,39 +123,31 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     };
   }, []);
 
-  // Handle Tile Provider Switch (seamless with setUrl - zero black squares)
+  // Handle Tile Provider Switch (seamlessly swaps layer with maxNativeZoom and zero lingering watermarks)
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !tileLayerRef.current) return;
+    if (!map) return;
 
-    let url = '';
-    let maxZoom = 18;
+    const config = TILE_CONFIGS[tileProvider] || TILE_CONFIGS.dark;
+    const oldLayer = tileLayerRef.current;
 
-    switch (tileProvider) {
-      case 'esri-dark':
-        url = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-        maxZoom = 16;
-        break;
-      case 'esri-streets':
-        url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
-        maxZoom = 19;
-        break;
-      case 'satellite':
-        url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-        maxZoom = 18;
-        break;
-      case 'osm':
-        url = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-        maxZoom = 19;
-        break;
+    const newLayer = L.tileLayer(config.url, {
+      subdomains: config.subdomains || 'abc',
+      maxZoom: config.maxZoom,
+      maxNativeZoom: config.maxNativeZoom, // Prevents requesting zoom levels beyond available imagery
+      attribution: config.attribution,
+      keepBuffer: 4,
+      updateWhenZooming: true, // Keep rendering smooth without freezing tiles
+      updateWhenIdle: false // Don't delay tile requests until idle pause
+    }).addTo(map);
+
+    // Keep tile raster underneath markers and routes
+    newLayer.bringToBack();
+    tileLayerRef.current = newLayer;
+
+    if (oldLayer) {
+      map.removeLayer(oldLayer);
     }
-
-    tileLayerRef.current.setUrl(url);
-    tileLayerRef.current.options.maxZoom = maxZoom;
-    tileLayerRef.current.options.keepBuffer = 8;
-    tileLayerRef.current.options.updateWhenZooming = false;
-    tileLayerRef.current.options.updateWhenIdle = true;
-    map.invalidateSize();
   }, [tileProvider]);
 
   // Render Day's Elements (Visits & Routes)
@@ -406,10 +427,10 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       <div className="absolute top-4 right-4 z-[400] flex flex-col items-end gap-2.5">
         {/* Layer Selector Segmented Control */}
         <div className="glass-panel p-1 rounded-2xl shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-2xl">
-          {(['esri-dark', 'esri-streets', 'satellite', 'osm'] as MapTileProvider[]).map((provider) => {
+          {(['dark', 'streets', 'satellite', 'osm'] as MapTileProvider[]).map((provider) => {
             const labels: Record<MapTileProvider, string> = {
-              'esri-dark': 'Dark',
-              'esri-streets': 'Streets',
+              dark: 'Dark',
+              streets: 'Streets',
               satellite: 'Satellite',
               osm: 'OSM'
             };
