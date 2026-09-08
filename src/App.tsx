@@ -188,60 +188,62 @@ export const App: React.FC = () => {
   const periodLabel = useMemo(() => {
     if (!timelineData) return '';
     if (selectedDate === 'all') {
-      return `🌟 All Dates (${timelineData.sortedDates.length} days, ${timelineData.stats.totalDistanceKm} km)`;
+      return `All Dates (${timelineData.sortedDates.length} days)`;
     }
     if (selectedDate.includes('..')) {
       const [start, end] = selectedDate.split('..');
-      return `📅 ${start} → ${end} (${selectedDay?.totalDistanceKm || 0} km)`;
+      return `${start} → ${end}`;
     }
-    if (timelineData.days[selectedDate]) {
-      const d = timelineData.days[selectedDate];
-      return `📅 ${selectedDate} (${d.totalDistanceKm} km, ${d.visits.length} stops)`;
-    }
-    return selectedDate ? `📅 ${selectedDate}` : 'Select Date';
-  }, [selectedDate, timelineData, selectedDay]);
+    return selectedDate;
+  }, [selectedDate, timelineData]);
 
   const handleOpenAnalytics = () => {
     setIsStatsOpen(true);
   };
 
-  // --- 1. INITIAL LOADING STATE: Upload file prompt only ---
+  // --- 1. INITIAL LOADING STATE: Atmospheric, Human-Crafted Hero Screen ---
   if (!timelineData) {
     return (
-      <div className="min-h-screen w-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-start p-4 sm:p-8 relative overflow-y-auto">
-        {/* Subtle Background Glows */}
-        <div className="fixed w-[600px] h-[600px] rounded-full bg-indigo-600/10 blur-[140px] pointer-events-none -top-32 -left-32"></div>
-        <div className="fixed w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[140px] pointer-events-none -bottom-32 -right-32"></div>
+      <div className="min-h-screen w-screen bg-[#070b14] text-slate-100 flex flex-col items-center justify-start p-4 sm:p-8 relative overflow-y-auto selection:bg-indigo-500 selection:text-white">
+        {/* Luminous Ambient Glowing Orbs */}
+        <div className="fixed w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-indigo-600/15 via-violet-600/10 to-transparent blur-[140px] pointer-events-none -top-40 -left-40 animate-pulse-glow" />
+        <div className="fixed w-[600px] h-[600px] rounded-full bg-gradient-to-br from-rose-500/10 via-amber-500/10 to-transparent blur-[140px] pointer-events-none -bottom-40 -right-40 animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
+        <div className="fixed w-[400px] h-[400px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none top-1/3 left-1/2 -translate-x-1/2" />
 
-        <div className="relative z-10 w-full max-w-2xl flex flex-col items-center my-auto py-6">
+        <div className="relative z-10 w-full max-w-2xl flex flex-col items-center my-auto py-8">
           {/* Main Title & Purpose */}
-          <div className="flex flex-col items-center text-center mb-6">
-            <div className="w-14 h-14 rounded-3xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-xl shadow-indigo-500/30 mb-3 border border-indigo-400/30">
-              <MapPin className="w-7 h-7 text-white" />
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="relative mb-4 group">
+              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-400 opacity-75 blur-md group-hover:opacity-100 transition duration-500" />
+              <div className="relative w-16 h-16 rounded-3xl bg-slate-900 border border-white/20 flex items-center justify-center shadow-2xl">
+                <MapPin className="w-8 h-8 text-cyan-400" />
+              </div>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Timeline Crack
+
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-indigo-500/10 via-violet-500/10 to-cyan-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-3 shadow-inner">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Personal Timeline & Route Visualizer</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+              Relive Your <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-rose-400 bg-clip-text text-transparent">Journeys</span>
             </h1>
-            <p className="text-sm text-slate-400 mt-1 max-w-md">
-              Analyze and view your visited paths for any selected time period.
+            <p className="text-sm text-slate-300 max-w-lg leading-relaxed">
+              Explore visited places, replay paths with directional vectors, and unlock beautiful insights across any selected time period.
             </p>
-            <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
-              <UploadCloud className="w-3.5 h-3.5" />
-              <span>Please upload your Timeline.json file to begin</span>
-            </div>
           </div>
 
           {/* Upload Drop Zone Card */}
-          <div className="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl flex flex-col mb-6">
+          <div className="w-full glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col mb-6 border border-white/10 relative overflow-hidden group">
             <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+              className={`border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${
                 isDragging
-                  ? 'border-indigo-500 bg-indigo-500/15 scale-[1.01]'
-                  : 'border-slate-700 bg-slate-950/60 hover:border-indigo-500/60 hover:bg-slate-950/90'
+                  ? 'border-cyan-400 bg-cyan-500/10 scale-[1.01]'
+                  : 'border-slate-700/80 bg-slate-950/40 hover:border-indigo-400/60 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]'
               }`}
             >
               <input
@@ -252,55 +254,58 @@ export const App: React.FC = () => {
                 className="hidden"
               />
 
-              <div className="w-16 h-16 rounded-2xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center mb-3 shadow-inner">
-                <FileCode className="w-8 h-8" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600/30 to-violet-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center mb-4 shadow-inner group-hover:scale-105 transition duration-300">
+                <FileCode className="w-8 h-8 text-cyan-300" />
               </div>
 
               <p className="text-base font-bold text-white mb-1">
-                Upload your <span className="text-indigo-400">Timeline.json</span> file
+                Drop your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300 font-extrabold">Timeline.json</span> here
               </p>
               <p className="text-xs text-slate-400">
-                Drag and drop here, or click to browse from your computer
+                Drag and drop your file, or click anywhere to browse
               </p>
-              <span className="mt-3 text-[11px] px-3 py-1 rounded-full bg-slate-800/90 text-slate-300 font-mono">
-                Google Maps Exported Timeline (.json)
-              </span>
+              <div className="mt-4 flex items-center gap-2">
+                <span className="text-[11px] px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 font-mono border border-slate-700/60">
+                  Google Maps Export (.json)
+                </span>
+              </div>
             </div>
 
             {uploadError && (
-              <div className="mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-rose-300 text-xs">
+              <div className="mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-950/50 border border-rose-500/30 text-rose-300 text-xs animate-fade-in">
                 <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                 <span>{uploadError}</span>
               </div>
             )}
 
-            <div className="mt-4 flex justify-center">
+            <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-slate-800/80">
+              <span className="text-xs text-slate-400">Don't have your file yet?</span>
               <button
                 onClick={handleLoadDemo}
                 disabled={loading}
-                className="w-full py-3 px-4 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition flex items-center justify-center gap-2"
+                className="py-2 px-4 rounded-xl bg-gradient-to-r from-indigo-600/30 via-violet-600/30 to-pink-600/20 hover:from-indigo-600/50 hover:to-pink-600/40 border border-indigo-500/30 text-xs font-bold text-indigo-200 hover:text-white transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
               >
-                <Sparkles className="w-4 h-4 text-indigo-400" />
-                <span>Try Demo Timeline</span>
+                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                <span>Explore Interactive Demo</span>
               </button>
             </div>
           </div>
 
           {/* Guide: How to Get Timeline.json File */}
-          <div className="w-full bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl backdrop-blur-xl">
-            <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+          <div className="w-full glass-panel rounded-3xl p-6 shadow-xl border border-white/10">
+            <div className="flex items-center justify-between mb-4 border-b border-slate-800/80 pb-3">
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-indigo-400" />
-                <h2 className="text-sm font-bold text-white">How to Get Your Timeline.json File</h2>
+                <HelpCircle className="w-4 h-4 text-cyan-400" />
+                <h2 className="text-sm font-bold text-white">How to Get Your Timeline.json</h2>
               </div>
 
               {/* Platform Tabs */}
-              <div className="flex gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+              <div className="flex gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
                 <button
                   onClick={() => setGuideTab('android')}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
                     guideTab === 'android'
-                      ? 'bg-indigo-600 text-white shadow-sm'
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -311,7 +316,7 @@ export const App: React.FC = () => {
                   onClick={() => setGuideTab('ios')}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
                     guideTab === 'ios'
-                      ? 'bg-indigo-600 text-white shadow-sm'
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -324,15 +329,16 @@ export const App: React.FC = () => {
             {/* Option 1: Android Phone Instructions */}
             {guideTab === 'android' && (
               <div className="text-xs text-slate-300 space-y-2.5 animate-fade-in">
-                <div className="font-semibold text-indigo-300 text-xs uppercase tracking-wide">
-                  Option 1: If you have an Android Phone
+                <div className="font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  <span>Android Settings Export</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-2 leading-relaxed text-slate-300">
-                  <li>Pull down your phone's notification shade and tap the <strong>Settings</strong> (gear icon).</li>
-                  <li>Scroll down and select <strong>Location</strong>, then tap <strong>Location Services</strong>.</li>
-                  <li>Select <strong>Timeline</strong> (you may need to select your specific Google account if you have more than one).</li>
-                  <li>Under the Timeline settings page, look for and tap <strong>Export Timeline data</strong>.</li>
-                  <li>Tap <strong>Continue</strong>, and the phone will generate and download a file named <code className="text-indigo-300 bg-slate-950 px-1 py-0.5 rounded">Timeline.json</code> to your local storage or files app.</li>
+                  <li>Open your phone's <strong>Settings</strong> (gear icon).</li>
+                  <li>Go to <strong>Location</strong>, then tap <strong>Location Services</strong>.</li>
+                  <li>Select <strong>Timeline</strong> (choose your Google account if prompted).</li>
+                  <li>Scroll down and tap <strong>Export Timeline data</strong>.</li>
+                  <li>Tap <strong>Continue</strong> to download <code className="text-indigo-300 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">Timeline.json</code>.</li>
                 </ol>
               </div>
             )}
@@ -340,25 +346,28 @@ export const App: React.FC = () => {
             {/* Option 2: iPhone (iOS) Instructions */}
             {guideTab === 'ios' && (
               <div className="text-xs text-slate-300 space-y-2.5 animate-fade-in">
-                <div className="font-semibold text-indigo-300 text-xs uppercase tracking-wide">
-                  Option 2: If you have an iPhone (iOS)
+                <div className="font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  <span>Google Maps iOS App Export</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-2 leading-relaxed text-slate-300">
                   <li>Open the <strong>Google Maps</strong> app on your iPhone.</li>
-                  <li>Tap your <strong>Profile icon</strong> in the upper right corner and select <strong>Settings</strong>.</li>
-                  <li>Scroll down and select <strong>Personal content</strong>.</li>
-                  <li>Look for the option labeled <strong>Export Timeline data</strong> and tap it to generate and save your local <code className="text-indigo-300 bg-slate-950 px-1 py-0.5 rounded">Timeline.json</code> data package.</li>
+                  <li>Tap your <strong>Profile avatar</strong> in the top right &gt; <strong>Settings</strong>.</li>
+                  <li>Scroll down and tap <strong>Personal content</strong>.</li>
+                  <li>Look for <strong>Export Timeline data</strong> and download your local <code className="text-indigo-300 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">Timeline.json</code>.</li>
                 </ol>
               </div>
             )}
           </div>
 
           {/* Privacy Guarantee */}
-          <div className="w-full mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-slate-400 text-xs">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="w-full mt-4 flex items-start gap-3 p-3.5 rounded-2xl glass-panel border border-emerald-500/20 text-slate-300 text-xs">
+            <div className="p-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0 mt-0.5 border border-emerald-500/20">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
             <div>
-              <strong className="text-slate-300 block mb-0.5">100% Client-Side Privacy</strong>
-              Your location data never leaves your device. All path analysis, map rendering, and playback happen purely in your browser.
+              <strong className="text-emerald-400 block mb-0.5 font-bold">100% Private & Client-Side</strong>
+              Your location history never leaves your device. All calculations, route visualizations, and analytics run locally in your browser.
             </div>
           </div>
         </div>
@@ -366,80 +375,95 @@ export const App: React.FC = () => {
     );
   }
 
-  // --- 2. AFTER FILE UPLOADING: Show visited paths, time period selector, playback bar & analytics ---
+  // --- 2. AFTER FILE UPLOADING: Modern Floating Island Header & Full-Screen Canvas ---
   const dates = timelineData.sortedDates;
   const currentIndex = dates.indexOf(selectedDate);
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex >= 0 && currentIndex < dates.length - 1;
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-slate-950 text-slate-100 overflow-hidden font-sans relative">
-      {/* Floating Minimal Top Bar: Selected Time Period & Quick Actions */}
-      <div className="absolute top-4 left-4 z-[450] flex items-center gap-2">
-        <div className="glass-panel px-3 py-1.5 rounded-2xl shadow-xl flex items-center gap-2 border border-slate-800">
-          <div className="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow">
-            <MapPin className="w-4 h-4" />
+    <div className="flex flex-col w-screen h-screen bg-[#070b14] text-slate-100 overflow-hidden font-sans relative select-none">
+      {/* Top Floating Control Capsule */}
+      <div className="absolute top-4 left-4 right-4 sm:right-auto sm:left-6 z-[450] flex items-center justify-between sm:justify-start gap-2.5 pointer-events-none">
+        <div className="glass-panel p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/10 pointer-events-auto backdrop-blur-2xl">
+          {/* Brand Emblem */}
+          <div className="flex items-center gap-2 pr-1 sm:pr-2">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 border border-white/20">
+              <MapPin className="w-4 h-4" />
+            </div>
+            <div className="hidden lg:flex flex-col">
+              <span className="font-extrabold text-xs tracking-tight text-white leading-none">Timeline Crack</span>
+              <span className="text-[9px] text-slate-400 leading-none mt-0.5">Journey Studio</span>
+            </div>
           </div>
-          <span className="font-bold text-sm text-white hidden sm:inline">Timeline Crack</span>
 
-          {/* Selected Time Period: Interactive Calendar Button + Steppers */}
+          {/* Selected Time Period: Interactive Calendar Pill & Steppers */}
           {dates.length > 0 && (
-            <div className="flex items-center gap-1 border-l border-slate-700/60 pl-2 ml-1">
+            <div className="flex items-center gap-1 border-l border-white/10 pl-1.5 sm:pl-2">
               <button
                 onClick={() => hasPrev && handleSelectDate(dates[currentIndex - 1])}
                 disabled={!hasPrev}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20 transition cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-20 transition-all cursor-pointer active:scale-90"
                 title="Previous recorded date"
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
 
               {/* Interactive Calendar Trigger Button */}
               <button
                 onClick={() => setIsCalendarOpen(true)}
-                className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 hover:border-indigo-500/50 transition shadow-sm cursor-pointer group"
-                title="Open calendar to select date or time period"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/70 hover:bg-slate-800/80 text-white border border-white/10 hover:border-indigo-400/50 transition-all shadow-inner cursor-pointer group active:scale-98"
+                title="Open calendar to choose date or time period"
               >
-                <Calendar className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition" />
-                <span className="font-bold text-xs text-white max-w-[180px] sm:max-w-[320px] truncate">
-                  {periodLabel}
-                </span>
-                <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-white transition" />
+                <div className="w-5 h-5 rounded-lg bg-indigo-500/20 text-cyan-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Calendar className="w-3.5 h-3.5" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <span className="font-bold text-xs text-white max-w-[150px] sm:max-w-[240px] truncate leading-tight">
+                    {periodLabel}
+                  </span>
+                  {selectedDay && (
+                    <span className="text-[10px] text-slate-400 leading-none font-mono">
+                      <span className="text-emerald-400 font-semibold">{selectedDay.totalDistanceKm} km</span> • {selectedDay.visits.length} stops
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors ml-0.5" />
               </button>
 
               <button
                 onClick={() => hasNext && handleSelectDate(dates[currentIndex + 1])}
                 disabled={!hasNext}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20 transition cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-20 transition-all cursor-pointer active:scale-90"
                 title="Next recorded date"
               >
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           )}
 
-          {/* Analytics Button in Top Bar */}
+          {/* Trip Analytics Button */}
           <button
             onClick={handleOpenAnalytics}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold text-indigo-300 hover:text-white bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 transition ml-1 cursor-pointer active:scale-95"
-            title="View Trip & Path Analytics"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 shadow-md shadow-indigo-600/30 transition-all cursor-pointer active:scale-95 border border-white/15"
+            title="Open Trip & Route Analytics Dashboard"
           >
-            <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Analytics</span>
+            <BarChart3 className="w-3.5 h-3.5 text-cyan-200" />
+            <span className="hidden sm:inline">Analytics</span>
           </button>
 
           {/* Upload Different File Button */}
           <button
             onClick={() => setTimelineData(null)}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            title="Upload different Timeline.json file"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            title="Upload a different Timeline.json file"
           >
             <UploadCloud className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Full-Screen Map with Visited Paths */}
+      {/* Full-Screen Map with Hardware-Accelerated Rendering */}
       <div className="w-full h-full relative">
         <TimelineMap
           selectedDay={selectedDay}

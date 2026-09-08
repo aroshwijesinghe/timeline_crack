@@ -240,43 +240,47 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in cursor-default"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fade-in cursor-default"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-xl bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[95vh]"
+        className="relative w-full max-w-xl bg-[#0d1322]/95 border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[95vh] backdrop-blur-2xl"
       >
+        {/* Ambient Glows */}
+        <div className="absolute w-60 h-60 rounded-full bg-indigo-600/10 blur-[90px] pointer-events-none -top-10 -right-10" />
+        <div className="absolute w-60 h-60 rounded-full bg-cyan-500/10 blur-[90px] pointer-events-none -bottom-10 -left-10" />
+
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center">
+        <div className="flex items-center justify-between pb-3.5 border-b border-white/10 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-400 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
               <CalendarIcon className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-white">Select Time Period</h2>
-              <p className="text-xs text-slate-400">Choose a single day or a date range with recorded trips</p>
+              <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight">Timeline Calendar</h2>
+              <p className="text-xs text-slate-400">Pick a specific day or drag a time window to visualize</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-all cursor-pointer active:scale-90"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Mode Selector Tabs & Quick Presets */}
-        <div className="py-3 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-800">
+        <div className="py-3.5 flex flex-wrap items-center justify-between gap-2 relative z-10">
+          <div className="flex items-center bg-slate-950/80 p-1 rounded-2xl border border-white/10 shadow-inner">
             <button
               onClick={() => {
                 setSelectionMode('single');
                 setRangeEnd(null);
               }}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectionMode === 'single'
-                  ? 'bg-indigo-600 text-white shadow'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -284,9 +288,9 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
             </button>
             <button
               onClick={() => setSelectionMode('range')}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectionMode === 'range'
-                  ? 'bg-indigo-600 text-white shadow'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -298,7 +302,7 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
             <button
               onClick={handleSelectCurrentMonth}
               title="Select all days in this displayed month"
-              className="px-2.5 py-1 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition cursor-pointer"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-white/5 transition-all cursor-pointer active:scale-95"
             >
               This Month
             </button>
@@ -306,33 +310,33 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
             <button
               onClick={handleSelectAll}
               title="Select all recorded dates combined"
-              className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold text-indigo-300 hover:text-white bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 shadow-md shadow-indigo-600/25 transition-all cursor-pointer active:scale-95 border border-white/10"
             >
-              <Sparkles className="w-3 h-3 text-indigo-400" />
+              <Sparkles className="w-3.5 h-3.5 text-cyan-200" />
               <span>All Dates</span>
             </button>
           </div>
         </div>
 
         {/* Month Navigation & Fast Jump Dropdown */}
-        <div className="flex items-center justify-between bg-slate-950/60 px-3 py-2 rounded-2xl border border-slate-800/80 mb-3">
+        <div className="flex items-center justify-between bg-slate-950/60 px-3.5 py-2.5 rounded-2xl border border-white/10 mb-3 relative z-10 backdrop-blur-md">
           <button
             onClick={handlePrevMonth}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer active:scale-90"
             title="Previous month"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-sm text-white">{currentMonthName}</span>
+          <div className="flex items-center gap-2.5">
+            <span className="font-extrabold text-sm text-white tracking-wide">{currentMonthName}</span>
 
             {/* Jump to month with data */}
             {recordedMonths.length > 0 && (
               <select
                 value={`${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`}
                 onChange={(e) => handleMonthJump(e.target.value)}
-                className="bg-slate-800 text-indigo-300 text-xs font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:outline-none cursor-pointer"
+                className="bg-slate-900 text-cyan-300 text-xs font-bold rounded-xl px-2.5 py-1 border border-white/10 focus:outline-none cursor-pointer"
                 title="Jump directly to recorded months"
               >
                 {recordedMonths.map((rm) => (
@@ -346,7 +350,7 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
 
           <button
             onClick={handleNextMonth}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer active:scale-90"
             title="Next month"
           >
             <ChevronRight className="w-4 h-4" />
@@ -354,18 +358,18 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
         </div>
 
         {/* Calendar Grid */}
-        <div className="flex-1 select-none">
+        <div className="flex-1 select-none relative z-10">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 gap-1 text-center mb-1">
+          <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
             {WEEKDAYS.map((wd) => (
-              <div key={wd} className="text-[11px] font-bold text-slate-500 py-1">
+              <div key={wd} className="text-[11px] font-bold text-slate-400 py-1 uppercase tracking-wider">
                 {wd}
               </div>
             ))}
           </div>
 
           {/* Days */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-1.5">
             {/* Empty slots before first day */}
             {Array.from({ length: firstDayIndex }).map((_, i) => (
               <div key={`empty-${i}`} className="h-10 sm:h-12" />
@@ -403,14 +407,14 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
                   onClick={() => handleDayClick(dateStr)}
                   onMouseEnter={() => setHoverDate(dateStr)}
                   onMouseLeave={() => setHoverDate(null)}
-                  className={`relative h-10 sm:h-12 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer group ${
+                  className={`relative h-10 sm:h-12 rounded-xl flex flex-col items-center justify-center transition-all duration-200 cursor-pointer group ${
                     isStart || isEnd || isSingleSelected
-                      ? 'bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-600/40 z-10 scale-105'
+                      ? 'bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 text-white font-extrabold shadow-lg shadow-indigo-600/40 z-10 scale-105 border border-white/30'
                       : isInRange
-                      ? 'bg-indigo-600/20 text-indigo-200 border border-indigo-500/30'
+                      ? 'bg-indigo-600/25 text-indigo-200 border border-indigo-400/30'
                       : hasData
-                      ? 'bg-slate-800/80 hover:bg-slate-700/80 text-white border border-slate-700/70 hover:border-indigo-400/50'
-                      : 'text-slate-500 hover:bg-slate-800/40 hover:text-slate-300'
+                      ? 'bg-slate-900/80 hover:bg-slate-800/90 text-white border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02]'
+                      : 'text-slate-500 hover:bg-white/5 hover:text-slate-300'
                   }`}
                   title={
                     hasData
@@ -422,17 +426,19 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
 
                   {/* Activity Indicator: dot & distance */}
                   {hasData && (
-                    <div className="flex items-center gap-0.5 mt-0.5">
+                    <div className="flex items-center gap-1 mt-0.5">
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          isStart || isEnd || isSingleSelected ? 'bg-white' : 'bg-emerald-400'
+                          isStart || isEnd || isSingleSelected
+                            ? 'bg-white shadow-[0_0_6px_#fff]'
+                            : 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
                         }`}
                       />
                       <span
                         className={`text-[9px] font-mono leading-none ${
                           isStart || isEnd || isSingleSelected
-                            ? 'text-indigo-100 font-bold'
-                            : 'text-slate-400'
+                            ? 'text-white font-bold'
+                            : 'text-cyan-300'
                         }`}
                       >
                         {dayData.totalDistanceKm > 0 ? `${Math.round(dayData.totalDistanceKm)}k` : `${dayData.visits.length}p`}
@@ -446,23 +452,23 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
         </div>
 
         {/* Footer & Period Summary */}
-        <div className="pt-3.5 border-t border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-3">
+        <div className="pt-3.5 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-3 relative z-10">
           <div className="text-xs text-slate-300">
             {previewSummary ? (
               <div className="flex flex-col">
-                <span className="font-bold text-white flex items-center gap-1.5">
-                  <Navigation className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="font-extrabold text-white flex items-center gap-1.5 text-xs">
+                  <Navigation className="w-3.5 h-3.5 text-cyan-400" />
                   <span>{previewSummary.label}</span>
                 </span>
-                <span className="text-[11px] text-slate-400">
-                  {previewSummary.daysCount} {previewSummary.daysCount === 1 ? 'day' : 'days'} ({previewSummary.activeDays} with trips) •{' '}
-                  <strong className="text-emerald-400">{previewSummary.distanceKm} km</strong> •{' '}
-                  <strong className="text-indigo-300">{previewSummary.visitsCount} stops</strong>
+                <span className="text-[11px] text-slate-400 mt-0.5">
+                  {previewSummary.daysCount} {previewSummary.daysCount === 1 ? 'day' : 'days'} ({previewSummary.activeDays} active) •{' '}
+                  <strong className="text-emerald-400 font-mono font-bold">{previewSummary.distanceKm} km</strong> •{' '}
+                  <strong className="text-cyan-300 font-mono font-bold">{previewSummary.visitsCount} stops</strong>
                 </span>
               </div>
             ) : (
-              <span className="text-slate-500">
-                {selectionMode === 'range' ? 'Click a start date, then an end date' : 'Click a date to select'}
+              <span className="text-slate-400 text-xs">
+                {selectionMode === 'range' ? 'Click a start date, then an end date' : 'Click any date to view'}
               </span>
             )}
           </div>
@@ -470,7 +476,7 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
           <div className="flex items-center justify-end gap-2">
             <button
               onClick={onClose}
-              className="px-3 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition text-xs font-semibold cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all text-xs font-bold cursor-pointer"
             >
               Cancel
             </button>
@@ -478,7 +484,7 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
             <button
               onClick={handleApplyRange}
               disabled={selectionMode === 'range' && !rangeStart}
-              className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:pointer-events-none text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition cursor-pointer active:scale-95"
+              className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 disabled:opacity-30 disabled:pointer-events-none text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all cursor-pointer active:scale-95 border border-white/15"
             >
               <Check className="w-3.5 h-3.5" />
               <span>{selectionMode === 'range' ? 'Apply Time Period' : 'Apply Date'}</span>

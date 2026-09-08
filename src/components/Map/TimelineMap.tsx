@@ -215,14 +215,40 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       routesGroup.addLayer(polyline);
     });
 
-    // 2. Draw Visited Place Markers
+    // 2. Draw Visited Place Markers with Human-Crafted Personality
+    const totalVisits = selectedDay.visits.length;
+
     selectedDay.visits.forEach((v, index) => {
+      const isDeparture = index === 0;
+      const isDestination = totalVisits > 1 && index === totalVisits - 1;
+
+      let badgeGradient = 'from-indigo-600 to-violet-500';
+      let ringColor = 'ring-indigo-500/40 shadow-indigo-500/40';
+      let statusLabel = `Stop #${index + 1}`;
+      let statusBadge = `bg-indigo-500/20 text-indigo-300 border-indigo-500/30`;
+
+      if (isDeparture) {
+        badgeGradient = 'from-emerald-500 to-teal-400';
+        ringColor = 'ring-emerald-400/50 shadow-emerald-500/50';
+        statusLabel = 'Departure';
+        statusBadge = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+      } else if (isDestination) {
+        badgeGradient = 'from-rose-500 to-amber-500';
+        ringColor = 'ring-rose-500/50 shadow-rose-500/50';
+        statusLabel = 'Destination';
+        statusBadge = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+      }
+
       const markerHtml = `
-        <div class="custom-pin-marker relative group">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-indigo-500/50 border-2 border-white ring-2 ring-indigo-500/40">
-            ${index + 1}
+        <div class="custom-pin-marker relative group flex flex-col items-center">
+          ${isDeparture ? '<div class="absolute -inset-1 rounded-full bg-emerald-400/30 animate-ping pointer-events-none"></div>' : ''}
+          ${isDestination ? '<div class="absolute -inset-1 rounded-full bg-rose-500/30 animate-ping pointer-events-none"></div>' : ''}
+          
+          <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr ${badgeGradient} text-white flex items-center justify-center font-extrabold text-xs shadow-xl ${ringColor} border-2 border-white ring-2">
+            ${isDeparture ? '🛫' : isDestination ? '🏁' : index + 1}
           </div>
-          <div class="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] px-1 rounded border border-slate-700 font-mono text-emerald-400">
+
+          <div class="absolute -bottom-2 bg-slate-950/90 backdrop-blur-md text-[9px] px-1.5 py-0.5 rounded-full border border-white/20 font-mono text-cyan-300 shadow-md whitespace-nowrap">
             ${v.durationFormatted}
           </div>
         </div>
@@ -231,9 +257,9 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       const customIcon = L.divIcon({
         html: markerHtml,
         className: '',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-        popupAnchor: [0, -18]
+        iconSize: [36, 42],
+        iconAnchor: [18, 21],
+        popupAnchor: [0, -22]
       });
 
       const marker = L.marker(v.location, { icon: customIcon });
@@ -241,30 +267,34 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       const googleMapsUrl = `https://www.google.com/maps?q=${v.location[0]},${v.location[1]}`;
 
       marker.bindPopup(`
-        <div class="p-3 text-slate-100 min-w-[220px]">
-          <div class="flex items-center justify-between mb-2 border-b border-slate-700/60 pb-1.5">
-            <span class="font-bold text-sm text-indigo-400">Stop #${index + 1}</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold uppercase">
-              ${v.semanticType || 'Place'}
+        <div class="p-4 text-slate-100 min-w-[240px]">
+          <div class="flex items-center justify-between gap-2 mb-2.5 pb-2 border-b border-white/10">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-bold text-white">${statusLabel}</span>
+              <span class="text-[10px] text-slate-400 font-mono">#${index + 1}</span>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase border ${statusBadge}">
+              ${v.semanticType || 'Visited Place'}
             </span>
           </div>
-          <div class="text-xs space-y-1.5 text-slate-300">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Duration:</span>
-              <span class="font-semibold text-emerald-400">${v.durationFormatted}</span>
+          
+          <div class="text-xs space-y-2 text-slate-300">
+            <div class="flex justify-between items-center bg-slate-950/40 px-2 py-1 rounded-lg border border-white/5">
+              <span class="text-slate-400 flex items-center gap-1">⏱ Dwell Time:</span>
+              <span class="font-bold text-emerald-400 font-mono">${v.durationFormatted}</span>
             </div>
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center">
               <span class="text-slate-400">Arrival:</span>
               <span class="font-medium text-white">${formatTime(v.startTime)}</span>
             </div>
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center">
               <span class="text-slate-400">Departure:</span>
               <span class="font-medium text-white">${formatTime(v.endTime)}</span>
             </div>
-            <div class="pt-2 flex justify-between items-center text-[11px] border-t border-slate-800">
+            <div class="pt-2 flex justify-between items-center text-[11px] border-t border-white/10">
               <span class="text-slate-400 font-mono text-[10px]">${v.location[0].toFixed(4)}, ${v.location[1].toFixed(4)}</span>
-              <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 underline font-medium">
-                Google Maps ↗
+              <a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-0.5 hover:underline">
+                Maps ↗
               </a>
             </div>
           </div>
@@ -456,90 +486,68 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Floating Map Controls & Overlays */}
-      <div className="absolute top-4 right-4 z-[400] flex flex-col gap-2">
-        {/* Layer Selector */}
-        <div className="glass-panel p-1 rounded-xl shadow-xl flex items-center gap-1">
-          <button
-            onClick={() => setTileProvider('esri-dark')}
-            title="Esri Dark Theme (No API Key)"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              tileProvider === 'esri-dark'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            Dark
-          </button>
-          <button
-            onClick={() => setTileProvider('esri-streets')}
-            title="Clean Street Map"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              tileProvider === 'esri-streets'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            Streets
-          </button>
-          <button
-            onClick={() => setTileProvider('satellite')}
-            title="Satellite Imagery"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              tileProvider === 'satellite'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            Satellite
-          </button>
-          <button
-            onClick={() => setTileProvider('osm')}
-            title="OpenStreetMap Standard"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              tileProvider === 'osm'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            OSM
-          </button>
+      <div className="absolute top-4 right-4 z-[400] flex flex-col items-end gap-2.5">
+        {/* Layer Selector Segmented Control */}
+        <div className="glass-panel p-1 rounded-2xl shadow-2xl flex items-center gap-1 border border-white/10 backdrop-blur-2xl">
+          {(['esri-dark', 'esri-streets', 'satellite', 'osm'] as MapTileProvider[]).map((provider) => {
+            const labels: Record<MapTileProvider, string> = {
+              'esri-dark': 'Dark',
+              'esri-streets': 'Streets',
+              satellite: 'Satellite',
+              osm: 'OSM'
+            };
+            const isActive = tileProvider === provider;
+            return (
+              <button
+                key={provider}
+                onClick={() => setTileProvider(provider)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {labels[provider]}
+              </button>
+            );
+          })}
         </div>
 
         {/* Toggles: Arrows, Raw GPS & Auto-Follow */}
-        <div className="glass-panel p-1 rounded-xl shadow-xl flex items-center justify-end gap-1">
+        <div className="glass-panel p-1 rounded-2xl shadow-2xl flex items-center justify-end gap-1.5 border border-white/10 backdrop-blur-2xl">
           <button
             onClick={() => setShowDirectionArrows(!showDirectionArrows)}
             title="Toggle Visited Direction Arrows"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               showDirectionArrows
-                ? 'bg-cyan-600/90 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20'
+                : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
             }`}
           >
-            <Navigation className={`w-3.5 h-3.5 transition-transform ${showDirectionArrows ? 'rotate-45' : ''}`} />
+            <Navigation className={`w-3.5 h-3.5 text-cyan-400 transition-transform duration-300 ${showDirectionArrows ? 'rotate-45' : ''}`} />
             <span>Arrows</span>
           </button>
 
           <button
             onClick={() => setShowRawSignals(!showRawSignals)}
             title="Toggle Raw GPS breadcrumbs"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               showRawSignals
-                ? 'bg-rose-600/90 text-white'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm shadow-rose-500/20'
+                : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
             }`}
           >
-            {showRawSignals ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-            <span>GPS Points {rawSignals.length > 0 ? `(${rawSignals.length})` : ''}</span>
+            {showRawSignals ? <Eye className="w-3.5 h-3.5 text-rose-400" /> : <EyeOff className="w-3.5 h-3.5" />}
+            <span>GPS {rawSignals.length > 0 ? `(${rawSignals.length})` : ''}</span>
           </button>
 
           <button
             onClick={() => setAutoFollow(!autoFollow)}
-            title={autoFollow ? "Auto-Follow Camera ON (Click to lock map still)" : "Camera Locked Still (Click to follow vehicle)"}
-            className={`p-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            title={autoFollow ? "Camera Auto-Follow ON (Click to lock map)" : "Camera Locked (Click to track moving vehicle)"}
+            className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               autoFollow
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <Crosshair className="w-3.5 h-3.5" />
@@ -549,14 +557,17 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
       {/* Floating HUD status during playback (cleanly positioned under top bar) */}
       {playbackPosition && (
-        <div className="absolute top-16 left-4 z-[400] glass-panel px-3.5 py-2 rounded-2xl shadow-2xl flex items-center gap-2.5 border border-indigo-500/30 animate-fade-in pointer-events-none">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0"></div>
+        <div className="absolute top-20 left-4 sm:left-6 z-[400] glass-panel px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-indigo-500/40 animate-fade-in pointer-events-none">
+          <div className="relative flex items-center justify-center">
+            <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping absolute"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 relative"></div>
+          </div>
           <div>
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-indigo-300">Live Status</div>
-            <div className="text-xs font-bold text-white flex items-center gap-1.5">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-300">Live Journey Position</div>
+            <div className="text-xs font-extrabold text-white flex items-center gap-1.5">
               <span>{playbackStatus}</span>
               {playbackActivityType && (
-                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">
                   {playbackActivityType}
                 </span>
               )}
@@ -567,18 +578,18 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
       {/* Bidirectional Route Legend */}
       {hasBidirectional && (
-        <div className="absolute bottom-6 left-4 z-[400] glass-panel px-3 py-2 rounded-xl shadow-2xl border border-slate-700/60 flex items-center gap-3.5 text-xs animate-fade-in pointer-events-auto">
-          <div className="flex items-center gap-1.5 text-slate-300 font-semibold text-[11px] tracking-wide uppercase">
-            <Navigation className="w-3.5 h-3.5 text-indigo-400 rotate-45" />
-            <span>Directions:</span>
+        <div className="absolute bottom-6 left-4 sm:left-6 z-[400] glass-panel px-4 py-2.5 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-4 text-xs animate-fade-in pointer-events-auto backdrop-blur-2xl">
+          <div className="flex items-center gap-1.5 text-slate-300 font-bold text-[11px] tracking-wider uppercase">
+            <Navigation className="w-3.5 h-3.5 text-cyan-400 rotate-45" />
+            <span>Path Corridors:</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/50"></span>
-            <span className="text-cyan-300 font-medium">Outbound (➔)</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]"></span>
+            <span className="text-cyan-300 font-semibold text-xs">Outbound ➔</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50"></span>
-            <span className="text-rose-300 font-medium">Return (➔)</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]"></span>
+            <span className="text-rose-300 font-semibold text-xs">Return ➔</span>
           </div>
         </div>
       )}
