@@ -265,10 +265,10 @@ export const App: React.FC = () => {
             </div>
 
             {/* Part 2 (Center): File Drop Part & Privacy Guarantee */}
-            <div className="flex flex-col justify-between gap-4">
-              <div className="glass-panel rounded-3xl p-6 sm:p-7 shadow-2xl border border-lime-500/25 flex flex-col justify-between relative overflow-hidden group">
-                <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 shadow-2xl border border-lime-500/25 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
 
+              <div>
                 {/* Tactile Large Interactive Dropzone */}
                 <div
                   onDragOver={handleDragOver}
@@ -315,9 +315,12 @@ export const App: React.FC = () => {
                     <span>{uploadError}</span>
                   </div>
                 )}
+              </div>
 
-                {/* Bottom Bar: Demo Quick-Start */}
-                <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-white/10">
+              {/* Bottom Section inside the Box */}
+              <div className="mt-5 space-y-3.5 pt-4 border-t border-white/10">
+                {/* Demo Quick-Start */}
+                <div className="flex items-center justify-between gap-3">
                   <div className="flex flex-col">
                     <span className="text-xs font-semibold text-white font-heading">Don't have your file?</span>
                     <span className="text-[10px] text-slate-400">Explore with sample trip data</span>
@@ -331,18 +334,20 @@ export const App: React.FC = () => {
                     <span>Try Demo Timeline</span>
                   </button>
                 </div>
-              </div>
 
-              {/* 100% Client-Side Privacy Guarantee (Directly docked near file upload) */}
-              <div className="w-full flex items-start gap-3.5 p-4 rounded-3xl glass-panel border border-lime-500/30 text-slate-300 text-xs shadow-xl backdrop-blur-2xl">
-                <div className="p-2 rounded-2xl bg-lime-500/20 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/40 shadow-[0_0_10px_rgba(132,204,22,0.2)]">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <strong className="text-[#a3e635] block mb-1 font-extrabold uppercase tracking-wide font-heading text-sm">
-                    100% Client-Side Privacy Guarantee
-                  </strong>
-                  Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser with zero cloud storage.
+                {/* 100% Client-Side Privacy Guarantee (Integrated inside upper box) */}
+                <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-black/50 border border-lime-500/25 text-slate-300 text-xs">
+                  <div className="p-1.5 rounded-xl bg-lime-500/20 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/30">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <strong className="text-[#a3e635] block mb-0.5 font-extrabold uppercase tracking-wide font-heading text-xs">
+                      100% Client-Side Privacy Guarantee
+                    </strong>
+                    <p className="text-[11px] text-slate-300 leading-snug">
+                      Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser with zero cloud storage.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
