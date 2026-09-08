@@ -221,10 +221,38 @@ export const App: React.FC = () => {
               <div>
                 {/* Logo Emblem & Studio Badge */}
                 <div className="flex items-center gap-3.5 mb-5">
-                  <div className="relative group">
-                    <div className="absolute -inset-2.5 rounded-2xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/40 transition duration-500 animate-pulse" />
-                    <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#2a3828] to-[#0c120b] border border-lime-500/50 flex items-center justify-center shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
-                      <MapPin className="w-7 h-7 text-[#a3e635] fill-[#a3e635]/20" />
+                  <div className="relative group cursor-pointer select-none">
+                    <div className="absolute -inset-2.5 rounded-2xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/45 transition duration-500 animate-pulse" />
+                    <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#243623] via-[#142012] to-[#070c06] border border-lime-500/50 flex items-center justify-center overflow-hidden shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
+                      {/* Rotating Radar Sweep Beam */}
+                      <div
+                        className="absolute -inset-3 rounded-full animate-radar-sweep pointer-events-none opacity-40"
+                        style={{
+                          background: 'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(163, 230, 53, 0.5) 360deg)',
+                        }}
+                      />
+
+                      {/* Concentric GPS Radar Ping Waves */}
+                      <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 pointer-events-none flex items-center justify-center">
+                        <span className="absolute w-7 h-7 rounded-full border border-lime-400/70 animate-ripple-1 pointer-events-none" />
+                        <span className="absolute w-7 h-7 rounded-full border border-emerald-400/50 animate-ripple-2 pointer-events-none" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_#bef264]" />
+                      </div>
+
+                      {/* Orbiting Satellite Dot */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="animate-orbit-satellite">
+                          <span className="block w-1.5 h-1.5 rounded-full bg-[#bef264] shadow-[0_0_6px_#bef264]" />
+                        </div>
+                      </div>
+
+                      {/* Floating Location Pin */}
+                      <div className="relative z-10 animate-beacon-float mb-1 flex items-center justify-center">
+                        <MapPin className="w-7 h-7 text-[#bef264] fill-[#bef264]/25 drop-shadow-[0_0_8px_rgba(190,242,100,0.7)]" />
+                      </div>
+
+                      {/* Breathing ground shadow */}
+                      <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-black/80 blur-[1px] animate-beacon-shadow" />
                     </div>
                   </div>
 
