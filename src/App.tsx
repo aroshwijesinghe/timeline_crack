@@ -240,14 +240,14 @@ export const App: React.FC = () => {
         </header>
 
         {/* Main Content Area (Full Width, Balanced, 3-Column Left-to-Right Panoramic Grid) */}
-        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-6 sm:py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-stretch w-full">
+        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-8 sm:py-12 flex items-center justify-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12 items-center w-full">
 
-            {/* Part 1 (Left): Welcome Hero & Interactive Feature Highlights */}
-            <div className="flex flex-col justify-between py-1 lg:pr-2 h-full">
+            {/* Part 1 (Left): Welcome Hero */}
+            <div className="flex flex-col justify-center py-2 lg:pr-4">
               <div>
                 {/* Animated Logo Beacon & Studio Badge */}
-                <div className="flex items-center gap-3.5 mb-5">
+                <div className="flex items-center gap-3.5 mb-6">
                   <div className="relative group cursor-pointer select-none">
                     <div className="absolute -inset-2.5 rounded-2xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/45 transition duration-500 animate-pulse" />
                     <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#243623] via-[#142012] to-[#070c06] border border-lime-500/50 flex items-center justify-center overflow-hidden shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
@@ -392,7 +392,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Part 3 (Right): How to Export Guide */}
-            <div className="flex flex-col justify-between relative overflow-hidden h-full">
+            <div className="flex flex-col justify-center py-2 lg:pl-2">
               <div>
                 {/* Guide Header & Platform Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
