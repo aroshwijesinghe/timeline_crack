@@ -347,8 +347,8 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Part 3 (Right): How to Export Guide */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-7 shadow-2xl border border-lime-500/20 flex flex-col justify-between relative overflow-hidden">
+            {/* Part 3 (Right): How to Export Guide (Borderless) */}
+            <div className="rounded-3xl p-6 sm:p-7 bg-gradient-to-b from-[#182217]/60 to-[#090e08]/70 backdrop-blur-xl shadow-xl border-0 flex flex-col justify-between relative overflow-hidden">
               <div>
                 {/* Guide Header & Platform Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
