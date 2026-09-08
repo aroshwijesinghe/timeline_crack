@@ -1,4 +1,4 @@
-import { LatLng, TimelineWaypoint } from '../types/timeline';
+import { LatLng, TimelineWaypoint, ParsedTimeline, TimelineDay, TimelineStats } from '../types/timeline';
 
 /**
  * Parses raw coordinate input into [lat, lng].
@@ -619,4 +619,99 @@ export function analyzeActivityDirections(
   return { directionMap, hasBidirectional };
 }
 
+export interface PeriodStatsResult extends TimelineStats {
+  rawSignalCount: number;
+  periodLabel: string;
+  isAllTime: boolean;
+}
 
+/**
+ * Computes travel and visit analytics specifically for the selected time period (single day, date range, or all).
+ */
+export function computePeriodStats(
+  selectedDay: TimelineDay | null,
+  timelineData: ParsedTimeline | null,
+  selectedDate: string
+): PeriodStatsResult {
+  if (!timelineData) {
+    return {
+      totalDays: 0,
+      totalVisits: 0,
+      totalActivities: 0,
+      totalDistanceKm: 0,
+      dateRange: null,
+      activityDistanceByType: {},
+      activityDurationByType: {},
+      activityCountByType: {},
+      rawSignalCount: 0,
+      periodLabel: 'No period selected',
+      isAllTime: false
+    };
+  }
+
+  // If 'all' is explicitly chosen, return whole-timeline stats
+  if (selectedDate === 'all' || !selectedDay) {
+    return {
+      ...timelineData.stats,
+      rawSignalCount: timelineData.rawSignals.length,
+      periodLabel: 'All Recorded Dates Combined',
+      isAllTime: true
+    };
+  }
+
+  // Calculate breakdown for the selected period
+  const activityDistanceByType: Record<string, number> = {};
+  const activityDurationByType: Record<string, number> = {};
+  const activityCountByType: Record<string, number> = {};
+  let totalDistanceKm = 0;
+
+  for (const act of selectedDay.activities) {
+    const type = act.type || 'UNKNOWN';
+    activityDistanceByType[type] = (activityDistanceByType[type] || 0) + (act.distanceKm || 0);
+    activityDurationByType[type] = (activityDurationByType[type] || 0) + (act.durationMs || 0);
+    activityCountByType[type] = (activityCountByType[type] || 0) + 1;
+    totalDistanceKm += (act.distanceKm || 0);
+  }
+
+  let totalDays = 1;
+  let dateRange: { start: string; end: string } = {
+    start: selectedDay.displayDate || selectedDate,
+    end: selectedDay.displayDate || selectedDate
+  };
+
+  let rawSignalCount = 0;
+
+  if (selectedDate.includes('..')) {
+    const [start, end] = selectedDate.split('..');
+    const matchingDates = Object.keys(timelineData.days).filter(d => d >= start && d <= end);
+    totalDays = matchingDates.length;
+    dateRange = { start, end };
+
+    const startTs = new Date(`${start}T00:00:00`).getTime();
+    const endTs = new Date(`${end}T23:59:59.999`).getTime();
+    rawSignalCount = timelineData.rawSignals.filter(
+      p => p.timestamp >= startTs && p.timestamp <= endTs
+    ).length;
+  } else {
+    // Single day: filter raw signals for that calendar date
+    const startTs = new Date(`${selectedDate}T00:00:00`).getTime();
+    const endTs = new Date(`${selectedDate}T23:59:59.999`).getTime();
+    rawSignalCount = timelineData.rawSignals.filter(
+      p => p.timestamp >= startTs && p.timestamp <= endTs
+    ).length;
+  }
+
+  return {
+    totalDays,
+    totalVisits: selectedDay.visits.length,
+    totalActivities: selectedDay.activities.length,
+    totalDistanceKm: Number(totalDistanceKm.toFixed(1)),
+    dateRange,
+    activityDistanceByType,
+    activityDurationByType,
+    activityCountByType,
+    rawSignalCount,
+    periodLabel: selectedDay.displayDate || selectedDate,
+    isAllTime: false
+  };
+}

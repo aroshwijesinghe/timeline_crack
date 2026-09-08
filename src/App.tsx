@@ -768,6 +768,8 @@ export const App: React.FC = () => {
         isOpen={isStatsOpen}
         onClose={() => setIsStatsOpen(false)}
         timelineData={timelineData}
+        selectedDay={selectedDay}
+        selectedDate={selectedDate}
       />
     </div>
   );
