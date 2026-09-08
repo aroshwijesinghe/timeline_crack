@@ -240,11 +240,11 @@ export const App: React.FC = () => {
         </header>
 
         {/* Main Content Area (Full Width, Balanced, 3-Column Left-to-Right Panoramic Grid) */}
-        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-8 sm:py-12 flex items-center justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12 items-center w-full">
+        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-6 sm:py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-center w-full">
 
             {/* Part 1 (Left): Welcome Hero */}
-            <div className="flex flex-col justify-center py-2 lg:pr-4">
+            <div className="flex flex-col justify-center py-4 lg:pr-4">
               <div>
                 {/* Animated Logo Beacon & Studio Badge */}
                 <div className="flex items-center gap-3.5 mb-6">
@@ -289,7 +289,7 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Impactful Headline */}
-                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight text-white mb-6 font-heading uppercase leading-[1.05]">
+                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight text-white mb-5 font-heading uppercase leading-[1.05]">
                   Welcome to <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-[#bef264] to-[#34d399] drop-shadow-[0_0_25px_rgba(163,230,53,0.35)]">
                     Timeline
@@ -297,14 +297,14 @@ export const App: React.FC = () => {
                 </h1>
 
                 {/* Narrative Subtitle */}
-                <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-sans max-w-md mt-2">
+                <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-sans max-w-md">
                   Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
                 </p>
               </div>
             </div>
 
             {/* Part 2 (Center): File Drop Part & Privacy Guarantee */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group h-full">
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
 
               <div>
@@ -381,7 +381,7 @@ export const App: React.FC = () => {
                   </div>
                   <div>
                     <strong className="text-[#a3e635] block mb-0.5 font-extrabold uppercase tracking-wide font-heading text-xs">
-                      100% Client-Side Privacy Guarantee
+                       Client-Side Privacy Guarantee
                     </strong>
                     <p className="text-[11px] text-slate-300 leading-snug">
                       Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser with zero cloud storage.
@@ -392,7 +392,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Part 3 (Right): How to Export Guide */}
-            <div className="flex flex-col justify-center py-2 lg:pl-2">
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
               <div>
                 {/* Guide Header & Platform Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
@@ -433,7 +433,7 @@ export const App: React.FC = () => {
                 {/* Android Steps with visual step numbers */}
                 {guideTab === 'android' && (
                   <div className="space-y-2.5 animate-fade-in text-xs text-slate-300">
-                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1">
+                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                       <span>Android Settings Export</span>
                     </div>
@@ -470,7 +470,7 @@ export const App: React.FC = () => {
                 {/* iOS Steps */}
                 {guideTab === 'ios' && (
                   <div className="space-y-2.5 animate-fade-in text-xs text-slate-300">
-                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1">
+                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                       <span>Google Maps iOS App Export</span>
                     </div>
