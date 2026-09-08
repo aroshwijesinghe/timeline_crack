@@ -11,9 +11,11 @@ import {
 import {
   getActivityStyle,
   formatTime,
-  formatDistance
+  formatDistance,
+  computePathArrowPoints,
+  analyzeActivityDirections
 } from '../../utils/geoUtils';
-import { Crosshair, Eye, EyeOff } from 'lucide-react';
+import { Crosshair, Eye, EyeOff, Navigation } from 'lucide-react';
 
 interface TimelineMapProps {
   selectedDay: TimelineDay | null;
@@ -41,11 +43,14 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const markersLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const routesLayerGroupRef = useRef<L.LayerGroup | null>(null);
+  const arrowsLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const rawSignalsLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const playbackMarkerRef = useRef<L.Marker | null>(null);
 
   const [tileProvider, setTileProvider] = useState<MapTileProvider>('esri-dark');
   const [showRawSignals, setShowRawSignals] = useState(false);
+  const [showDirectionArrows, setShowDirectionArrows] = useState(true);
+  const [hasBidirectional, setHasBidirectional] = useState(false);
   const [autoFollow, setAutoFollow] = useState(true);
 
   // Initialize Map
@@ -71,6 +76,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
     markersLayerGroupRef.current = L.layerGroup().addTo(map);
     routesLayerGroupRef.current = L.layerGroup().addTo(map);
+    arrowsLayerGroupRef.current = L.layerGroup().addTo(map);
     rawSignalsLayerGroupRef.current = L.layerGroup().addTo(map);
 
     mapInstanceRef.current = map;
@@ -126,17 +132,39 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     routesGroup.clearLayers();
 
     // 1. Draw Routes / Activities
+    const { directionMap, hasBidirectional: foundBidirectional } = analyzeActivityDirections(selectedDay.activities);
+    setHasBidirectional(foundBidirectional);
+
     selectedDay.activities.forEach((act) => {
       const style = getActivityStyle(act.type);
       if (act.path.length < 2) return;
 
-      const polyline = L.polyline(act.path, {
-        color: style.color,
+      const dirInfo = directionMap.get(act.id);
+      const pathToDraw = dirInfo?.offsetPath || act.path;
+      const routeColor = dirInfo ? dirInfo.color : style.color;
+
+      const polyline = L.polyline(pathToDraw, {
+        color: routeColor,
         weight: 5,
-        opacity: 0.85,
+        opacity: 0.88,
         lineCap: 'round',
         lineJoin: 'round'
       });
+
+      let directionBadge = '';
+      if (dirInfo?.role === 'outbound') {
+        directionBadge = `
+          <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+            ➔ Outbound
+          </span>
+        `;
+      } else if (dirInfo?.role === 'return') {
+        directionBadge = `
+          <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40">
+            ➔ Return
+          </span>
+        `;
+      }
 
       const avgSpeedKmh =
         act.durationMs > 0 && act.distanceKm > 0
@@ -144,10 +172,13 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           : null;
 
       polyline.bindPopup(`
-        <div class="p-3 text-slate-100 min-w-[200px]">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="w-3 h-3 rounded-full" style="background-color: ${style.color}"></span>
-            <span class="font-bold text-sm tracking-wide text-white uppercase">${style.label}</span>
+        <div class="p-3 text-slate-100 min-w-[210px]">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full" style="background-color: ${routeColor}"></span>
+              <span class="font-bold text-sm tracking-wide text-white uppercase">${style.label}</span>
+            </div>
+            ${directionBadge}
           </div>
           <div class="text-xs space-y-1 text-slate-300">
             <div class="flex justify-between"><span class="text-slate-400">Distance:</span> <span class="font-semibold text-white">${formatDistance(act.distanceMeters)}</span></div>
@@ -233,6 +264,46 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       map.fitBounds(selectedDay.bounds, { padding: [50, 50], maxZoom: 15, animate: true });
     }
   }, [selectedDay]);
+
+  // Render Direction Arrows along visited paths
+  useEffect(() => {
+    const arrowsGroup = arrowsLayerGroupRef.current;
+    if (!arrowsGroup) return;
+    arrowsGroup.clearLayers();
+
+    if (!showDirectionArrows || !selectedDay) return;
+
+    const { directionMap } = analyzeActivityDirections(selectedDay.activities);
+
+    selectedDay.activities.forEach((act) => {
+      if (act.path.length < 2) return;
+      const dirInfo = directionMap.get(act.id);
+      const pathToDraw = dirInfo?.offsetPath || act.path;
+      const arrowColor = dirInfo ? dirInfo.arrowColor : getActivityStyle(act.type).color;
+
+      const arrowPoints = computePathArrowPoints(pathToDraw, 350);
+      arrowPoints.forEach((point) => {
+        const arrowHtml = `
+          <div style="transform: rotate(${point.bearing}deg); width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.85));">
+              <path d="M12 2.5L20 20.5L12 16.5L4 20.5L12 2.5Z" fill="${arrowColor}" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" />
+            </svg>
+          </div>
+        `;
+        const arrowIcon = L.divIcon({
+          html: arrowHtml,
+          className: 'bg-transparent border-none',
+          iconSize: [22, 22],
+          iconAnchor: [11, 11]
+        });
+        const arrowMarker = L.marker(point.position, {
+          icon: arrowIcon,
+          interactive: false
+        });
+        arrowsGroup.addLayer(arrowMarker);
+      });
+    });
+  }, [selectedDay, showDirectionArrows]);
 
   // Handle Focus Item (Pan/Zoom on click from feed)
   useEffect(() => {
@@ -405,8 +476,21 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           </button>
         </div>
 
-        {/* Toggles: Raw GPS & Auto-Follow */}
+        {/* Toggles: Arrows, Raw GPS & Auto-Follow */}
         <div className="glass-panel p-1 rounded-xl shadow-xl flex items-center justify-end gap-1">
+          <button
+            onClick={() => setShowDirectionArrows(!showDirectionArrows)}
+            title="Toggle Visited Direction Arrows"
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+              showDirectionArrows
+                ? 'bg-cyan-600/90 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Navigation className={`w-3.5 h-3.5 transition-transform ${showDirectionArrows ? 'rotate-45' : ''}`} />
+            <span>Arrows</span>
+          </button>
+
           <button
             onClick={() => setShowRawSignals(!showRawSignals)}
             title="Toggle Raw GPS breadcrumbs"
@@ -448,6 +532,24 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
                 </span>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bidirectional Route Legend */}
+      {hasBidirectional && (
+        <div className="absolute bottom-6 left-4 z-[400] glass-panel px-3 py-2 rounded-xl shadow-2xl border border-slate-700/60 flex items-center gap-3.5 text-xs animate-fade-in pointer-events-auto">
+          <div className="flex items-center gap-1.5 text-slate-300 font-semibold text-[11px] tracking-wide uppercase">
+            <Navigation className="w-3.5 h-3.5 text-indigo-400 rotate-45" />
+            <span>Directions:</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/50"></span>
+            <span className="text-cyan-300 font-medium">Outbound (➔)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50"></span>
+            <span className="text-rose-300 font-medium">Return (➔)</span>
           </div>
         </div>
       )}

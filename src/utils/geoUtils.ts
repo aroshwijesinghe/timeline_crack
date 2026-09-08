@@ -317,3 +317,306 @@ export function interpolatePosition(
   return null;
 }
 
+/**
+ * Calculates compass bearing (0-360 deg) between two coordinates.
+ */
+export function calculateBearing(p1: LatLng, p2: LatLng): number {
+  const lat1 = (p1[0] * Math.PI) / 180;
+  const lat2 = (p2[0] * Math.PI) / 180;
+  const dLng = ((p2[1] - p1[1]) * Math.PI) / 180;
+
+  const y = Math.sin(dLng) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  const brng = (Math.atan2(y, x) * 180) / Math.PI;
+  return (brng + 360) % 360;
+}
+
+/**
+ * Offsets a coordinate by a distance in meters along a given bearing angle.
+ */
+export function offsetLatLng(point: LatLng, bearingDeg: number, distanceMeters: number): LatLng {
+  const R = 6371000; // Earth's radius in meters
+  const latRad = (point[0] * Math.PI) / 180;
+  const lngRad = (point[1] * Math.PI) / 180;
+  const bearingRad = (bearingDeg * Math.PI) / 180;
+
+  const newLatRad = Math.asin(
+    Math.sin(latRad) * Math.cos(distanceMeters / R) +
+    Math.cos(latRad) * Math.sin(distanceMeters / R) * Math.cos(bearingRad)
+  );
+  const newLngRad =
+    lngRad +
+    Math.atan2(
+      Math.sin(bearingRad) * Math.sin(distanceMeters / R) * Math.cos(latRad),
+      Math.cos(distanceMeters / R) - Math.sin(latRad) * Math.sin(newLatRad)
+    );
+
+  return [(newLatRad * 180) / Math.PI, (newLngRad * 180) / Math.PI];
+}
+
+/**
+ * Offsets a polyline perpendicularly to its direction of travel (to the right if positive distance).
+ * This creates clean parallel lanes for opposing or bidirectional paths so both directions are visible side-by-side.
+ */
+export function offsetPolyline(path: LatLng[], offsetMeters: number): LatLng[] {
+  if (!path || path.length < 2 || offsetMeters === 0) return path;
+
+  const result: LatLng[] = [];
+  for (let i = 0; i < path.length; i++) {
+    let bearing: number;
+    if (i === 0) {
+      bearing = calculateBearing(path[0], path[1]);
+    } else if (i === path.length - 1) {
+      bearing = calculateBearing(path[path.length - 2], path[path.length - 1]);
+    } else {
+      const b1 = calculateBearing(path[i - 1], path[i]);
+      const b2 = calculateBearing(path[i], path[i + 1]);
+      let diff = b2 - b1;
+      while (diff < -180) diff += 360;
+      while (diff > 180) diff -= 360;
+      bearing = (b1 + diff / 2 + 360) % 360;
+    }
+
+    // Right-hand perpendicular angle (90 degrees clockwise)
+    const perpBearing = (bearing + 90) % 360;
+    result.push(offsetLatLng(path[i], perpBearing, offsetMeters));
+  }
+
+  return result;
+}
+
+export interface PathArrowPoint {
+  position: LatLng;
+  bearing: number;
+}
+
+/**
+ * Computes evenly-spaced arrow positions and bearings along a polyline.
+ * Ensures clean visibility with optimal spacing (e.g. every ~350m).
+ */
+export function computePathArrowPoints(path: LatLng[], minDistanceBetweenMeters: number = 350): PathArrowPoint[] {
+  if (!path || path.length < 2) return [];
+
+  const segmentLengths: number[] = [];
+  let totalLength = 0;
+  for (let i = 0; i < path.length - 1; i++) {
+    const len = calculateDistanceMeters(path[i], path[i + 1]);
+    segmentLengths.push(len);
+    totalLength += len;
+  }
+
+  if (totalLength < 35) return [];
+
+  const targetDistances: number[] = [];
+  if (totalLength < minDistanceBetweenMeters) {
+    // Short path: 1 arrow right at 50%
+    targetDistances.push(totalLength * 0.5);
+  } else if (totalLength < minDistanceBetweenMeters * 2) {
+    // Medium path: 2 arrows at 35% and 70%
+    targetDistances.push(totalLength * 0.35);
+    targetDistances.push(totalLength * 0.7);
+  } else {
+    // Longer path: evenly spaced arrows
+    const count = Math.min(30, Math.max(2, Math.floor(totalLength / minDistanceBetweenMeters)));
+    const step = totalLength / count;
+    for (let i = 0; i < count; i++) {
+      targetDistances.push((i + 0.5) * step);
+    }
+  }
+
+  const arrows: PathArrowPoint[] = [];
+  let currentDist = 0;
+  let segIdx = 0;
+
+  for (const target of targetDistances) {
+    while (segIdx < segmentLengths.length - 1 && currentDist + segmentLengths[segIdx] < target) {
+      currentDist += segmentLengths[segIdx];
+      segIdx++;
+    }
+
+    const segLen = segmentLengths[segIdx];
+    const p1 = path[segIdx];
+    const p2 = path[segIdx + 1];
+    const bearing = calculateBearing(p1, p2);
+
+    if (segLen <= 0.0001) {
+      arrows.push({ position: p1, bearing });
+      continue;
+    }
+
+    const ratio = Math.max(0, Math.min(1, (target - currentDist) / segLen));
+    const pos: LatLng = [
+      p1[0] + (p2[0] - p1[0]) * ratio,
+      p1[1] + (p2[1] - p1[1]) * ratio
+    ];
+
+    arrows.push({ position: pos, bearing });
+  }
+
+  return arrows;
+}
+
+export interface DirectionalActivityInfo {
+  isBidirectional: boolean;
+  role: 'outbound' | 'return' | 'unidirectional';
+  color: string;
+  arrowColor: string;
+  label: string;
+  offsetPath: LatLng[];
+  partnerActivityId?: string;
+}
+
+/**
+ * Analyzes activities for bidirectional routes (outbound vs return journeys).
+ * Pairs opposing routes and assigns Cyan (#06b6d4) for Outbound, Rose (#f43f5e) for Return,
+ * and offsets their paths so both directions and arrows are distinctly visible side-by-side.
+ */
+export function analyzeActivityDirections(
+  activities: import('../types/timeline').TimelineActivity[]
+): {
+  directionMap: Map<string, DirectionalActivityInfo>;
+  hasBidirectional: boolean;
+} {
+  const directionMap = new Map<string, DirectionalActivityInfo>();
+  let hasBidirectional = false;
+
+  if (!activities || activities.length === 0) {
+    return { directionMap, hasBidirectional: false };
+  }
+
+  // Find bidirectional pairs
+  const pairedSet = new Set<string>();
+  const pairs: Array<{ outboundId: string; returnId: string }> = [];
+
+  for (let i = 0; i < activities.length; i++) {
+    const actA = activities[i];
+    if (actA.path.length < 2 || pairedSet.has(actA.id)) continue;
+
+    for (let j = i + 1; j < activities.length; j++) {
+      const actB = activities[j];
+      if (actB.path.length < 2 || pairedSet.has(actB.id)) continue;
+
+      // Check 1: Endpoints match in reverse
+      const startA = actA.path[0];
+      const endA = actA.path[actA.path.length - 1];
+      const startB = actB.path[0];
+      const endB = actB.path[actB.path.length - 1];
+
+      const dDirectA = calculateDistanceMeters(startA, endA);
+      const dDirectB = calculateDistanceMeters(startB, endB);
+
+      let isOpposing = false;
+
+      if (dDirectA > 250 && dDirectB > 250) {
+        const dStartA_EndB = calculateDistanceMeters(startA, endB);
+        const dEndA_StartB = calculateDistanceMeters(endA, startB);
+
+        if (dStartA_EndB < 900 && dEndA_StartB < 900) {
+          isOpposing = true;
+        }
+      }
+
+      // Check 2: Sample intermediate points to see if paths overlap in opposite directions
+      if (!isOpposing && actA.path.length >= 3 && actB.path.length >= 3) {
+        const sampleCount = Math.min(8, actA.path.length);
+        let opposingSampleMatches = 0;
+
+        for (let s = 0; s < sampleCount; s++) {
+          const idxA = Math.floor((s / (sampleCount - 1)) * (actA.path.length - 1));
+          const ptA = actA.path[idxA];
+          const nextIdxA = Math.min(actA.path.length - 1, idxA + 1);
+          const bearingA = calculateBearing(ptA, actA.path[nextIdxA]);
+
+          // Find closest point in B
+          let minBdist = Infinity;
+          let closestIdxB = 0;
+          for (let b = 0; b < actB.path.length; b++) {
+            const d = calculateDistanceMeters(ptA, actB.path[b]);
+            if (d < minBdist) {
+              minBdist = d;
+              closestIdxB = b;
+            }
+          }
+
+          if (minBdist < 350) {
+            const nextIdxB = Math.min(actB.path.length - 1, closestIdxB + 1);
+            const bearingB = calculateBearing(actB.path[closestIdxB], actB.path[nextIdxB]);
+            let diff = Math.abs(bearingA - bearingB);
+            if (diff > 180) diff = 360 - diff;
+
+            if (diff > 115) {
+              opposingSampleMatches++;
+            }
+          }
+        }
+
+        if (opposingSampleMatches >= 2 && opposingSampleMatches >= Math.floor(sampleCount * 0.3)) {
+          isOpposing = true;
+        }
+      }
+
+      if (isOpposing) {
+        pairedSet.add(actA.id);
+        pairedSet.add(actB.id);
+        hasBidirectional = true;
+
+        // The earlier activity is Outbound, later is Return
+        if (actA.startTime <= actB.startTime) {
+          pairs.push({ outboundId: actA.id, returnId: actB.id });
+        } else {
+          pairs.push({ outboundId: actB.id, returnId: actA.id });
+        }
+        break;
+      }
+    }
+  }
+
+  // Populate pairs with distinct colors and lane offsets
+  for (const pair of pairs) {
+    const actOut = activities.find(a => a.id === pair.outboundId);
+    const actRet = activities.find(a => a.id === pair.returnId);
+
+    if (actOut) {
+      directionMap.set(actOut.id, {
+        isBidirectional: true,
+        role: 'outbound',
+        color: '#06b6d4', // Cyan
+        arrowColor: '#06b6d4',
+        label: 'Outbound Journey',
+        offsetPath: offsetPolyline(actOut.path, 3.5),
+        partnerActivityId: pair.returnId
+      });
+    }
+
+    if (actRet) {
+      directionMap.set(actRet.id, {
+        isBidirectional: true,
+        role: 'return',
+        color: '#f43f5e', // Rose
+        arrowColor: '#f43f5e',
+        label: 'Return Journey',
+        offsetPath: offsetPolyline(actRet.path, 3.5),
+        partnerActivityId: pair.outboundId
+      });
+    }
+  }
+
+  // Populate remaining unpaired activities as unidirectional
+  for (const act of activities) {
+    if (!directionMap.has(act.id)) {
+      const defaultColor = getActivityStyle(act.type).color;
+      directionMap.set(act.id, {
+        isBidirectional: false,
+        role: 'unidirectional',
+        color: defaultColor,
+        arrowColor: defaultColor,
+        label: getActivityStyle(act.type).label,
+        offsetPath: act.path
+      });
+    }
+  }
+
+  return { directionMap, hasBidirectional };
+}
+
+
