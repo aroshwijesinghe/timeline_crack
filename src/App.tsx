@@ -10,7 +10,6 @@ import { CalendarModal } from './components/Calendar/CalendarModal';
 import { sampleTimelineJSON } from './demo/sampleTimeline';
 import {
   UploadCloud,
-  FileCode,
   ShieldCheck,
   AlertCircle,
   MapPin,
@@ -21,7 +20,9 @@ import {
   BarChart3,
   Smartphone,
   Apple,
-  HelpCircle
+  HelpCircle,
+  Navigation,
+  Layers
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -200,26 +201,54 @@ export const App: React.FC = () => {
     setIsStatsOpen(true);
   };
 
-  // --- 1. INITIAL LOADING STATE: Eco-Dark Hero Screen (Matching Reference Image) ---
+  // --- 1. INITIAL LOADING STATE: Eco-Dark Studio Screen ---
   if (!timelineData) {
     return (
-      <div className="min-h-screen w-full bg-[#040704] text-slate-100 flex flex-col justify-between p-4 sm:p-8 lg:p-12 relative selection:bg-lime-500 selection:text-black font-sans overflow-x-hidden">
+      <div className="min-h-screen w-full bg-[#040704] text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 relative selection:bg-lime-500 selection:text-black font-sans overflow-x-hidden">
         {/* Subtle Geometric Cartographic Grid Pattern */}
         <div className="fixed inset-0 opacity-[0.035] pointer-events-none bg-[radial-gradient(#a3e635_1px,transparent_1px)] [background-size:24px_24px]" />
 
         {/* Luminous Organic Green Ambient Glows */}
-        <div className="fixed w-[650px] h-[650px] rounded-full bg-lime-500/12 blur-[150px] pointer-events-none -top-24 -left-20 animate-eco-glow" />
-        <div className="fixed w-[600px] h-[600px] rounded-full bg-emerald-500/10 blur-[150px] pointer-events-none top-1/3 right-0 animate-eco-glow" style={{ animationDelay: '2s' }} />
-        <div className="fixed w-[500px] h-[500px] rounded-full bg-lime-400/8 blur-[130px] pointer-events-none -bottom-20 left-1/4" />
+        <div className="fixed w-[650px] h-[650px] rounded-full bg-lime-500/10 blur-[160px] pointer-events-none -top-24 -left-20 animate-eco-glow" />
+        <div className="fixed w-[600px] h-[600px] rounded-full bg-emerald-500/8 blur-[160px] pointer-events-none top-1/3 right-0 animate-eco-glow" style={{ animationDelay: '2s' }} />
+        <div className="fixed w-[500px] h-[500px] rounded-full bg-lime-400/6 blur-[140px] pointer-events-none -bottom-20 left-1/4" />
 
-        {/* Content Container (Full Width, Spacious, 3-Column Left-to-Right Panoramic Grid) */}
-        <div className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-8 sm:py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-start w-full">
+        {/* Sleek Top Navigation Bar */}
+        <header className="relative z-10 w-full max-w-[1540px] mx-auto flex items-center justify-between py-3.5 sm:py-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#a3e635] shadow-[0_0_10px_#a3e635] animate-pulse" />
+            <span className="font-heading font-black tracking-wider uppercase text-sm sm:text-base text-white">
+              Timeline Studio
+            </span>
+            <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-lime-500/15 border border-lime-500/30 text-[#bef264]">
+              v2.4 Live
+            </span>
+          </div>
 
-            {/* Part 1 (Left Corner): The Welcome Part (Unboxed, open, spacious) */}
-            <div className="flex flex-col items-start text-left justify-between py-1 lg:pr-2">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-slate-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
+              <span className="hidden sm:inline font-medium">100% In-Browser Privacy</span>
+              <span className="sm:hidden font-medium">Private</span>
+            </div>
+            <button
+              onClick={handleLoadDemo}
+              disabled={loading}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-lime-500/20 to-emerald-500/20 hover:from-lime-500/30 hover:to-emerald-500/30 border border-lime-500/40 text-xs font-bold text-[#bef264] hover:text-white transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+            >
+              <span>Quick Demo</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Main Content Area (Full Width, Balanced, 3-Column Left-to-Right Panoramic Grid) */}
+        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-6 sm:py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-stretch w-full">
+
+            {/* Part 1 (Left): Welcome Hero & Interactive Feature Highlights */}
+            <div className="flex flex-col justify-between py-1 lg:pr-2 h-full">
               <div>
-                {/* Logo Emblem & Studio Badge */}
+                {/* Animated Logo Beacon & Studio Badge */}
                 <div className="flex items-center gap-3.5 mb-5">
                   <div className="relative group cursor-pointer select-none">
                     <div className="absolute -inset-2.5 rounded-2xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/45 transition duration-500 animate-pulse" />
@@ -270,30 +299,47 @@ export const App: React.FC = () => {
                 </h1>
 
                 {/* Narrative Subtitle */}
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans mb-8 max-w-md">
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans mb-6 max-w-md">
                   Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
                 </p>
               </div>
 
-              {/* Interactive Capability Badges */}
-              <div className="w-full space-y-2.5 pt-6 border-t border-white/10">
-                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-lime-500/35 text-slate-300 hover:text-white text-xs font-semibold transition-all">
-                  <div className="w-2.5 h-2.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)] shrink-0" />
-                  <span>Directional Vector Corridors</span>
+              {/* Interactive Capability Cards */}
+              <div className="w-full space-y-3 pt-6 border-t border-white/10">
+                <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-lime-500/35 text-slate-300 hover:text-white transition-all group">
+                  <div className="p-2 rounded-xl bg-lime-500/15 border border-lime-500/30 text-lime-400 group-hover:scale-110 transition-transform shrink-0 mt-0.5">
+                    <Navigation className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white font-heading uppercase tracking-wider">Directional Vector Corridors</div>
+                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Color-coded routes with live directional flow arrows and waypoint beacons</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-emerald-500/35 text-slate-300 hover:text-white text-xs font-semibold transition-all">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0" />
-                  <span>Comprehensive Daily & Period Stats</span>
+
+                <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-emerald-500/35 text-slate-300 hover:text-white transition-all group">
+                  <div className="p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-110 transition-transform shrink-0 mt-0.5">
+                    <BarChart3 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white font-heading uppercase tracking-wider">Comprehensive Travel Stats</div>
+                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Interactive distance, visited places, duration breakdown, and calendar ranges</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-amber-500/35 text-slate-300 hover:text-white text-xs font-semibold transition-all">
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] shrink-0" />
-                  <span>Keyless Satellite, Streets & Dark Maps</span>
+
+                <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-amber-500/35 text-slate-300 hover:text-white transition-all group">
+                  <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 group-hover:scale-110 transition-transform shrink-0 mt-0.5">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white font-heading uppercase tracking-wider">3 Keyless Map Themes</div>
+                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Instant switching between Satellite imagery, Streets, and Dark Carto views</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Part 2 (Center): File Drop Part & Privacy Guarantee */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-7 shadow-2xl border border-lime-500/25 flex flex-col justify-between relative overflow-hidden group">
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group h-full">
               <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
 
               <div>
@@ -306,7 +352,7 @@ export const App: React.FC = () => {
                   className={`border-2 border-dashed rounded-3xl p-7 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative group/drop ${
                     isDragging
                       ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01] shadow-[0_0_40px_rgba(132,204,22,0.3)]'
-                      : 'border-white/15 bg-black/40 hover:border-lime-500/60 hover:bg-black/60 hover:shadow-[0_0_35px_rgba(132,204,22,0.2)]'
+                      : 'border-lime-500/30 bg-black/40 hover:border-lime-400/80 hover:bg-black/60 hover:shadow-[0_0_35px_rgba(132,204,22,0.2)]'
                   }`}
                 >
                   <input
@@ -319,7 +365,7 @@ export const App: React.FC = () => {
 
                   {/* Icon with glowing halo */}
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#2b3929] to-[#0c120b] text-[#a3e635] border border-lime-500/40 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(132,204,22,0.3)] group-hover/drop:scale-110 group-hover/drop:border-lime-400 transition-all duration-300">
-                    <FileCode className="w-8 h-8 text-[#bef264]" />
+                    <UploadCloud className="w-8 h-8 text-[#bef264]" />
                   </div>
 
                   <p className="text-base sm:text-lg font-black text-white mb-1.5 font-heading uppercase tracking-wide">
@@ -330,8 +376,8 @@ export const App: React.FC = () => {
                   </p>
 
                   <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
-                    <span className="text-[11px] px-3 py-1 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-lime-400" />
+                    <span className="text-[11px] px-3.5 py-1 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
                       Google Maps Export (.json)
                     </span>
                   </div>
@@ -346,11 +392,11 @@ export const App: React.FC = () => {
               </div>
 
               {/* Bottom Section inside the Box */}
-              <div className="mt-5 space-y-3.5 pt-4 border-t border-white/10">
+              <div className="mt-5 space-y-3 pt-4 border-t border-white/10">
                 {/* Demo Quick-Start */}
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
                   <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-white font-heading">Don't have your file?</span>
+                    <span className="text-xs font-bold text-white font-heading">Don't have your file?</span>
                     <span className="text-[10px] text-slate-400">Explore with sample trip data</span>
                   </div>
 
@@ -363,8 +409,8 @@ export const App: React.FC = () => {
                   </button>
                 </div>
 
-                {/* 100% Client-Side Privacy Guarantee (Integrated inside upper box) */}
-                <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-black/50 border border-lime-500/25 text-slate-300 text-xs">
+                {/* 100% Client-Side Privacy Guarantee */}
+                <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-black/50 border border-lime-500/20 text-slate-300 text-xs">
                   <div className="p-1.5 rounded-xl bg-lime-500/20 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/30">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
@@ -380,8 +426,8 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Part 3 (Right): How to Export Guide (Borderless) */}
-            <div className="rounded-3xl p-6 sm:p-7 bg-gradient-to-b from-[#182217]/60 to-[#090e08]/70 backdrop-blur-xl shadow-xl border-0 flex flex-col justify-between relative overflow-hidden">
+            {/* Part 3 (Right): How to Export Guide */}
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden h-full">
               <div>
                 {/* Guide Header & Platform Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
@@ -428,29 +474,29 @@ export const App: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">01</span>
-                        <p className="leading-snug pt-0.5 text-xs">Open your phone's <strong>Settings</strong> (gear icon).</p>
+                        <p className="leading-snug pt-0.5 text-xs">Open your phone's <strong className="text-white">Settings</strong> (gear icon).</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">02</span>
-                        <p className="leading-snug pt-0.5 text-xs">Go to <strong>Location</strong> &gt; <strong>Location Services</strong>.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Go to <strong className="text-white">Location</strong> &gt; <strong className="text-white">Location Services</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">03</span>
-                        <p className="leading-snug pt-0.5 text-xs">Select <strong>Timeline</strong> (choose Google account).</p>
+                        <p className="leading-snug pt-0.5 text-xs">Select <strong className="text-white">Timeline</strong> (choose Google account).</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">04</span>
-                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong>Export Timeline data</strong>.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong className="text-white">Export Timeline data</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">05</span>
-                        <p className="leading-snug pt-0.5 text-xs">Tap <strong>Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Tap <strong className="text-white">Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
@@ -465,24 +511,24 @@ export const App: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">01</span>
-                        <p className="leading-snug pt-0.5 text-xs">Open <strong>Google Maps</strong> app on your iPhone.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Open <strong className="text-white">Google Maps</strong> app on your iPhone.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">02</span>
-                        <p className="leading-snug pt-0.5 text-xs">Tap your <strong>Profile avatar</strong> &gt; <strong>Settings</strong>.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Tap your <strong className="text-white">Profile avatar</strong> &gt; <strong className="text-white">Settings</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">03</span>
-                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong>Personal content</strong>.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong className="text-white">Personal content</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
                         <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">04</span>
-                        <p className="leading-snug pt-0.5 text-xs">Tap <strong>Export Timeline data</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                        <p className="leading-snug pt-0.5 text-xs">Tap <strong className="text-white">Export Timeline data</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
@@ -497,7 +543,23 @@ export const App: React.FC = () => {
             </div>
 
           </div>
-        </div>
+        </main>
+
+        {/* Minimalist Professional Footer */}
+        <footer className="relative z-10 w-full max-w-[1540px] mx-auto pt-4 pb-2 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-lime-400/80" />
+            <p>© 2026 Timeline Studio — Private, in-browser location history visualizer.</p>
+          </div>
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-1.5 text-slate-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-lime-400" />
+              Local Browser Processing
+            </span>
+            <span className="text-slate-600">|</span>
+            <span className="text-slate-400">Zero Cloud Uploads</span>
+          </div>
+        </footer>
       </div>
     );
   }
