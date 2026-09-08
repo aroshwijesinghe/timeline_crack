@@ -20,7 +20,8 @@ import {
   BarChart3,
   Smartphone,
   Apple,
-  HelpCircle
+  HelpCircle,
+  FileText
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -328,9 +329,33 @@ export const App: React.FC = () => {
                     className="hidden"
                   />
 
-                  {/* Icon with glowing halo */}
-                  <div className="w-14 h-14 rounded-2xl bg-white/[0.04] text-[#bef264] border border-white/[0.1] flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(0,0,0,0.5)] group-hover/drop:scale-110 group-hover/drop:border-[#bef264]/60 group-hover/drop:bg-[#bef264]/10 transition-all duration-300">
-                    <UploadCloud className="w-7 h-7 text-[#bef264]" />
+                  {/* Creative Interactive Animated File-Drop Dock */}
+                  <div className="relative w-24 h-24 mb-3 flex items-center justify-center select-none pointer-events-none">
+                    {/* Concentric Ambient Suction / Radar Rings */}
+                    <div className="absolute inset-0 rounded-full border border-[#bef264]/20 animate-drop-pulse-ring" />
+                    <div className="absolute inset-2 rounded-full border border-[#bef264]/30 animate-drop-pulse-ring" style={{ animationDelay: '1s' }} />
+
+                    {/* Glowing Dock Backdrop */}
+                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-b from-[#182319] to-[#0a100a] text-[#bef264] border border-[#bef264]/35 flex items-center justify-center shadow-[0_0_30px_rgba(190,242,100,0.25)] group-hover/drop:scale-110 group-hover/drop:border-[#bef264]/80 group-hover/drop:shadow-[0_0_40px_rgba(190,242,100,0.4)] transition-all duration-500 overflow-hidden">
+                      {/* Ambient bottom glow */}
+                      <div className="absolute bottom-0 inset-x-0 h-6 bg-[#bef264]/20 blur-md" />
+
+                      {/* Animated Cloud Icon */}
+                      <UploadCloud className="w-8 h-8 text-[#bef264] relative z-10 animate-file-drop-float drop-shadow-[0_0_10px_rgba(190,242,100,0.6)]" />
+
+                      {/* Subtle floating incoming JSON file card animation */}
+                      <div className="absolute -top-1 right-2 animate-file-slide-in z-20">
+                        <div className="p-1 rounded-md bg-[#bef264] text-black shadow-lg flex items-center justify-center">
+                          <FileText className="w-3 h-3 stroke-[2.5]" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mini animated floating badge */}
+                    <div className="absolute -bottom-1 px-2 py-0.5 rounded-full bg-black/90 border border-[#bef264]/50 shadow-[0_0_10px_rgba(190,242,100,0.3)] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#bef264] animate-ping" />
+                      <span className="text-[9px] font-mono font-black text-[#bef264] tracking-tighter">.JSON</span>
+                    </div>
                   </div>
 
                   <p className="text-base sm:text-lg font-black text-white mb-1 font-heading uppercase tracking-wide">
@@ -340,8 +365,8 @@ export const App: React.FC = () => {
                     Drag & drop your file, or click anywhere inside to browse
                   </p>
 
-                  <div className="mt-3.5 flex flex-wrap items-center justify-center gap-1.5">
-                    <span className="text-[11px] px-3.5 py-1 rounded-full bg-white/[0.04] text-slate-300 font-mono border border-white/[0.1] flex items-center gap-1.5">
+                  <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
+                    <span className="text-[11px] px-3.5 py-1 rounded-full bg-white/[0.04] text-slate-300 font-mono border border-white/[0.1] flex items-center gap-1.5 group-hover/drop:border-[#bef264]/40 transition-colors">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#bef264] animate-pulse" />
                       Google Maps Export (.json)
                     </span>
