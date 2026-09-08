@@ -97,7 +97,7 @@ The output in the `dist/` directory is static HTML/JS/CSS ready to deploy to Git
 - **Framework**: [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
 - **Bundler**: [Vite](https://vitejs.dev/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Glassmorphism aesthetic
-- **Map & Routing**: [Leaflet](https://leafletjs.com/) + OpenStreetMap / CartoDB tiles
+- **Map & Routing**: [Leaflet](https://leafletjs.com/) + OpenStreetMap / Esri ArcGIS tiles (100% free, no API key required)
 - **Icons**: [Lucide React](https://lucide.dev/)
 
 ---

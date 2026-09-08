@@ -15,16 +15,19 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: rgba(8, 12, 8, 0.9);
+  background: rgba(31, 33, 31, 0.9);
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(132, 204, 22, 0.3);
   border-radius: 9999px;
-  transition: background 0.2s ease;
+  transition: background 0.5s ease;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(163, 230, 53, 0.6);
+  background: rgb(44, 142, 2);
 }
 
 /* Leaflet Overrides for Glossy Eco-Dark Aesthetic */
@@ -40,15 +43,18 @@
 .leaflet-tile-pane {
   will-change: transform;
 }
+
 .leaflet-zoom-animated {
   will-change: transform;
 }
+
 .leaflet-tile {
   image-rendering: auto;
   will-change: transform;
 }
-.leaflet-pane > svg,
-.leaflet-pane > canvas {
+
+.leaflet-pane>svg,
+.leaflet-pane>canvas {
   will-change: transform;
 }
 
@@ -156,6 +162,7 @@
   cursor: pointer;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .custom-pin-marker:hover {
   transform: scale(1.25) translateY(-3px);
   z-index: 1000 !important;
@@ -163,10 +170,13 @@
 
 /* Eco Glow Keyframes */
 @keyframes eco-pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.85;
     transform: scale(1.06);
@@ -182,10 +192,12 @@
     transform: scale(0.6);
     opacity: 0.85;
   }
+
   60% {
     transform: scale(1.6);
     opacity: 0.25;
   }
+
   100% {
     transform: scale(2.2);
     opacity: 0;

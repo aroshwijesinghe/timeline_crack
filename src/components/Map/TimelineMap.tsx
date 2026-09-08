@@ -34,18 +34,16 @@ interface TileConfig {
 
 const TILE_CONFIGS: Record<MapTileProvider, TileConfig> = {
   dark: {
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    subdomains: 'abcd',
-    maxZoom: 20,
-    maxNativeZoom: 19,
-    attribution: '&copy; CARTO &copy; OpenStreetMap contributors'
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 19,
+    maxNativeZoom: 15, // Caps requests to level 15 so Esri never returns 'Map data not yet available', and scales smoothly without API key
+    attribution: '&copy; Esri &copy; OpenStreetMap contributors'
   },
   streets: {
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    subdomains: 'abcd',
-    maxZoom: 20,
-    maxNativeZoom: 19,
-    attribution: '&copy; CARTO &copy; OpenStreetMap contributors'
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 19,
+    maxNativeZoom: 17, // Caps requests to level 17 so Esri never returns watermarks, without API key
+    attribution: '&copy; Esri &copy; OpenStreetMap contributors'
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
