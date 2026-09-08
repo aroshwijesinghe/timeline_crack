@@ -214,45 +214,46 @@ export const App: React.FC = () => {
         <div className="fixed w-[500px] h-[500px] rounded-full bg-lime-400/8 blur-[130px] pointer-events-none -bottom-20 left-1/4" />
 
         {/* Content Container (Full Width, Spacious, Beautifully Balanced) */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center my-auto py-6">
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col my-auto py-6">
 
-          {/* 1. OPEN, UNBOXED HERO SECTION (Spacious, bold, human-crafted typography) */}
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-            {/* Ambient Logo Emblem */}
-            <div className="relative mb-5 group">
-              <div className="absolute -inset-3 rounded-3xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/40 transition duration-700 animate-pulse" />
-              <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-b from-[#2a3828] to-[#0c120b] border border-lime-500/50 flex items-center justify-center shadow-[0_0_35px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
-                <MapPin className="w-9 h-9 sm:w-10 sm:h-10 text-[#a3e635] fill-[#a3e635]/20" />
+          {/* 1. LEFT CORNER WELCOME SECTION (Open, spacious, left-aligned) */}
+          <div className="w-full flex flex-col items-start text-left mb-8 sm:mb-10">
+            {/* Logo Emblem & Studio Badge */}
+            <div className="flex items-center gap-3.5 mb-4">
+              <div className="relative group">
+                <div className="absolute -inset-2 rounded-2xl bg-lime-400/25 blur-lg group-hover:bg-lime-400/40 transition duration-500 animate-pulse" />
+                <div className="relative w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-b from-[#2a3828] to-[#0c120b] border border-lime-500/50 flex items-center justify-center shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
+                  <MapPin className="w-7 h-7 sm:w-8 sm:h-8 text-[#a3e635] fill-[#a3e635]/20" />
+                </div>
+              </div>
+
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-extrabold uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5 text-[#bef264]" />
+                <span>Personal Timeline & Route Studio</span>
               </div>
             </div>
 
-            {/* Studio Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-extrabold uppercase tracking-widest mb-4 shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-[#bef264]" />
-              <span>Personal Timeline & Route Studio</span>
-            </div>
-
-            {/* Impactful Open Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4 font-heading uppercase leading-[1.08]">
+            {/* Impactful Left-Aligned Headline */}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-3 font-heading uppercase leading-[1.08]">
               Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-[#bef264] to-[#34d399] drop-shadow-[0_0_25px_rgba(163,230,53,0.35)]">Timeline</span>
             </h1>
 
             {/* Narrative Subtitle */}
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-sans max-w-2xl">
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans max-w-2xl mb-4">
               Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
             </p>
 
-            {/* Interactive Capability Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5 mt-6">
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-lime-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
+            {/* Interactive Capability Badges (Left-Aligned) */}
+            <div className="flex flex-wrap items-center justify-start gap-2.5">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-lime-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                 <span>Directional Vector Corridors</span>
               </div>
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-emerald-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-emerald-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                 <span>Multi-Day Travel Metrics</span>
               </div>
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-amber-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-amber-500/40 text-slate-300 hover:text-white text-xs font-semibold transition-all shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
                 <span>Free Keyless Vector Basemaps</span>
               </div>
