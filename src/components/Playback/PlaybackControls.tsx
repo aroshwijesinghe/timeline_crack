@@ -6,7 +6,8 @@ import {
   FastForward,
   Clock,
   Gauge,
-  BarChart3
+  BarChart3,
+  Car
 } from 'lucide-react';
 import { formatTime } from '../../utils/geoUtils';
 
@@ -60,13 +61,13 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           {formatTime(minTimestamp) || 'Start'}
         </span>
 
-        {/* Interactive Custom Scrubber Track & Moving Circle Thumb */}
-        <div className="relative flex-1 group flex items-center h-6">
+        {/* Interactive Custom Scrubber Track & Moving Car Symbol */}
+        <div className="relative flex-1 group flex items-center h-8">
           {/* Background Track */}
           <div className="absolute inset-x-0 h-2 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/50">
             {/* Filled Progress Gradient Bar */}
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 rounded-full transition-all duration-75"
+              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 rounded-full transition-all duration-75"
               style={{ width: `${currentProgress}%` }}
             />
           </div>
@@ -79,23 +80,25 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
             step="0.05"
             value={currentProgress}
             onChange={handleSliderChange}
-            className="absolute inset-x-0 w-full h-6 opacity-0 cursor-pointer z-20"
+            className="absolute inset-x-0 w-full h-8 opacity-0 cursor-pointer z-20"
           />
 
-          {/* Animated Custom Moving Circle Symbol */}
+          {/* Animated Custom Moving Car Symbol */}
           <div
             className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none z-10"
             style={{ left: `${currentProgress}%` }}
           >
-            <div className={`relative flex items-center justify-center ${isPlaying ? 'scale-125' : 'scale-100'} transition-transform duration-150`}>
+            <div className={`relative flex items-center justify-center transition-transform duration-150 ${isPlaying ? 'scale-110' : 'scale-100'}`}>
               {/* Outer pulsing ring when playing */}
               {isPlaying && (
-                <div className="absolute -inset-1.5 rounded-full bg-indigo-500/60 animate-ping" />
+                <div className="absolute -inset-1.5 rounded-xl bg-indigo-500/50 animate-ping pointer-events-none" />
               )}
-              {/* Circle thumb with glowing center */}
-              <div className="w-4 h-4 rounded-full bg-white border-2 border-indigo-600 shadow-lg shadow-indigo-500/60 flex items-center justify-center">
-                <div className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-purple-600 animate-pulse' : 'bg-indigo-600'}`} />
+              {/* Small Car Badge */}
+              <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 border-2 border-white shadow-xl shadow-indigo-500/60 flex items-center justify-center text-white">
+                <Car className="w-4 h-4 text-white fill-white/20" />
               </div>
+              {/* Downward pointer notch */}
+              <div className="absolute -bottom-1 w-1.5 h-1.5 bg-indigo-600 rotate-45 border-r border-b border-white shadow-sm" />
             </div>
           </div>
         </div>

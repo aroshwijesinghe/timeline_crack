@@ -51,7 +51,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
   const [showRawSignals, setShowRawSignals] = useState(false);
   const [showDirectionArrows, setShowDirectionArrows] = useState(true);
   const [hasBidirectional, setHasBidirectional] = useState(false);
-  const [autoFollow, setAutoFollow] = useState(true);
+  const [autoFollow, setAutoFollow] = useState(false);
 
   // Initialize Map
   useEffect(() => {
@@ -506,10 +506,10 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
           <button
             onClick={() => setAutoFollow(!autoFollow)}
-            title="Auto-center camera on moving vehicle/pin"
+            title={autoFollow ? "Auto-Follow Camera ON (Click to lock map still)" : "Camera Locked Still (Click to follow vehicle)"}
             className={`p-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               autoFollow
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
           >
