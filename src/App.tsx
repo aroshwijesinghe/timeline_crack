@@ -257,140 +257,67 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Part 2 (Center): Upload Drop Zone Card */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between border border-lime-500/20 relative overflow-hidden group">
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 flex-1 ${
-                  isDragging
-                    ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01]'
-                    : 'border-white/10 bg-black/40 hover:border-lime-500/50 hover:bg-black/60 hover:shadow-[0_0_30px_rgba(132,204,22,0.2)]'
-                }`}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileSelect}
-                  accept=".json"
-                  className="hidden"
-                />
-
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#253023] to-[#0c120b] text-[#a3e635] border border-lime-500/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(132,204,22,0.25)] group-hover:scale-105 transition duration-300">
-                  <FileCode className="w-8 h-8 text-[#bef264]" />
-                </div>
-
-                <p className="text-base font-extrabold text-white mb-1 font-heading uppercase tracking-wide">
-                  Drop your <span className="text-[#a3e635]">Timeline.json</span> file here
-                </p>
-                <p className="text-xs text-slate-400">
-                  Drag and drop your file, or click anywhere to browse
-                </p>
-                <div className="mt-4 flex items-center gap-2">
-                  <span className="text-[11px] px-3 py-1 rounded-full bg-black/60 text-slate-300 font-mono border border-white/10">
-                    Google Maps Export (.json)
-                  </span>
-                </div>
-              </div>
-
-              {uploadError && (
-                <div className="mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs animate-fade-in">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
-                  <span>{uploadError}</span>
-                </div>
-              )}
-
-              <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-white/10">
-                <span className="text-xs text-slate-400">Don't have your file ready?</span>
-                <button
-                  onClick={handleLoadDemo}
-                  disabled={loading}
-                  className="py-2 px-4 rounded-xl bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 text-black font-extrabold text-xs transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(132,204,22,0.3)] cursor-pointer active:scale-95 uppercase tracking-wide font-heading"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-black" />
-                  <span>Try Demo Timeline</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Part 3 (Right): Guide & Privacy Guarantee */}
+            {/* Part 2 (Center): Upload Drop Zone Card & Privacy Guarantee */}
             <div className="flex flex-col justify-between gap-4">
-              <div className="glass-panel rounded-3xl p-6 shadow-xl border border-lime-500/20 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-4 border-b border-white/10 pb-3">
-                    <div className="flex items-center gap-2">
-                      <HelpCircle className="w-4 h-4 text-[#a3e635]" />
-                      <h2 className="text-xs sm:text-sm font-extrabold text-white font-heading uppercase tracking-wide">
-                        How to Export Timeline.json
-                      </h2>
-                    </div>
+              <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between border border-lime-500/20 relative overflow-hidden group flex-1">
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 flex-1 ${
+                    isDragging
+                      ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01]'
+                      : 'border-white/10 bg-black/40 hover:border-lime-500/50 hover:bg-black/60 hover:shadow-[0_0_30px_rgba(132,204,22,0.2)]'
+                  }`}
+                >
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileSelect}
+                    accept=".json"
+                    className="hidden"
+                  />
 
-                    {/* Platform Tabs */}
-                    <div className="flex gap-1 bg-black/60 p-1 rounded-xl border border-white/10 text-xs font-bold font-heading">
-                      <button
-                        onClick={() => setGuideTab('android')}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all ${
-                          guideTab === 'android'
-                            ? 'bg-gradient-to-b from-[#2b3629] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        <Smartphone className="w-3.5 h-3.5" />
-                        <span>Android</span>
-                      </button>
-                      <button
-                        onClick={() => setGuideTab('ios')}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all ${
-                          guideTab === 'ios'
-                            ? 'bg-gradient-to-b from-[#2b3629] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        <Apple className="w-3.5 h-3.5" />
-                        <span>iPhone (iOS)</span>
-                      </button>
-                    </div>
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#253023] to-[#0c120b] text-[#a3e635] border border-lime-500/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(132,204,22,0.25)] group-hover:scale-105 transition duration-300">
+                    <FileCode className="w-8 h-8 text-[#bef264]" />
                   </div>
 
-                  {/* Option 1: Android Phone Instructions */}
-                  {guideTab === 'android' && (
-                    <div className="text-xs text-slate-300 space-y-2 animate-fade-in">
-                      <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#a3e635]" />
-                        <span>Android Settings Export</span>
-                      </div>
-                      <ol className="list-decimal list-inside space-y-1.5 leading-relaxed text-slate-300 text-[11px] sm:text-xs">
-                        <li>Open your phone's <strong>Settings</strong> (gear icon).</li>
-                        <li>Go to <strong>Location</strong>, then tap <strong>Location Services</strong>.</li>
-                        <li>Select <strong>Timeline</strong> (choose your Google account if prompted).</li>
-                        <li>Scroll down and tap <strong>Export Timeline data</strong>.</li>
-                        <li>Tap <strong>Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</li>
-                      </ol>
-                    </div>
-                  )}
+                  <p className="text-base font-extrabold text-white mb-1 font-heading uppercase tracking-wide">
+                    Drop your <span className="text-[#a3e635]">Timeline.json</span> file here
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    Drag and drop your file, or click anywhere to browse
+                  </p>
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="text-[11px] px-3 py-1 rounded-full bg-black/60 text-slate-300 font-mono border border-white/10">
+                      Google Maps Export (.json)
+                    </span>
+                  </div>
+                </div>
 
-                  {/* Option 2: iPhone (iOS) Instructions */}
-                  {guideTab === 'ios' && (
-                    <div className="text-xs text-slate-300 space-y-2 animate-fade-in">
-                      <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#a3e635]" />
-                        <span>Google Maps iOS App Export</span>
-                      </div>
-                      <ol className="list-decimal list-inside space-y-1.5 leading-relaxed text-slate-300 text-[11px] sm:text-xs">
-                        <li>Open the <strong>Google Maps</strong> app on your iPhone.</li>
-                        <li>Tap your <strong>Profile avatar</strong> in the top right &gt; <strong>Settings</strong>.</li>
-                        <li>Scroll down and tap <strong>Personal content</strong>.</li>
-                        <li>Look for <strong>Export Timeline data</strong> and download your local <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</li>
-                      </ol>
-                    </div>
-                  )}
+                {uploadError && (
+                  <div className="mt-4 flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs animate-fade-in">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+                    <span>{uploadError}</span>
+                  </div>
+                )}
+
+                <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-white/10">
+                  <span className="text-xs text-slate-400">Don't have your file ready?</span>
+                  <button
+                    onClick={handleLoadDemo}
+                    disabled={loading}
+                    className="py-2 px-4 rounded-xl bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 text-black font-extrabold text-xs transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(132,204,22,0.3)] cursor-pointer active:scale-95 uppercase tracking-wide font-heading"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-black" />
+                    <span>Try Demo Timeline</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Privacy Guarantee */}
-              <div className="w-full flex items-start gap-3 p-3.5 rounded-2xl glass-panel border border-lime-500/25 text-slate-300 text-xs">
+              {/* Privacy Guarantee Segment (Directly near file uploading) */}
+              <div className="w-full flex items-start gap-3 p-3.5 rounded-2xl glass-panel border border-lime-500/25 text-slate-300 text-xs shadow-lg">
                 <div className="p-1.5 rounded-xl bg-lime-500/15 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/30">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
@@ -398,6 +325,79 @@ export const App: React.FC = () => {
                   <strong className="text-[#a3e635] block mb-0.5 font-bold uppercase tracking-wide font-heading">100% Client-Side Privacy</strong>
                   Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser.
                 </div>
+              </div>
+            </div>
+
+            {/* Part 3 (Right): How to Export Guide */}
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl border border-lime-500/20 flex flex-col justify-between">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-4 border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <HelpCircle className="w-4 h-4 text-[#a3e635]" />
+                    <h2 className="text-xs sm:text-sm font-extrabold text-white font-heading uppercase tracking-wide">
+                      How to Export Timeline.json
+                    </h2>
+                  </div>
+
+                  {/* Platform Tabs */}
+                  <div className="flex gap-1 bg-black/60 p-1 rounded-xl border border-white/10 text-xs font-bold font-heading">
+                    <button
+                      onClick={() => setGuideTab('android')}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all ${
+                        guideTab === 'android'
+                          ? 'bg-gradient-to-b from-[#2b3629] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Smartphone className="w-3.5 h-3.5" />
+                      <span>Android</span>
+                    </button>
+                    <button
+                      onClick={() => setGuideTab('ios')}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all ${
+                        guideTab === 'ios'
+                          ? 'bg-gradient-to-b from-[#2b3629] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Apple className="w-3.5 h-3.5" />
+                      <span>iPhone (iOS)</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Option 1: Android Phone Instructions */}
+                {guideTab === 'android' && (
+                  <div className="text-xs text-slate-300 space-y-2.5 animate-fade-in">
+                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#a3e635]" />
+                      <span>Android Settings Export</span>
+                    </div>
+                    <ol className="list-decimal list-inside space-y-2 leading-relaxed text-slate-300 text-xs">
+                      <li>Open your phone's <strong>Settings</strong> (gear icon).</li>
+                      <li>Go to <strong>Location</strong>, then tap <strong>Location Services</strong>.</li>
+                      <li>Select <strong>Timeline</strong> (choose your Google account if prompted).</li>
+                      <li>Scroll down and tap <strong>Export Timeline data</strong>.</li>
+                      <li>Tap <strong>Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</li>
+                    </ol>
+                  </div>
+                )}
+
+                {/* Option 2: iPhone (iOS) Instructions */}
+                {guideTab === 'ios' && (
+                  <div className="text-xs text-slate-300 space-y-2.5 animate-fade-in">
+                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#a3e635]" />
+                      <span>Google Maps iOS App Export</span>
+                    </div>
+                    <ol className="list-decimal list-inside space-y-2 leading-relaxed text-slate-300 text-xs">
+                      <li>Open the <strong>Google Maps</strong> app on your iPhone.</li>
+                      <li>Tap your <strong>Profile avatar</strong> in the top right &gt; <strong>Settings</strong>.</li>
+                      <li>Scroll down and tap <strong>Personal content</strong>.</li>
+                      <li>Look for <strong>Export Timeline data</strong> and download your local <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</li>
+                    </ol>
+                  </div>
+                )}
               </div>
             </div>
           </div>
