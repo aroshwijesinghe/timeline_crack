@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
   ParsedTimeline,
-  LatLng,
   TimelineDay
 } from './types/timeline';
 import { parseTimelineJSON } from './utils/timelineParser';
-import { interpolatePosition } from './utils/geoUtils';
 import { TimelineMap } from './components/Map/TimelineMap';
-import { PlaybackControls } from './components/Playback/PlaybackControls';
 import { StatsModal } from './components/Stats/StatsModal';
 import { CalendarModal } from './components/Calendar/CalendarModal';
 import { sampleTimelineJSON } from './demo/sampleTimeline';
@@ -41,47 +38,6 @@ export const App: React.FC = () => {
   const [guideTab, setGuideTab] = useState<'android' | 'ios'>('android');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Playback State
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState<number>(30); // 30x real-time by default
-  const [currentTimestamp, setCurrentTimestamp] = useState<number>(0);
-  const [playbackPosition, setPlaybackPosition] = useState<LatLng | null>(null);
-  const [playbackStatus, setPlaybackStatus] = useState<string>('Ready');
-  const [playbackActivityType, setPlaybackActivityType] = useState<string | null>(null);
-
-  const currentTsRef = useRef<number>(0);
-  const animationFrameRef = useRef<number | null>(null);
-  const lastTickTimeRef = useRef<number>(0);
-
-  // Setup playback for a day
-  const setupDayPlayback = useCallback((day: TimelineDay | null) => {
-    setIsPlaying(false);
-    if (!day || day.segments.length === 0) {
-      currentTsRef.current = 0;
-      setCurrentTimestamp(0);
-      setPlaybackPosition(null);
-      setPlaybackStatus('No activity');
-      setPlaybackActivityType(null);
-      return;
-    }
-
-    const firstSeg = day.segments[0];
-    const initialTs = firstSeg.timestamp;
-    currentTsRef.current = initialTs;
-    setCurrentTimestamp(initialTs);
-
-    if (firstSeg.type === 'visit') {
-      setPlaybackPosition(firstSeg.data.location);
-      setPlaybackStatus(`At ${firstSeg.data.name || firstSeg.data.semanticType || 'Location'}`);
-      setPlaybackActivityType('STILL');
-    } else {
-      const p = firstSeg.data.path[0] || null;
-      setPlaybackPosition(p);
-      setPlaybackStatus(`Traveling via ${firstSeg.data.type}`);
-      setPlaybackActivityType(firstSeg.data.type);
-    }
-  }, []);
-
   // Handle Loading Data
   const handleDataLoaded = useCallback((jsonData: any) => {
     try {
@@ -101,12 +57,11 @@ export const App: React.FC = () => {
           }
         }
         setSelectedDate(bestDate);
-        setupDayPlayback(parsed.days[bestDate]);
       }
     } catch (err: any) {
       setUploadError(`Failed to parse timeline JSON: ${err.message}`);
     }
-  }, [setupDayPlayback]);
+  }, []);
 
   // Process selected file
   const processFile = (file: File) => {
@@ -225,86 +180,8 @@ export const App: React.FC = () => {
     return selectedDate ? timelineData.days[selectedDate] || null : null;
   }, [timelineData, selectedDate]);
 
-  // Day Min and Max timestamps across all segments in selectedDay
-  const { minTimestamp, maxTimestamp } = React.useMemo(() => {
-    if (!selectedDay || selectedDay.segments.length === 0) {
-      return { minTimestamp: 0, maxTimestamp: 0 };
-    }
-    let minTs = Infinity;
-    let maxTs = -Infinity;
-
-    for (const seg of selectedDay.segments) {
-      const s = seg.timestamp;
-      const e = seg.type === 'visit' ? seg.data.endTimestamp : seg.data.endTimestamp;
-      if (s < minTs) minTs = s;
-      if (e > maxTs) maxTs = e;
-    }
-
-    if (minTs === Infinity || maxTs === -Infinity) {
-      return { minTimestamp: 0, maxTimestamp: 0 };
-    }
-
-    return { minTimestamp: minTs, maxTimestamp: Math.max(minTs + 1000, maxTs) };
-  }, [selectedDay]);
-
   const handleSelectDate = (dateOrPeriod: string) => {
     setSelectedDate(dateOrPeriod);
-    if (!timelineData) return;
-
-    if (dateOrPeriod === 'all') {
-      const allSegments = Object.values(timelineData.days).flatMap((d) => d.segments);
-      const allVisits = Object.values(timelineData.days).flatMap((d) => d.visits);
-      const allActivities = Object.values(timelineData.days).flatMap((d) => d.activities);
-      setupDayPlayback({
-        dateStr: 'all',
-        displayDate: 'All Recorded Dates Combined',
-        segments: allSegments,
-        visits: allVisits,
-        activities: allActivities,
-        totalDistanceMeters: Math.round(timelineData.stats.totalDistanceKm * 1000),
-        totalDistanceKm: timelineData.stats.totalDistanceKm,
-        totalActiveDurationMs: 0,
-        bounds: timelineData.overallBounds
-      });
-    } else if (dateOrPeriod.includes('..')) {
-      const [start, end] = dateOrPeriod.split('..');
-      const matchingDates = Object.keys(timelineData.days)
-        .filter((d) => d >= start && d <= end)
-        .sort();
-      const matchingDays = matchingDates.map((d) => timelineData.days[d]);
-      const segments = matchingDays
-        .flatMap((d) => d.segments)
-        .sort((a, b) => a.timestamp - b.timestamp);
-      const visits = matchingDays.flatMap((d) => d.visits);
-      const activities = matchingDays.flatMap((d) => d.activities);
-      const totalDist = matchingDays.reduce((acc, d) => acc + d.totalDistanceKm, 0);
-
-      let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
-      let hasCoords = false;
-      matchingDays.forEach((d) => {
-        if (d.bounds) {
-          minLat = Math.min(minLat, d.bounds[0][0], d.bounds[1][0]);
-          maxLat = Math.max(maxLat, d.bounds[0][0], d.bounds[1][0]);
-          minLng = Math.min(minLng, d.bounds[0][1], d.bounds[1][1]);
-          maxLng = Math.max(maxLng, d.bounds[0][1], d.bounds[1][1]);
-          hasCoords = true;
-        }
-      });
-
-      setupDayPlayback({
-        dateStr: dateOrPeriod,
-        displayDate: `${start} to ${end} (${matchingDays.length} active days)`,
-        segments,
-        visits,
-        activities,
-        totalDistanceMeters: Math.round(totalDist * 1000),
-        totalDistanceKm: Number(totalDist.toFixed(1)),
-        totalActiveDurationMs: 0,
-        bounds: hasCoords ? [[minLat, minLng], [maxLat, maxLng]] : timelineData.overallBounds
-      });
-    } else if (timelineData.days[dateOrPeriod]) {
-      setupDayPlayback(timelineData.days[dateOrPeriod]);
-    }
   };
 
   // User-friendly label for current time period
@@ -324,168 +201,9 @@ export const App: React.FC = () => {
     return selectedDate ? `📅 ${selectedDate}` : 'Select Date';
   }, [selectedDate, timelineData, selectedDay]);
 
-  // Interpolate / locate position for a specific timestamp
-  const evaluatePlaybackAt = useCallback(
-    (ts: number) => {
-      if (!selectedDay || selectedDay.segments.length === 0) return;
-
-      for (let i = 0; i < selectedDay.segments.length; i++) {
-        const seg = selectedDay.segments[i];
-
-        if (seg.type === 'visit') {
-          const v = seg.data;
-          if (ts >= v.startTimestamp && ts <= v.endTimestamp) {
-            setPlaybackPosition(v.location);
-            setPlaybackStatus(`At ${v.name || v.semanticType || 'Visited Location'}`);
-            setPlaybackActivityType('STILL');
-            return;
-          }
-        } else {
-          const a = seg.data;
-          if (ts >= a.startTimestamp && ts <= a.endTimestamp) {
-            const interpolated = interpolatePosition(
-              a.waypoints,
-              ts,
-              a.path,
-              a.startTimestamp,
-              a.endTimestamp
-            );
-            if (interpolated) {
-              setPlaybackPosition(interpolated);
-            }
-            setPlaybackStatus(`Traveling via ${a.type}`);
-            setPlaybackActivityType(a.type);
-            return;
-          }
-        }
-      }
-
-      if (ts < minTimestamp) {
-        const first = selectedDay.segments[0];
-        const pos = first.type === 'visit' ? first.data.location : (first.data.path ? first.data.path[0] : null);
-        setPlaybackPosition(pos || null);
-        setPlaybackStatus('Before start of recorded activity');
-        setPlaybackActivityType(null);
-        return;
-      }
-
-      if (ts >= maxTimestamp) {
-        const last = selectedDay.segments[selectedDay.segments.length - 1];
-        const pos =
-          last.type === 'visit'
-            ? last.data.location
-            : (last.data.path ? last.data.path[last.data.path.length - 1] : null);
-        setPlaybackPosition(pos || null);
-        setPlaybackStatus('Journey complete');
-        setPlaybackActivityType(null);
-        return;
-      }
-
-      for (let i = 0; i < selectedDay.segments.length - 1; i++) {
-        const current = selectedDay.segments[i];
-        const next = selectedDay.segments[i + 1];
-        const currentEnd = current.type === 'visit' ? current.data.endTimestamp : current.data.endTimestamp;
-        const nextStart = next.timestamp;
-
-        if (ts > currentEnd && ts < nextStart) {
-          const pos = current.type === 'visit'
-            ? current.data.location
-            : (current.data.path ? current.data.path[current.data.path.length - 1] : null);
-          setPlaybackPosition(pos || null);
-          setPlaybackStatus('Stationary between trips');
-          setPlaybackActivityType('STILL');
-          return;
-        }
-      }
-    },
-    [selectedDay, minTimestamp, maxTimestamp]
-  );
-
-  // Toggle playback: auto-rewind if at or beyond the end
-  const handleTogglePlay = useCallback(() => {
-    if (!isPlaying) {
-      if (currentTsRef.current >= maxTimestamp || currentTsRef.current < minTimestamp) {
-        currentTsRef.current = minTimestamp;
-        setCurrentTimestamp(minTimestamp);
-        evaluatePlaybackAt(minTimestamp);
-      }
-      setIsPlaying(true);
-    } else {
-      setIsPlaying(false);
-    }
-  }, [isPlaying, minTimestamp, maxTimestamp, evaluatePlaybackAt]);
-
-  // Playback Loop
-  useEffect(() => {
-    if (!isPlaying) {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-      return;
-    }
-
-    lastTickTimeRef.current = performance.now();
-
-    const loop = (time: number) => {
-      const dtMs = time - lastTickTimeRef.current;
-      lastTickTimeRef.current = time;
-
-      // Limit dtMs to prevent jumps if tab was backgrounded
-      const clampedDt = Math.min(dtMs, 100);
-      const timeAdvanceMs = clampedDt * playbackSpeed * 60;
-
-      const nextTs = currentTsRef.current + timeAdvanceMs;
-      if (nextTs >= maxTimestamp) {
-        currentTsRef.current = maxTimestamp;
-        setCurrentTimestamp(maxTimestamp);
-        evaluatePlaybackAt(maxTimestamp);
-        setIsPlaying(false);
-        return;
-      }
-
-      currentTsRef.current = nextTs;
-      setCurrentTimestamp(nextTs);
-      evaluatePlaybackAt(nextTs);
-
-      animationFrameRef.current = requestAnimationFrame(loop);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(loop);
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-    };
-  }, [isPlaying, playbackSpeed, maxTimestamp, evaluatePlaybackAt]);
-
-  const handleSeek = (newTs: number) => {
-    currentTsRef.current = newTs;
-    setCurrentTimestamp(newTs);
-    evaluatePlaybackAt(newTs);
-  };
-
   const handleOpenAnalytics = () => {
-    setIsPlaying(false); // Stop playback so CPU is immediately 100% responsive
     setIsStatsOpen(true);
   };
-
-  // Keyboard Shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) {
-        return;
-      }
-      if (e.code === 'Space') {
-        e.preventDefault();
-        handleTogglePlay();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleTogglePlay]);
 
   // --- 1. INITIAL LOADING STATE: Upload file prompt only ---
   if (!timelineData) {
@@ -726,32 +444,8 @@ export const App: React.FC = () => {
         <TimelineMap
           selectedDay={selectedDay}
           focusedItemId={null}
-          playbackPosition={playbackPosition}
-          playbackStatus={playbackStatus}
-          playbackActivityType={playbackActivityType}
           rawSignals={timelineData.rawSignals}
         />
-
-        {/* Floating Bottom: Playback Controls Bar with Integrated Analytics */}
-        {selectedDay && selectedDay.segments.length > 0 && (
-          <div className="absolute bottom-5 left-4 right-4 sm:left-1/2 sm:-translate-x-1/2 sm:w-[720px] z-[450] animate-slide-up">
-            <PlaybackControls
-              isPlaying={isPlaying}
-              speed={playbackSpeed}
-              currentTimestamp={currentTimestamp}
-              minTimestamp={minTimestamp}
-              maxTimestamp={maxTimestamp}
-              onTogglePlay={handleTogglePlay}
-              onSeek={handleSeek}
-              onChangeSpeed={(s) => setPlaybackSpeed(s)}
-              onReset={() => {
-                setIsPlaying(false);
-                handleSeek(minTimestamp);
-              }}
-              onOpenStats={handleOpenAnalytics}
-            />
-          </div>
-        )}
       </div>
 
       {/* Interactive Calendar Time Period Selector Modal */}

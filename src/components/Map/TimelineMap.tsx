@@ -19,10 +19,10 @@ import { Crosshair, Eye, EyeOff, Navigation } from 'lucide-react';
 
 interface TimelineMapProps {
   selectedDay: TimelineDay | null;
-  focusedItemId: string | null;
-  playbackPosition: LatLng | null;
-  playbackStatus: string;
-  playbackActivityType: string | null;
+  focusedItemId?: string | null;
+  playbackPosition?: LatLng | null;
+  playbackStatus?: string;
+  playbackActivityType?: string | null;
   rawSignals: RawSignalPoint[];
   onSelectVisit?: (visit: TimelinePlaceVisit) => void;
   onSelectActivity?: (activity: TimelineActivity) => void;
