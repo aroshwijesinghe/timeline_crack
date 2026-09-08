@@ -83,14 +83,12 @@ The output in the `dist/` directory is static HTML/JS/CSS ready to deploy to Git
 3. Select **Timeline** (you may need to select your specific Google account if you have more than one).
 4. Under the Timeline settings page, look for and tap **Export Timeline data**.
 5. Tap **Continue**, and the phone will generate and download a file named `Timeline.json` to your local storage or files app.
-   - *References*: [[1](https://support.google.com/maps/answer/6258979?hl=en&co=GENIE.Platform%3DAndroid), [2](https://www.reddit.com/r/GoogleMaps/comments/1chlsst/export_google_maps_timeline_data_on_android/), [3](https://support.google.com/maps/thread/424560487/download-location-history?hl=en), [4](https://play.google.com/store/apps/details?id=io.github.nikkittap.timelineexporter)]
 
 ### Option 2: If you have an iPhone (iOS)
 1. Open the **Google Maps** app on your iPhone.
 2. Tap your **Profile icon** in the upper right corner and select **Settings**.
 3. Scroll down and select **Personal content**.
 4. Look for the option labeled **Export Timeline data** and tap it to generate and save your local `Timeline.json` data package.
-   - *References*: [[1](https://dawarich.app/tools/timeline-visualizer/), [2](https://www.googlemapstimeline.com/blog/export-google-timeline-data)]
 
 ---
 

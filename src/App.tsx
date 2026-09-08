@@ -24,7 +24,6 @@ import {
   BarChart3,
   Smartphone,
   Apple,
-  ExternalLink,
   HelpCircle
 } from 'lucide-react';
 
@@ -459,13 +458,6 @@ export const App: React.FC = () => {
                   <li>Under the Timeline settings page, look for and tap <strong>Export Timeline data</strong>.</li>
                   <li>Tap <strong>Continue</strong>, and the phone will generate and download a file named <code className="text-indigo-300 bg-slate-950 px-1 py-0.5 rounded">Timeline.json</code> to your local storage or files app.</li>
                 </ol>
-                <div className="pt-2 text-[11px] text-slate-500 flex items-center gap-2 border-t border-slate-800/80 mt-3">
-                  <span>References:</span>
-                  <a href="https://support.google.com/maps/answer/6258979?hl=en&co=GENIE.Platform%3DAndroid" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline flex items-center gap-0.5">[1] Google Support <ExternalLink className="w-2.5 h-2.5 inline" /></a>
-                  <a href="https://www.reddit.com/r/GoogleMaps/comments/1chlsst/export_google_maps_timeline_data_on_android/" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline flex items-center gap-0.5">[2] Reddit <ExternalLink className="w-2.5 h-2.5 inline" /></a>
-                  <a href="https://support.google.com/maps/thread/424560487/download-location-history?hl=en" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline flex items-center gap-0.5">[3] Community <ExternalLink className="w-2.5 h-2.5 inline" /></a>
-                  <a href="https://play.google.com/store/apps/details?id=io.github.nikkittap.timelineexporter" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline flex items-center gap-0.5">[4] Play Store <ExternalLink className="w-2.5 h-2.5 inline" /></a>
-                </div>
               </div>
             )}
 
@@ -481,11 +473,6 @@ export const App: React.FC = () => {
                   <li>Scroll down and select <strong>Personal content</strong>.</li>
                   <li>Look for the option labeled <strong>Export Timeline data</strong> and tap it to generate and save your local <code className="text-indigo-300 bg-slate-950 px-1 py-0.5 rounded">Timeline.json</code> data package.</li>
                 </ol>
-                <div className="pt-2 text-[11px] text-slate-500 flex items-center gap-2 border-t border-slate-800/80 mt-3">
-                  <span>References:</span>
-                  <a href="https://dawarich.app/tools/timeline-visualizer/" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline flex items-center gap-0.5">[1] Visualizer <ExternalLink className="w-2.5 h-2.5 inline" /></a>
-                  <a href="https://www.googlemapstimeline.com/blog/export-google-timeline-data" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline flex items-center gap-0.5">[2] Guide <ExternalLink className="w-2.5 h-2.5 inline" /></a>
-                </div>
               </div>
             )}
           </div>
