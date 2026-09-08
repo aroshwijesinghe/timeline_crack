@@ -289,7 +289,7 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Impactful Headline */}
-                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight text-white mb-4 font-heading uppercase leading-[1.05]">
+                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight text-white mb-6 font-heading uppercase leading-[1.05]">
                   Welcome to <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-[#bef264] to-[#34d399] drop-shadow-[0_0_25px_rgba(163,230,53,0.35)]">
                     Timeline
@@ -297,7 +297,7 @@ export const App: React.FC = () => {
                 </h1>
 
                 {/* Narrative Subtitle */}
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans mb-6 max-w-md">
+                <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-sans max-w-md mt-2">
                   Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
                 </p>
               </div>
