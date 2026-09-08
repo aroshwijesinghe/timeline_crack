@@ -104,8 +104,6 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen || !timelineData) return null;
-
   // Month navigation
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -190,6 +188,7 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
 
   // Computed summary of the currently highlighted range/selection
   const previewSummary = useMemo(() => {
+    if (!timelineData) return null;
     if (selectionMode === 'single') {
       if (!rangeStart) return null;
       const day = timelineData.days[rangeStart];
@@ -235,6 +234,8 @@ export const CalendarModal: React.FC<CalendarModalProps> = ({
     month: 'long',
     year: 'numeric'
   });
+
+  if (!isOpen || !timelineData) return null;
 
   return (
     <div

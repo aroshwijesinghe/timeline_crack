@@ -247,17 +247,6 @@ export const App: React.FC = () => {
     return { minTimestamp: minTs, maxTimestamp: Math.max(minTs + 1000, maxTs) };
   }, [selectedDay]);
 
-  // Keep currentTimestamp within active bounds [minTimestamp, maxTimestamp]
-  useEffect(() => {
-    if (minTimestamp > 0 && maxTimestamp > minTimestamp) {
-      if (currentTsRef.current < minTimestamp || currentTsRef.current > maxTimestamp) {
-        currentTsRef.current = minTimestamp;
-        setCurrentTimestamp(minTimestamp);
-        evaluatePlaybackAt(minTimestamp);
-      }
-    }
-  }, [selectedDay, minTimestamp, maxTimestamp]);
-
   const handleSelectDate = (dateOrPeriod: string) => {
     setSelectedDate(dateOrPeriod);
     if (!timelineData) return;
