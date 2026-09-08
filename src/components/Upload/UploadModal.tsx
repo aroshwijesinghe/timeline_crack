@@ -5,8 +5,7 @@ import {
   Sparkles,
   ShieldCheck,
   AlertCircle,
-  X,
-  FileCheck
+  X
 } from 'lucide-react';
 import { sampleTimelineJSON } from '../../demo/sampleTimeline';
 
@@ -86,24 +85,6 @@ export const UploadModal: React.FC<UploadModalProps> = ({
     onClose();
   };
 
-  const handleLoadLocalWorkspaceFile = async () => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const resp = await fetch('./Timeline.json');
-      if (!resp.ok) {
-        throw new Error('Local Timeline.json not found in root directory.');
-      }
-      const data = await resp.json();
-      onDataLoaded(data, 'Timeline.json (Workspace)');
-      setLoading(false);
-      onClose();
-    } catch (err: any) {
-      setErrorMsg(`Could not auto-fetch local Timeline.json: ${err.message}. Please use the upload box above to select it from your computer.`);
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
       <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col">
@@ -171,21 +152,11 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             </div>
           )}
 
-          {/* Quick Actions: Local file & Demo */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button
-              onClick={handleLoadLocalWorkspaceFile}
-              disabled={loading}
-              className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-slate-200 transition"
-            >
-              <FileCheck className="w-4 h-4 text-emerald-400" />
-              <span>Load Workspace Timeline</span>
-            </button>
-
+          <div className="flex justify-center">
             <button
               onClick={handleLoadDemo}
               disabled={loading}
-              className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition"
+              className="w-full py-3 px-4 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition flex items-center justify-center gap-2"
             >
               <Sparkles className="w-4 h-4 text-indigo-400" />
               <span>Try Interactive Demo</span>

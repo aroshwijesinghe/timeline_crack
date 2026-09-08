@@ -16,7 +16,6 @@ import {
   Sparkles,
   ShieldCheck,
   AlertCircle,
-  FileCheck,
   MapPin,
   ChevronLeft,
   ChevronRight,
@@ -156,23 +155,6 @@ export const App: React.FC = () => {
 
   const handleLoadDemo = () => {
     handleDataLoaded(sampleTimelineJSON);
-  };
-
-  const handleLoadLocalWorkspaceFile = async () => {
-    setLoading(true);
-    setUploadError(null);
-    try {
-      const resp = await fetch('./Timeline.json');
-      if (!resp.ok) {
-        throw new Error('Local Timeline.json not found in root.');
-      }
-      const data = await resp.json();
-      handleDataLoaded(data);
-      setLoading(false);
-    } catch (err: any) {
-      setUploadError(`Could not load local Timeline.json: ${err.message}. Please select your file using the upload box.`);
-      setLoading(false);
-    }
   };
 
   // Selected Day object (supports individual dates or 'all' for full lifetime view)
@@ -432,20 +414,11 @@ export const App: React.FC = () => {
               </div>
             )}
 
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button
-                onClick={handleLoadLocalWorkspaceFile}
-                disabled={loading}
-                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-slate-200 transition"
-              >
-                <FileCheck className="w-4 h-4 text-emerald-400" />
-                <span>Load Workspace File</span>
-              </button>
-
+            <div className="mt-4 flex justify-center">
               <button
                 onClick={handleLoadDemo}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition"
+                className="w-full py-3 px-4 rounded-2xl bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition flex items-center justify-center gap-2"
               >
                 <Sparkles className="w-4 h-4 text-indigo-400" />
                 <span>Try Demo Timeline</span>
