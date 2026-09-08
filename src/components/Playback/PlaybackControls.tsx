@@ -5,7 +5,8 @@ import {
   RotateCcw,
   FastForward,
   Clock,
-  Gauge
+  Gauge,
+  BarChart3
 } from 'lucide-react';
 import { formatTime } from '../../utils/geoUtils';
 
@@ -19,6 +20,7 @@ interface PlaybackControlsProps {
   onSeek: (timestamp: number) => void;
   onChangeSpeed: (speed: number) => void;
   onReset: () => void;
+  onOpenStats?: () => void;
 }
 
 const SPEED_OPTIONS = [1, 5, 15, 30, 60, 120];
@@ -32,7 +34,8 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   onTogglePlay,
   onSeek,
   onChangeSpeed,
-  onReset
+  onReset,
+  onOpenStats
 }) => {
   const totalDuration = Math.max(1, maxTimestamp - minTimestamp);
   const currentProgress = Math.max(0, Math.min(100, ((currentTimestamp - minTimestamp) / totalDuration) * 100));
@@ -111,22 +114,35 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           </button>
         </div>
 
-        {/* Speed Selector */}
-        <div className="flex items-center gap-1.5 bg-slate-900/80 px-2 py-1 rounded-xl border border-slate-800">
-          <Gauge className="w-3.5 h-3.5 text-slate-400 mr-1" />
-          {SPEED_OPTIONS.map((spd) => (
+        {/* Speed Selector & Analytics Button */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-slate-900/80 px-2 py-1 rounded-xl border border-slate-800">
+            <Gauge className="w-3.5 h-3.5 text-slate-400 mr-1" />
+            {SPEED_OPTIONS.map((spd) => (
+              <button
+                key={spd}
+                onClick={() => onChangeSpeed(spd)}
+                className={`px-2 py-0.5 rounded-lg text-xs font-bold transition-all ${
+                  speed === spd
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                }`}
+              >
+                {spd}x
+              </button>
+            ))}
+          </div>
+
+          {onOpenStats && (
             <button
-              key={spd}
-              onClick={() => onChangeSpeed(spd)}
-              className={`px-2 py-0.5 rounded-lg text-xs font-bold transition-all ${
-                speed === spd
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-              }`}
+              onClick={onOpenStats}
+              title="View Travel Analytics"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-xs font-bold text-indigo-300 hover:text-white border border-indigo-500/40 transition active:scale-95 shadow-md"
             >
-              {spd}x
+              <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Analytics</span>
             </button>
-          ))}
+          )}
         </div>
       </div>
     </div>
