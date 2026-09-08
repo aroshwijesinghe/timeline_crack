@@ -204,7 +204,7 @@ export const App: React.FC = () => {
   // --- 1. INITIAL LOADING STATE: Eco-Dark Hero Screen (Matching Reference Image) ---
   if (!timelineData) {
     return (
-      <div className="min-h-screen w-screen bg-[#040704] text-slate-100 flex flex-col items-center justify-start p-4 sm:p-8 relative overflow-y-auto selection:bg-lime-500 selection:text-black font-sans">
+      <div className="min-h-screen w-full bg-[#040704] text-slate-100 flex flex-col items-center justify-start p-4 sm:p-8 relative selection:bg-lime-500 selection:text-black font-sans">
         {/* Luminous Organic Green Ambient Glows */}
         <div className="fixed w-[600px] h-[600px] rounded-full bg-lime-500/12 blur-[140px] pointer-events-none -top-20 -left-20 animate-eco-glow" />
         <div className="fixed w-[550px] h-[550px] rounded-full bg-emerald-500/10 blur-[140px] pointer-events-none top-1/4 right-0 animate-eco-glow" style={{ animationDelay: '1.8s' }} />
@@ -382,7 +382,7 @@ export const App: React.FC = () => {
   const hasNext = currentIndex >= 0 && currentIndex < dates.length - 1;
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-[#040704] text-slate-100 overflow-hidden font-sans relative select-none">
+    <div className="flex flex-col w-full h-screen bg-[#040704] text-slate-100 overflow-hidden font-sans relative select-none">
       {/* Top Floating Control Dock (Smoked Glass Bar with Lime Accents) */}
       <div className="absolute top-4 left-4 right-4 sm:right-auto sm:left-6 z-[450] flex items-center justify-between sm:justify-start gap-2.5 pointer-events-none">
         <div className="glass-panel p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-lime-500/20 pointer-events-auto backdrop-blur-2xl">

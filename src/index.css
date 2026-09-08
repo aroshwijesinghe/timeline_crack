@@ -10,24 +10,34 @@
   }
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars - Modern, Prominent Eco-Lime */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(31, 33, 31, 0.9);
+  background: #060906;
+  border-left: 1px solid rgba(132, 204, 22, 0.15);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(132, 204, 22, 0.3);
+  background: rgba(132, 204, 22, 0.45);
   border-radius: 9999px;
-  transition: background 0.5s ease;
+  border: 2px solid #060906;
+  box-shadow: 0 0 8px rgba(132, 204, 22, 0.35);
+  transition: all 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(44, 142, 2);
+  background: rgba(163, 230, 53, 0.95);
+  box-shadow: 0 0 14px rgba(163, 230, 53, 0.7);
+}
+
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(132, 204, 22, 0.55) #060906;
 }
 
 /* Leaflet Overrides for Glossy Eco-Dark Aesthetic */
