@@ -8,8 +8,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-        heading: ['Outfit', 'sans-serif'],
+        sans: ['Nunito', 'Outfit', 'system-ui', 'sans-serif'],
+        heading: ['Nunito', 'Outfit', 'sans-serif'],
+        round: ['Nunito', 'sans-serif'],
       },
       colors: {
         eco: {

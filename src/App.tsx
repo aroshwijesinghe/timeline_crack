@@ -240,8 +240,8 @@ export const App: React.FC = () => {
         </header>
 
         {/* Main Content Area (Full Width, Balanced, 3-Column Left-to-Right Panoramic Grid) */}
-        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-6 sm:py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-center w-full">
+        <main className="relative z-10 w-full max-w-[1540px] mx-auto my-auto py-6 sm:py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-stretch w-full">
 
             {/* Part 1 (Left): Welcome Hero */}
             <div className="flex flex-col justify-center py-4 lg:pr-4">
@@ -283,7 +283,7 @@ export const App: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-extrabold uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
                     <span>Personal Timeline Studio</span>
                   </div>
                 </div>
@@ -304,7 +304,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Part 2 (Center): File Drop Part & Privacy Guarantee */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group">
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group h-full">
               <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
 
               <div>
@@ -314,7 +314,7 @@ export const App: React.FC = () => {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-3xl p-7 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative group/drop ${
+                  className={`border-2 border-dashed rounded-3xl p-6 sm:p-7 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative group/drop ${
                     isDragging
                       ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01] shadow-[0_0_40px_rgba(132,204,22,0.3)]'
                       : 'border-lime-500/30 bg-black/40 hover:border-lime-400/80 hover:bg-black/60 hover:shadow-[0_0_35px_rgba(132,204,22,0.2)]'
@@ -329,18 +329,18 @@ export const App: React.FC = () => {
                   />
 
                   {/* Icon with glowing halo */}
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#2b3929] to-[#0c120b] text-[#a3e635] border border-lime-500/40 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(132,204,22,0.3)] group-hover/drop:scale-110 group-hover/drop:border-lime-400 transition-all duration-300">
-                    <UploadCloud className="w-8 h-8 text-[#bef264]" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-[#2b3929] to-[#0c120b] text-[#a3e635] border border-lime-500/40 flex items-center justify-center mb-3 shadow-[0_0_25px_rgba(132,204,22,0.3)] group-hover/drop:scale-110 group-hover/drop:border-lime-400 transition-all duration-300">
+                    <UploadCloud className="w-7 h-7 text-[#bef264]" />
                   </div>
 
-                  <p className="text-base sm:text-lg font-black text-white mb-1.5 font-heading uppercase tracking-wide">
+                  <p className="text-base sm:text-lg font-black text-white mb-1 font-heading uppercase tracking-wide">
                     Drop your <span className="text-[#a3e635] drop-shadow-[0_0_10px_rgba(163,230,53,0.4)]">Timeline.json</span> here
                   </p>
                   <p className="text-xs text-slate-400 max-w-xs">
                     Drag & drop your file, or click anywhere inside to browse
                   </p>
 
-                  <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+                  <div className="mt-3.5 flex flex-wrap items-center justify-center gap-1.5">
                     <span className="text-[11px] px-3.5 py-1 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
                       Google Maps Export (.json)
@@ -349,7 +349,7 @@ export const App: React.FC = () => {
                 </div>
 
                 {uploadError && (
-                  <div className="mt-4 flex items-start gap-3 p-3.5 rounded-2xl bg-rose-950/70 border border-rose-500/50 text-rose-200 text-xs animate-fade-in">
+                  <div className="mt-3 flex items-start gap-3 p-3 rounded-2xl bg-rose-950/70 border border-rose-500/50 text-rose-200 text-xs animate-fade-in">
                     <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                     <span>{uploadError}</span>
                   </div>
@@ -357,7 +357,7 @@ export const App: React.FC = () => {
               </div>
 
               {/* Bottom Section inside the Box */}
-              <div className="mt-5 space-y-3 pt-4 border-t border-white/10">
+              <div className="mt-4 space-y-2.5 pt-3.5 border-t border-white/10">
                 {/* Demo Quick-Start */}
                 <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
                   <div className="flex flex-col">
@@ -375,12 +375,12 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* 100% Client-Side Privacy Guarantee */}
-                <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-black/50 border border-lime-500/20 text-slate-300 text-xs">
+                <div className="flex items-start gap-3 p-3 rounded-2xl bg-black/50 border border-lime-500/20 text-slate-300 text-xs">
                   <div className="p-1.5 rounded-xl bg-lime-500/20 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/30">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="text-[#a3e635] block mb-0.5 font-extrabold uppercase tracking-wide font-heading text-xs">
+                    <strong className="text-[#a3e635] block mb-0.5 font-black uppercase tracking-wide font-heading text-xs">
                        Client-Side Privacy Guarantee
                     </strong>
                     <p className="text-[11px] text-slate-300 leading-snug">
@@ -392,13 +392,13 @@ export const App: React.FC = () => {
             </div>
 
             {/* Part 3 (Right): How to Export Guide */}
-            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
-              <div>
+            <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden h-full">
+              <div className="flex flex-col h-full justify-between">
                 {/* Guide Header & Platform Switcher */}
-                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-5 border-b border-white/10 pb-3.5">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 border-b border-white/10 pb-3.5">
                   <div className="flex items-center gap-2">
                     <HelpCircle className="w-4 h-4 text-[#a3e635]" />
-                    <h2 className="text-sm font-extrabold text-white font-heading uppercase tracking-wide">
+                    <h2 className="text-sm font-black text-white font-heading uppercase tracking-wide">
                       How to Export Timeline
                     </h2>
                   </div>
@@ -430,38 +430,38 @@ export const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Android Steps with visual step numbers */}
+                {/* Android Steps with comfortable vertical distribution */}
                 {guideTab === 'android' && (
-                  <div className="space-y-2.5 animate-fade-in text-xs text-slate-300">
-                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1.5">
+                  <div className="space-y-2.5 animate-fade-in text-xs text-slate-300 flex-1 flex flex-col justify-between">
+                    <div className="font-black text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
                       <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                       <span>Android Settings Export</span>
                     </div>
 
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">01</span>
-                        <p className="leading-snug pt-0.5 text-xs">Open your phone's <strong className="text-white">Settings</strong> (gear icon).</p>
+                    <div className="space-y-2 flex-1 flex flex-col justify-between my-1">
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">01</span>
+                        <p className="leading-snug text-xs">Open your phone's <strong className="text-white">Settings</strong> (gear icon).</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">02</span>
-                        <p className="leading-snug pt-0.5 text-xs">Go to <strong className="text-white">Location</strong> &gt; <strong className="text-white">Location Services</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">02</span>
+                        <p className="leading-snug text-xs">Go to <strong className="text-white">Location</strong> &gt; <strong className="text-white">Location Services</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">03</span>
-                        <p className="leading-snug pt-0.5 text-xs">Select <strong className="text-white">Timeline</strong> (choose Google account).</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">03</span>
+                        <p className="leading-snug text-xs">Select <strong className="text-white">Timeline</strong> (choose Google account).</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">04</span>
-                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong className="text-white">Export Timeline data</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">04</span>
+                        <p className="leading-snug text-xs">Scroll down and tap <strong className="text-white">Export Timeline data</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">05</span>
-                        <p className="leading-snug pt-0.5 text-xs">Tap <strong className="text-white">Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">05</span>
+                        <p className="leading-snug text-xs">Tap <strong className="text-white">Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
@@ -469,31 +469,31 @@ export const App: React.FC = () => {
 
                 {/* iOS Steps */}
                 {guideTab === 'ios' && (
-                  <div className="space-y-2.5 animate-fade-in text-xs text-slate-300">
-                    <div className="font-bold text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading mb-1.5">
+                  <div className="space-y-2.5 animate-fade-in text-xs text-slate-300 flex-1 flex flex-col justify-between">
+                    <div className="font-black text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
                       <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
                       <span>Google Maps iOS App Export</span>
                     </div>
 
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">01</span>
-                        <p className="leading-snug pt-0.5 text-xs">Open <strong className="text-white">Google Maps</strong> app on your iPhone.</p>
+                    <div className="space-y-2 flex-1 flex flex-col justify-between my-1">
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">01</span>
+                        <p className="leading-snug text-xs">Open <strong className="text-white">Google Maps</strong> app on your iPhone.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">02</span>
-                        <p className="leading-snug pt-0.5 text-xs">Tap your <strong className="text-white">Profile avatar</strong> &gt; <strong className="text-white">Settings</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">02</span>
+                        <p className="leading-snug text-xs">Tap your <strong className="text-white">Profile avatar</strong> &gt; <strong className="text-white">Settings</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">03</span>
-                        <p className="leading-snug pt-0.5 text-xs">Scroll down and tap <strong className="text-white">Personal content</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">03</span>
+                        <p className="leading-snug text-xs">Scroll down and tap <strong className="text-white">Personal content</strong>.</p>
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-5 h-5 rounded-lg bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-bold text-[10px] shrink-0">04</span>
-                        <p className="leading-snug pt-0.5 text-xs">Tap <strong className="text-white">Export Timeline data</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">04</span>
+                        <p className="leading-snug text-xs">Tap <strong className="text-white">Export Timeline data</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
