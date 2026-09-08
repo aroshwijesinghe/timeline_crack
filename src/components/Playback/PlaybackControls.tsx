@@ -137,7 +137,7 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
             <button
               onClick={onOpenStats}
               title="View Travel Analytics"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-xs font-bold text-indigo-300 hover:text-white border border-indigo-500/40 transition active:scale-95 shadow-md"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-xs font-bold text-indigo-300 hover:text-white border border-indigo-500/40 transition active:scale-95 shadow-md cursor-pointer"
             >
               <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
               <span>Analytics</span>

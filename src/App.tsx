@@ -46,6 +46,7 @@ export const App: React.FC = () => {
   const [playbackStatus, setPlaybackStatus] = useState<string>('Ready');
   const [playbackActivityType, setPlaybackActivityType] = useState<string | null>(null);
 
+  const currentTsRef = useRef<number>(0);
   const animationFrameRef = useRef<number | null>(null);
   const lastTickTimeRef = useRef<number>(0);
 
@@ -53,6 +54,7 @@ export const App: React.FC = () => {
   const setupDayPlayback = useCallback((day: TimelineDay | null) => {
     setIsPlaying(false);
     if (!day || day.segments.length === 0) {
+      currentTsRef.current = 0;
       setCurrentTimestamp(0);
       setPlaybackPosition(null);
       setPlaybackStatus('No activity');
@@ -62,6 +64,7 @@ export const App: React.FC = () => {
 
     const firstSeg = day.segments[0];
     const initialTs = firstSeg.timestamp;
+    currentTsRef.current = initialTs;
     setCurrentTimestamp(initialTs);
 
     if (firstSeg.type === 'visit') {
@@ -290,6 +293,7 @@ export const App: React.FC = () => {
     if (!isPlaying) {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
       return;
     }
@@ -300,18 +304,22 @@ export const App: React.FC = () => {
       const dtMs = time - lastTickTimeRef.current;
       lastTickTimeRef.current = time;
 
-      const timeAdvanceMs = dtMs * playbackSpeed * 60;
+      // Limit dtMs to prevent jumps if tab was backgrounded
+      const clampedDt = Math.min(dtMs, 100);
+      const timeAdvanceMs = clampedDt * playbackSpeed * 60;
 
-      setCurrentTimestamp((prev) => {
-        const nextTs = prev + timeAdvanceMs;
-        if (nextTs >= maxTimestamp) {
-          setIsPlaying(false);
-          evaluatePlaybackAt(maxTimestamp);
-          return maxTimestamp;
-        }
-        evaluatePlaybackAt(nextTs);
-        return nextTs;
-      });
+      const nextTs = currentTsRef.current + timeAdvanceMs;
+      if (nextTs >= maxTimestamp) {
+        currentTsRef.current = maxTimestamp;
+        setCurrentTimestamp(maxTimestamp);
+        evaluatePlaybackAt(maxTimestamp);
+        setIsPlaying(false);
+        return;
+      }
+
+      currentTsRef.current = nextTs;
+      setCurrentTimestamp(nextTs);
+      evaluatePlaybackAt(nextTs);
 
       animationFrameRef.current = requestAnimationFrame(loop);
     };
@@ -321,13 +329,20 @@ export const App: React.FC = () => {
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
     };
   }, [isPlaying, playbackSpeed, maxTimestamp, evaluatePlaybackAt]);
 
   const handleSeek = (newTs: number) => {
+    currentTsRef.current = newTs;
     setCurrentTimestamp(newTs);
     evaluatePlaybackAt(newTs);
+  };
+
+  const handleOpenAnalytics = () => {
+    setIsPlaying(false); // Stop playback so CPU is immediately 100% responsive
+    setIsStatsOpen(true);
   };
 
   // Keyboard Shortcuts
@@ -565,8 +580,8 @@ export const App: React.FC = () => {
 
           {/* Analytics Button in Top Bar */}
           <button
-            onClick={() => setIsStatsOpen(true)}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold text-indigo-300 hover:text-white bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 transition ml-1"
+            onClick={handleOpenAnalytics}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold text-indigo-300 hover:text-white bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 transition ml-1 cursor-pointer active:scale-95"
             title="View Trip & Path Analytics"
           >
             <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
@@ -576,7 +591,7 @@ export const App: React.FC = () => {
           {/* Upload Different File Button */}
           <button
             onClick={() => setTimelineData(null)}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
             title="Upload different Timeline.json file"
           >
             <UploadCloud className="w-4 h-4" />
@@ -611,7 +626,7 @@ export const App: React.FC = () => {
                 setIsPlaying(false);
                 handleSeek(minTimestamp);
               }}
-              onOpenStats={() => setIsStatsOpen(true)}
+              onOpenStats={handleOpenAnalytics}
             />
           </div>
         )}

@@ -318,7 +318,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     }
 
     if (autoFollow) {
-      map.panTo(playbackPosition, { animate: true, duration: 0.2 });
+      map.panTo(playbackPosition, { animate: false });
     }
   }, [playbackPosition, playbackActivityType, autoFollow]);
 
@@ -333,7 +333,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           <button
             onClick={() => setTileProvider('esri-dark')}
             title="Esri Dark Theme (No API Key)"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               tileProvider === 'esri-dark'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -344,7 +344,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           <button
             onClick={() => setTileProvider('esri-streets')}
             title="Clean Street Map"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               tileProvider === 'esri-streets'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -355,7 +355,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           <button
             onClick={() => setTileProvider('satellite')}
             title="Satellite Imagery"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               tileProvider === 'satellite'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -366,7 +366,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           <button
             onClick={() => setTileProvider('osm')}
             title="OpenStreetMap Standard"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               tileProvider === 'osm'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -381,7 +381,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           <button
             onClick={() => setShowRawSignals(!showRawSignals)}
             title="Toggle Raw GPS breadcrumbs"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               showRawSignals
                 ? 'bg-rose-600/90 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -394,7 +394,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           <button
             onClick={() => setAutoFollow(!autoFollow)}
             title="Auto-center camera on moving vehicle/pin"
-            className={`p-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`p-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               autoFollow
                 ? 'bg-indigo-600 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -405,16 +405,16 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
         </div>
       </div>
 
-      {/* Floating HUD status during playback */}
+      {/* Floating HUD status during playback (cleanly positioned under top bar) */}
       {playbackPosition && (
-        <div className="absolute top-4 left-4 z-[400] glass-panel px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-indigo-500/30 animate-fade-in">
-          <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></div>
+        <div className="absolute top-16 left-4 z-[400] glass-panel px-3.5 py-2 rounded-2xl shadow-2xl flex items-center gap-2.5 border border-indigo-500/30 animate-fade-in pointer-events-none">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0"></div>
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-indigo-300">Live Playback Status</div>
-            <div className="text-sm font-bold text-white flex items-center gap-2">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-indigo-300">Live Status</div>
+            <div className="text-xs font-bold text-white flex items-center gap-1.5">
               <span>{playbackStatus}</span>
               {playbackActivityType && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-mono">
                   {playbackActivityType}
                 </span>
               )}

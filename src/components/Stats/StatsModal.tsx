@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   X,
   Calendar,
@@ -25,12 +25,27 @@ export const StatsModal: React.FC<StatsModalProps> = ({
   onClose,
   timelineData
 }) => {
-  if (!isOpen || !timelineData) return null;
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
-  const { stats } = timelineData;
-  const modes = Object.keys(stats.activityDistanceByType).sort(
-    (a, b) => stats.activityDistanceByType[b] - stats.activityDistanceByType[a]
-  );
+  const stats = timelineData?.stats;
+  const modes = useMemo(() => {
+    if (!stats) return [];
+    return Object.keys(stats.activityDistanceByType).sort(
+      (a, b) => stats.activityDistanceByType[b] - stats.activityDistanceByType[a]
+    );
+  }, [stats]);
+
+  if (!isOpen || !timelineData || !stats) return null;
 
   const renderIcon = (iconName: string) => {
     const props = { className: 'w-4 h-4' };
@@ -46,8 +61,14 @@ export const StatsModal: React.FC<StatsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in cursor-default"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-800">
           <div>
@@ -61,7 +82,7 @@ export const StatsModal: React.FC<StatsModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition"
+            className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
