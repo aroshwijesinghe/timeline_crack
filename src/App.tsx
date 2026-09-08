@@ -14,7 +14,7 @@ import {
   Sparkles,
   ShieldCheck,
   AlertCircle,
-  Leaf,
+  MapPin,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -211,12 +211,12 @@ export const App: React.FC = () => {
         <div className="fixed w-[450px] h-[450px] rounded-full bg-lime-400/8 blur-[120px] pointer-events-none -bottom-20 left-1/3" />
 
         <div className="relative z-10 w-full max-w-2xl flex flex-col items-center my-auto py-8">
-          {/* Top Logo & Brand (Matching Leaf in Reference Image) */}
+          {/* Top Logo & Brand (Location Pin Icon) */}
           <div className="flex flex-col items-center text-center mb-8">
             <div className="relative mb-4 group">
               <div className="absolute -inset-2 rounded-3xl bg-lime-400/25 blur-lg group-hover:bg-lime-400/40 transition duration-500" />
               <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-b from-[#263124] to-[#0c120b] border border-lime-500/40 flex items-center justify-center shadow-[0_0_25px_rgba(132,204,22,0.4)]">
-                <Leaf className="w-8 h-8 text-[#a3e635] fill-[#a3e635]/20" />
+                <MapPin className="w-8 h-8 text-[#a3e635] fill-[#a3e635]/20" />
               </div>
             </div>
 
@@ -386,10 +386,10 @@ export const App: React.FC = () => {
       {/* Top Floating Control Dock (Smoked Glass Bar with Lime Accents) */}
       <div className="absolute top-4 left-4 right-4 sm:right-auto sm:left-6 z-[450] flex items-center justify-between sm:justify-start gap-2.5 pointer-events-none">
         <div className="glass-panel p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-lime-500/20 pointer-events-auto backdrop-blur-2xl">
-          {/* Brand Emblem (Leaf Icon with Radiant Glow) */}
+          {/* Brand Emblem (Location Pin Icon with Radiant Glow) */}
           <div className="flex items-center gap-2 pr-1 sm:pr-2">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-[#2d382b] to-[#0d130c] text-[#a3e635] flex items-center justify-center shadow-[0_0_15px_rgba(132,204,22,0.4)] border border-lime-500/40">
-              <Leaf className="w-4 h-4 fill-[#a3e635]/20" />
+              <MapPin className="w-4 h-4 text-[#a3e635] fill-[#a3e635]/20" />
             </div>
             <div className="hidden lg:flex flex-col">
               <span className="font-extrabold text-xs tracking-wider text-white uppercase font-heading leading-none">Timeline</span>

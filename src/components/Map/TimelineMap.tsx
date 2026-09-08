@@ -236,7 +236,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           ${isDestination ? '<div class="absolute -inset-1 rounded-full bg-amber-400/40 animate-ping pointer-events-none"></div>' : ''}
           
           <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr ${badgeGradient} flex items-center justify-center font-black text-xs shadow-xl ${ringColor} border-2 ring-2 transition-transform duration-200 group-hover:scale-110">
-            ${isDeparture ? '🌱' : isDestination ? '⭐' : index + 1}
+            ${isDeparture ? '📍' : isDestination ? '🏁' : index + 1}
           </div>
 
           <div class="absolute -bottom-2 bg-[#050805]/95 backdrop-blur-md text-[9px] px-1.5 py-0.5 rounded-full border border-lime-500/30 font-mono text-lime-300 shadow-md whitespace-nowrap">
