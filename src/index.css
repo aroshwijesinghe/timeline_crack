@@ -30,6 +30,23 @@
   height: 100%;
   background-color: #1e293b !important;
   font-family: inherit;
+  outline: none;
+}
+
+/* GPU acceleration for Leaflet tile panes and smooth zooming */
+.leaflet-tile-pane {
+  will-change: transform;
+}
+.leaflet-zoom-animated {
+  will-change: transform;
+}
+.leaflet-tile {
+  image-rendering: auto;
+  will-change: transform;
+}
+.leaflet-pane > svg,
+.leaflet-pane > canvas {
+  will-change: transform;
 }
 
 /* Leaflet Popup Styling */

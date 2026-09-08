@@ -392,9 +392,13 @@ export interface PathArrowPoint {
 
 /**
  * Computes evenly-spaced arrow positions and bearings along a polyline.
- * Ensures clean visibility with optimal spacing (e.g. every ~350m).
+ * Optimized for silky-smooth 60fps zooming and panning by preventing DOM overloading.
  */
-export function computePathArrowPoints(path: LatLng[], minDistanceBetweenMeters: number = 350): PathArrowPoint[] {
+export function computePathArrowPoints(
+  path: LatLng[],
+  minDistanceBetweenMeters: number = 800,
+  maxArrowsPerPath: number = 5
+): PathArrowPoint[] {
   if (!path || path.length < 2) return [];
 
   const segmentLengths: number[] = [];
@@ -405,7 +409,7 @@ export function computePathArrowPoints(path: LatLng[], minDistanceBetweenMeters:
     totalLength += len;
   }
 
-  if (totalLength < 35) return [];
+  if (totalLength < 50) return [];
 
   const targetDistances: number[] = [];
   if (totalLength < minDistanceBetweenMeters) {
@@ -416,8 +420,8 @@ export function computePathArrowPoints(path: LatLng[], minDistanceBetweenMeters:
     targetDistances.push(totalLength * 0.35);
     targetDistances.push(totalLength * 0.7);
   } else {
-    // Longer path: evenly spaced arrows
-    const count = Math.min(30, Math.max(2, Math.floor(totalLength / minDistanceBetweenMeters)));
+    // Longer path: evenly spaced arrows capped to maxArrowsPerPath
+    const count = Math.min(maxArrowsPerPath, Math.max(2, Math.floor(totalLength / minDistanceBetweenMeters)));
     const step = totalLength / count;
     for (let i = 0; i < count; i++) {
       targetDistances.push((i + 0.5) * step);

@@ -62,7 +62,19 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
       center: [6.9271, 79.8612],
       zoom: 12,
       zoomControl: false,
-      attributionControl: false
+      attributionControl: false,
+      preferCanvas: true, // Hardware-accelerated Canvas rendering for vector routes & points
+      zoomSnap: 0.25, // Micro-zoom increments for silky smooth zooming
+      zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 120, // Prevents abrupt jumping on mouse wheel / trackpad scroll
+      wheelDebounceTime: 40,
+      fadeAnimation: true,
+      zoomAnimation: true,
+      markerZoomAnimation: true,
+      inertia: true,
+      inertiaDeceleration: 3400,
+      inertiaMaxSpeed: 2000,
+      easeLinearity: 0.25
     });
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -71,7 +83,11 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     const initialUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
     tileLayerRef.current = L.tileLayer(initialUrl, {
       attribution: 'Tiles &copy; Esri',
-      maxZoom: 16
+      maxZoom: 16,
+      keepBuffer: 8, // Keep preloaded buffer around viewport for lag-free panning
+      updateWhenZooming: false, // Don't churn DOM during zoom; scale tiles with CSS3 transforms
+      updateWhenIdle: true, // Only fetch new tile resolution once zooming/scrolling pauses
+      updateInterval: 120
     }).addTo(map);
 
     markersLayerGroupRef.current = L.layerGroup().addTo(map);
@@ -116,6 +132,9 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
     tileLayerRef.current.setUrl(url);
     tileLayerRef.current.options.maxZoom = maxZoom;
+    tileLayerRef.current.options.keepBuffer = 8;
+    tileLayerRef.current.options.updateWhenZooming = false;
+    tileLayerRef.current.options.updateWhenIdle = true;
     map.invalidateSize();
   }, [tileProvider]);
 
@@ -265,7 +284,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     }
   }, [selectedDay]);
 
-  // Render Direction Arrows along visited paths
+  // Render Direction Arrows along visited paths (optimized to prevent DOM lag)
   useEffect(() => {
     const arrowsGroup = arrowsLayerGroupRef.current;
     if (!arrowsGroup) return;
@@ -275,17 +294,26 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
     const { directionMap } = analyzeActivityDirections(selectedDay.activities);
 
-    selectedDay.activities.forEach((act) => {
-      if (act.path.length < 2) return;
+    // Limit total arrows across the map to prevent DOM layout lag during zoom/scroll
+    let totalArrowsCount = 0;
+    const MAX_TOTAL_ARROWS = 45;
+    const maxPerPath = selectedDay.activities.length > 10 ? 3 : 5;
+
+    for (const act of selectedDay.activities) {
+      if (act.path.length < 2) continue;
+      if (totalArrowsCount >= MAX_TOTAL_ARROWS) break;
+
       const dirInfo = directionMap.get(act.id);
       const pathToDraw = dirInfo?.offsetPath || act.path;
       const arrowColor = dirInfo ? dirInfo.arrowColor : getActivityStyle(act.type).color;
 
-      const arrowPoints = computePathArrowPoints(pathToDraw, 350);
-      arrowPoints.forEach((point) => {
+      const arrowPoints = computePathArrowPoints(pathToDraw, 900, maxPerPath);
+      for (const point of arrowPoints) {
+        if (totalArrowsCount >= MAX_TOTAL_ARROWS) break;
+
         const arrowHtml = `
-          <div style="transform: rotate(${point.bearing}deg); width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-            <svg width="18" height="18" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.85));">
+          <div style="transform: rotate(${point.bearing}deg); width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.85));">
               <path d="M12 2.5L20 20.5L12 16.5L4 20.5L12 2.5Z" fill="${arrowColor}" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" />
             </svg>
           </div>
@@ -293,16 +321,17 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
         const arrowIcon = L.divIcon({
           html: arrowHtml,
           className: 'bg-transparent border-none',
-          iconSize: [22, 22],
-          iconAnchor: [11, 11]
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
         });
         const arrowMarker = L.marker(point.position, {
           icon: arrowIcon,
           interactive: false
         });
         arrowsGroup.addLayer(arrowMarker);
-      });
-    });
+        totalArrowsCount++;
+      }
+    }
   }, [selectedDay, showDirectionArrows]);
 
   // Handle Focus Item (Pan/Zoom on click from feed)
