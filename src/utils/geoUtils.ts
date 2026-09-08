@@ -261,33 +261,59 @@ function formatLabel(str: string): string {
 }
 
 /**
- * Linearly interpolates position along waypoints for a given timestamp.
+ * Linearly interpolates position along waypoints or path for a given timestamp.
  */
 export function interpolatePosition(
   waypoints: TimelineWaypoint[],
-  timestamp: number
+  timestamp: number,
+  fallbackPath?: LatLng[],
+  startTimestamp?: number,
+  endTimestamp?: number
 ): LatLng | null {
-  if (!waypoints || waypoints.length === 0) return null;
-  if (waypoints.length === 1 || timestamp <= waypoints[0].timestamp) {
-    return waypoints[0].point;
-  }
-  if (timestamp >= waypoints[waypoints.length - 1].timestamp) {
-    return waypoints[waypoints.length - 1].point;
-  }
+  if (waypoints && waypoints.length > 0) {
+    const firstTs = waypoints[0].timestamp;
+    const lastTs = waypoints[waypoints.length - 1].timestamp;
 
-  // Find segment [i, i+1]
-  for (let i = 0; i < waypoints.length - 1; i++) {
-    const p1 = waypoints[i];
-    const p2 = waypoints[i + 1];
-    if (timestamp >= p1.timestamp && timestamp <= p2.timestamp) {
-      const span = p2.timestamp - p1.timestamp;
-      if (span <= 0) return p1.point;
-      const ratio = (timestamp - p1.timestamp) / span;
-      const lat = p1.point[0] + (p2.point[0] - p1.point[0]) * ratio;
-      const lng = p1.point[1] + (p2.point[1] - p1.point[1]) * ratio;
-      return [lat, lng];
+    if (lastTs > firstTs) {
+      if (timestamp <= firstTs) return waypoints[0].point;
+      if (timestamp >= lastTs) return waypoints[waypoints.length - 1].point;
+
+      for (let i = 0; i < waypoints.length - 1; i++) {
+        const p1 = waypoints[i];
+        const p2 = waypoints[i + 1];
+        if (timestamp >= p1.timestamp && timestamp <= p2.timestamp) {
+          const span = p2.timestamp - p1.timestamp;
+          if (span <= 0) return p1.point;
+          const ratio = (timestamp - p1.timestamp) / span;
+          return [
+            p1.point[0] + (p2.point[0] - p1.point[0]) * ratio,
+            p1.point[1] + (p2.point[1] - p1.point[1]) * ratio
+          ];
+        }
+      }
     }
   }
 
-  return waypoints[waypoints.length - 1].point;
+  // Fallback: interpolate along path based on duration ratio
+  if (fallbackPath && fallbackPath.length > 0) {
+    if (fallbackPath.length === 1) return fallbackPath[0];
+    if (startTimestamp !== undefined && endTimestamp !== undefined && endTimestamp > startTimestamp) {
+      const clampedTs = Math.max(startTimestamp, Math.min(endTimestamp, timestamp));
+      const ratio = (clampedTs - startTimestamp) / (endTimestamp - startTimestamp);
+      const floatIndex = ratio * (fallbackPath.length - 1);
+      const idx = Math.floor(floatIndex);
+      const nextIdx = Math.min(fallbackPath.length - 1, idx + 1);
+      const subRatio = floatIndex - idx;
+      const p1 = fallbackPath[idx];
+      const p2 = fallbackPath[nextIdx];
+      return [
+        p1[0] + (p2[0] - p1[0]) * subRatio,
+        p1[1] + (p2[1] - p1[1]) * subRatio
+      ];
+    }
+    return fallbackPath[0];
+  }
+
+  return null;
 }
+

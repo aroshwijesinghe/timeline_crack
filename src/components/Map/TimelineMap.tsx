@@ -291,11 +291,40 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     }
 
     const actStyle = getActivityStyle(playbackActivityType || 'TRAVEL');
+    const type = (playbackActivityType || '').toUpperCase();
+
+    // Context-sensitive SVG icon inside the moving symbol
+    let iconSvg = '';
+    if (type.includes('VEHICLE') || type.includes('CAR') || type === 'TRAVEL' || type.includes('DRIVE') || type.includes('MOTORCYCLE')) {
+      // Car Icon
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>`;
+    } else if (type.includes('WALK') || type.includes('FOOT')) {
+      // Walker Icon
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 4 3 4-3 5-4-1-2 4"/><circle cx="12" cy="4" r="1.5"/><path d="m9 13-3 7"/><path d="m13 13 3 7"/></svg>`;
+    } else if (type.includes('RUN')) {
+      // Runner Icon
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="4" r="2"/><path d="m15 8-4 3 2 4-5-1-1 4"/><path d="m18 17 2 4"/><path d="m8 10-3 3 4 2"/></svg>`;
+    } else if (type.includes('BIKE') || type.includes('CYCLE')) {
+      // Bicycle Icon
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>`;
+    } else if (type.includes('BUS')) {
+      // Bus Icon
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M4 11h16"/><path d="M2 15h20"/><path d="M19 19H5a2 2 0 0 1-2-2V7c0-2.2 2-4 5-4h8c3 0 5 1.8 5 4v10a2 2 0 0 1-2 2z"/><circle cx="6.5" cy="16" r="1.5"/><circle cx="17.5" cy="16" r="1.5"/></svg>`;
+    } else if (type.includes('TRAIN') || type.includes('SUBWAY')) {
+      // Train Icon
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>`;
+    } else {
+      // Pin / Stationary
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+    }
 
     const playbackHtml = `
-      <div class="playback-marker-pulse">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-xl border-2 border-white ring-2 ring-indigo-400" style="background-color: ${actStyle.color}">
-          <div class="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+      <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;">
+        <!-- Pulsing radar halo -->
+        <div style="position: absolute; inset: 0; border-radius: 50%; background: ${actStyle.color}; opacity: 0.35; animation: ping-slow 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
+        <!-- Center glowing circle with symbol -->
+        <div style="position: relative; width: 34px; height: 34px; border-radius: 50%; background: ${actStyle.color}; border: 2.5px solid #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.6), 0 0 14px ${actStyle.color}; display: flex; align-items: center; justify-content: center; color: #ffffff; z-index: 10;">
+          ${iconSvg}
         </div>
       </div>
     `;
@@ -303,14 +332,14 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     const playbackIcon = L.divIcon({
       html: playbackHtml,
       className: '',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
+      iconSize: [44, 44],
+      iconAnchor: [22, 22]
     });
 
     if (!playbackMarkerRef.current) {
       playbackMarkerRef.current = L.marker(playbackPosition, {
         icon: playbackIcon,
-        zIndexOffset: 2000
+        zIndexOffset: 3000
       }).addTo(map);
     } else {
       playbackMarkerRef.current.setLatLng(playbackPosition);

@@ -171,12 +171,16 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
 
         // Check if internal timelinePath exists
         if (Array.isArray(seg.timelinePath) && seg.timelinePath.length > 0) {
-          for (const wp of seg.timelinePath) {
+          const rawCount = seg.timelinePath.length;
+          for (let k = 0; k < rawCount; k++) {
+            const wp = seg.timelinePath[k];
             const p = parseLatLng(wp.point || wp.latLng);
             if (p) {
-              const wpTime = wp.time || startStr;
-              const wpTs = new Date(wpTime).getTime();
-              waypoints.push({ point: p, time: wpTime, timestamp: isNaN(wpTs) ? startTs : wpTs });
+              const fraction = rawCount > 1 ? k / (rawCount - 1) : 0;
+              const defaultTs = Math.round(startTs + fraction * (endTs - startTs));
+              const wpTime = wp.time || new Date(defaultTs).toISOString();
+              const wpTs = wp.time ? new Date(wp.time).getTime() : defaultTs;
+              waypoints.push({ point: p, time: wpTime, timestamp: isNaN(wpTs) ? defaultTs : wpTs });
               path.push(p);
               updateBounds(p[0], p[1]);
             }
@@ -247,12 +251,16 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
         const waypoints: TimelineWaypoint[] = [];
         const path: LatLng[] = [];
 
-        for (const wp of seg.timelinePath) {
+        const rawCount = seg.timelinePath.length;
+        for (let k = 0; k < rawCount; k++) {
+          const wp = seg.timelinePath[k];
           const p = parseLatLng(wp.point || wp.latLng);
           if (p) {
-            const wpTime = wp.time || startStr;
-            const wpTs = new Date(wpTime).getTime();
-            waypoints.push({ point: p, time: wpTime, timestamp: isNaN(wpTs) ? startTs : wpTs });
+            const fraction = rawCount > 1 ? k / (rawCount - 1) : 0;
+            const defaultTs = Math.round(startTs + fraction * (endTs - startTs));
+            const wpTime = wp.time || new Date(defaultTs).toISOString();
+            const wpTs = wp.time ? new Date(wp.time).getTime() : defaultTs;
+            waypoints.push({ point: p, time: wpTime, timestamp: isNaN(wpTs) ? defaultTs : wpTs });
             path.push(p);
             updateBounds(p[0], p[1]);
           }

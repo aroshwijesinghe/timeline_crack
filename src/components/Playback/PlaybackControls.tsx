@@ -60,7 +60,18 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           {formatTime(minTimestamp) || 'Start'}
         </span>
 
-        <div className="relative flex-1 group flex items-center">
+        {/* Interactive Custom Scrubber Track & Moving Circle Thumb */}
+        <div className="relative flex-1 group flex items-center h-6">
+          {/* Background Track */}
+          <div className="absolute inset-x-0 h-2 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/50">
+            {/* Filled Progress Gradient Bar */}
+            <div
+              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 rounded-full transition-all duration-75"
+              style={{ width: `${currentProgress}%` }}
+            />
+          </div>
+
+          {/* Invisible Native Range Input for seamless drag & scrub */}
           <input
             type="range"
             min="0"
@@ -68,8 +79,25 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
             step="0.05"
             value={currentProgress}
             onChange={handleSliderChange}
-            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+            className="absolute inset-x-0 w-full h-6 opacity-0 cursor-pointer z-20"
           />
+
+          {/* Animated Custom Moving Circle Symbol */}
+          <div
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none z-10"
+            style={{ left: `${currentProgress}%` }}
+          >
+            <div className={`relative flex items-center justify-center ${isPlaying ? 'scale-125' : 'scale-100'} transition-transform duration-150`}>
+              {/* Outer pulsing ring when playing */}
+              {isPlaying && (
+                <div className="absolute -inset-1.5 rounded-full bg-indigo-500/60 animate-ping" />
+              )}
+              {/* Circle thumb with glowing center */}
+              <div className="w-4 h-4 rounded-full bg-white border-2 border-indigo-600 shadow-lg shadow-indigo-500/60 flex items-center justify-center">
+                <div className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-purple-600 animate-pulse' : 'bg-indigo-600'}`} />
+              </div>
+            </div>
+          </div>
         </div>
 
         <span className="text-xs font-mono text-slate-400 min-w-[65px] text-right">

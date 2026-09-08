@@ -225,20 +225,38 @@ export const App: React.FC = () => {
     return selectedDate ? timelineData.days[selectedDate] || null : null;
   }, [timelineData, selectedDate]);
 
-  // Day Min and Max timestamps
+  // Day Min and Max timestamps across all segments in selectedDay
   const { minTimestamp, maxTimestamp } = React.useMemo(() => {
     if (!selectedDay || selectedDay.segments.length === 0) {
       return { minTimestamp: 0, maxTimestamp: 0 };
     }
-    const first = selectedDay.segments[0];
-    const last = selectedDay.segments[selectedDay.segments.length - 1];
-    const minTs = first.timestamp;
-    const maxTs =
-      last.type === 'visit'
-        ? last.data.endTimestamp
-        : last.data.endTimestamp;
+    let minTs = Infinity;
+    let maxTs = -Infinity;
+
+    for (const seg of selectedDay.segments) {
+      const s = seg.timestamp;
+      const e = seg.type === 'visit' ? seg.data.endTimestamp : seg.data.endTimestamp;
+      if (s < minTs) minTs = s;
+      if (e > maxTs) maxTs = e;
+    }
+
+    if (minTs === Infinity || maxTs === -Infinity) {
+      return { minTimestamp: 0, maxTimestamp: 0 };
+    }
+
     return { minTimestamp: minTs, maxTimestamp: Math.max(minTs + 1000, maxTs) };
   }, [selectedDay]);
+
+  // Keep currentTimestamp within active bounds [minTimestamp, maxTimestamp]
+  useEffect(() => {
+    if (minTimestamp > 0 && maxTimestamp > minTimestamp) {
+      if (currentTsRef.current < minTimestamp || currentTsRef.current > maxTimestamp) {
+        currentTsRef.current = minTimestamp;
+        setCurrentTimestamp(minTimestamp);
+        evaluatePlaybackAt(minTimestamp);
+      }
+    }
+  }, [selectedDay, minTimestamp, maxTimestamp]);
 
   const handleSelectDate = (dateOrPeriod: string) => {
     setSelectedDate(dateOrPeriod);
@@ -336,7 +354,13 @@ export const App: React.FC = () => {
         } else {
           const a = seg.data;
           if (ts >= a.startTimestamp && ts <= a.endTimestamp) {
-            const interpolated = interpolatePosition(a.waypoints, ts);
+            const interpolated = interpolatePosition(
+              a.waypoints,
+              ts,
+              a.path,
+              a.startTimestamp,
+              a.endTimestamp
+            );
             if (interpolated) {
               setPlaybackPosition(interpolated);
             }
@@ -349,7 +373,7 @@ export const App: React.FC = () => {
 
       if (ts < minTimestamp) {
         const first = selectedDay.segments[0];
-        const pos = first.type === 'visit' ? first.data.location : first.data.path[0];
+        const pos = first.type === 'visit' ? first.data.location : (first.data.path ? first.data.path[0] : null);
         setPlaybackPosition(pos || null);
         setPlaybackStatus('Before start of recorded activity');
         setPlaybackActivityType(null);
@@ -361,9 +385,9 @@ export const App: React.FC = () => {
         const pos =
           last.type === 'visit'
             ? last.data.location
-            : last.data.path[last.data.path.length - 1];
+            : (last.data.path ? last.data.path[last.data.path.length - 1] : null);
         setPlaybackPosition(pos || null);
-        setPlaybackStatus('Day complete');
+        setPlaybackStatus('Journey complete');
         setPlaybackActivityType(null);
         return;
       }
@@ -375,7 +399,9 @@ export const App: React.FC = () => {
         const nextStart = next.timestamp;
 
         if (ts > currentEnd && ts < nextStart) {
-          const pos = current.type === 'visit' ? current.data.location : current.data.path[current.data.path.length - 1];
+          const pos = current.type === 'visit'
+            ? current.data.location
+            : (current.data.path ? current.data.path[current.data.path.length - 1] : null);
           setPlaybackPosition(pos || null);
           setPlaybackStatus('Stationary between trips');
           setPlaybackActivityType('STILL');
@@ -385,6 +411,20 @@ export const App: React.FC = () => {
     },
     [selectedDay, minTimestamp, maxTimestamp]
   );
+
+  // Toggle playback: auto-rewind if at or beyond the end
+  const handleTogglePlay = useCallback(() => {
+    if (!isPlaying) {
+      if (currentTsRef.current >= maxTimestamp || currentTsRef.current < minTimestamp) {
+        currentTsRef.current = minTimestamp;
+        setCurrentTimestamp(minTimestamp);
+        evaluatePlaybackAt(minTimestamp);
+      }
+      setIsPlaying(true);
+    } else {
+      setIsPlaying(false);
+    }
+  }, [isPlaying, minTimestamp, maxTimestamp, evaluatePlaybackAt]);
 
   // Playback Loop
   useEffect(() => {
@@ -451,12 +491,12 @@ export const App: React.FC = () => {
       }
       if (e.code === 'Space') {
         e.preventDefault();
-        setIsPlaying((p) => !p);
+        handleTogglePlay();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleTogglePlay]);
 
   // --- 1. INITIAL LOADING STATE: Upload file prompt only ---
   if (!timelineData) {
@@ -712,7 +752,7 @@ export const App: React.FC = () => {
               currentTimestamp={currentTimestamp}
               minTimestamp={minTimestamp}
               maxTimestamp={maxTimestamp}
-              onTogglePlay={() => setIsPlaying(!isPlaying)}
+              onTogglePlay={handleTogglePlay}
               onSeek={handleSeek}
               onChangeSpeed={(s) => setPlaybackSpeed(s)}
               onReset={() => {
