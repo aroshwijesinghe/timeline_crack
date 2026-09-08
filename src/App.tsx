@@ -20,9 +20,7 @@ import {
   BarChart3,
   Smartphone,
   Apple,
-  HelpCircle,
-  Navigation,
-  Layers
+  HelpCircle
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -302,39 +300,6 @@ export const App: React.FC = () => {
                 <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans mb-6 max-w-md">
                   Visualize your visited paths, replay journeys with directional vectors, and explore rich travel analytics — running 100% locally in your browser.
                 </p>
-              </div>
-
-              {/* Interactive Capability Cards */}
-              <div className="w-full space-y-3 pt-6 border-t border-white/10">
-                <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-lime-500/35 text-slate-300 hover:text-white transition-all group">
-                  <div className="p-2 rounded-xl bg-lime-500/15 border border-lime-500/30 text-lime-400 group-hover:scale-110 transition-transform shrink-0 mt-0.5">
-                    <Navigation className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white font-heading uppercase tracking-wider">Directional Vector Corridors</div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Color-coded routes with live directional flow arrows and waypoint beacons</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-emerald-500/35 text-slate-300 hover:text-white transition-all group">
-                  <div className="p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-110 transition-transform shrink-0 mt-0.5">
-                    <BarChart3 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white font-heading uppercase tracking-wider">Comprehensive Travel Stats</div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Interactive distance, visited places, duration breakdown, and calendar ranges</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-amber-500/35 text-slate-300 hover:text-white transition-all group">
-                  <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 group-hover:scale-110 transition-transform shrink-0 mt-0.5">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white font-heading uppercase tracking-wider">3 Keyless Map Themes</div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">Instant switching between Satellite imagery, Streets, and Dark Carto views</p>
-                  </div>
-                </div>
               </div>
             </div>
 
