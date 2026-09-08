@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import L from 'leaflet';
 import {
   TimelineDay,
@@ -14,7 +14,7 @@ import {
   computePathArrowPoints,
   analyzeActivityDirections
 } from '../../utils/geoUtils';
-import { Eye, EyeOff, Navigation } from 'lucide-react';
+import { Eye, EyeOff, Navigation, Shuffle } from 'lucide-react';
 
 interface TimelineMapProps {
   selectedDay: TimelineDay | null;
@@ -60,6 +60,26 @@ const TILE_CONFIGS: Record<MapTileProvider, TileConfig> = {
   }
 };
 
+// Curated luminous, high-contrast palette for random road/route coloring
+const VIBRANT_ROUTE_PALETTE = [
+  '#a3e635', // Electric Lime
+  '#06b6d4', // Bright Cyan
+  '#f43f5e', // Radiant Rose
+  '#f59e0b', // Golden Amber
+  '#8b5cf6', // Vivid Purple
+  '#38bdf8', // Sky Blue
+  '#ec4899', // Hot Pink
+  '#10b981', // Mint Emerald
+  '#eab308', // Solar Yellow
+  '#6366f1', // Electric Indigo
+  '#fb923c', // Tangerine
+  '#14b8a6', // Teal
+  '#d946ef', // Neon Fuchsia
+  '#22c55e', // Emerald
+  '#3b82f6', // Cobalt Blue
+  '#e11d48'  // Crimson Red
+];
+
 export const TimelineMap: React.FC<TimelineMapProps> = ({
   selectedDay,
   focusedItemId,
@@ -79,6 +99,23 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
   const [showRawSignals, setShowRawSignals] = useState(false);
   const [showDirectionArrows, setShowDirectionArrows] = useState(true);
   const [hasBidirectional, setHasBidirectional] = useState(false);
+  const [colorSeed, setColorSeed] = useState(0);
+
+  // Generate distinct random colors for each activity/road segment each time day is selected or shuffled
+  const routeColors = useMemo(() => {
+    if (!selectedDay) return {};
+    const map: Record<string, string> = {};
+    const palette = [...VIBRANT_ROUTE_PALETTE];
+    // Fisher-Yates shuffle
+    for (let i = palette.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [palette[i], palette[j]] = [palette[j], palette[i]];
+    }
+    selectedDay.activities.forEach((act, idx) => {
+      map[act.id] = palette[idx % palette.length];
+    });
+    return map;
+  }, [selectedDay, colorSeed]);
 
   // Initialize Map
   useEffect(() => {
@@ -170,7 +207,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
       const dirInfo = directionMap.get(act.id);
       const pathToDraw = dirInfo?.offsetPath || act.path;
-      const routeColor = dirInfo ? dirInfo.color : style.color;
+      const routeColor = routeColors[act.id] || (dirInfo ? dirInfo.color : style.color);
 
       const polyline = L.polyline(pathToDraw, {
         color: routeColor,
@@ -322,7 +359,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     if (selectedDay.bounds) {
       map.fitBounds(selectedDay.bounds, { padding: [50, 50], maxZoom: 15, animate: true });
     }
-  }, [selectedDay]);
+  }, [selectedDay, routeColors]);
 
   // Render Direction Arrows along visited paths (optimized to prevent DOM lag)
   useEffect(() => {
@@ -345,7 +382,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
       const dirInfo = directionMap.get(act.id);
       const pathToDraw = dirInfo?.offsetPath || act.path;
-      const arrowColor = dirInfo ? dirInfo.arrowColor : getActivityStyle(act.type).color;
+      const arrowColor = routeColors[act.id] || (dirInfo ? dirInfo.arrowColor : getActivityStyle(act.type).color);
 
       const arrowPoints = computePathArrowPoints(pathToDraw, 900, maxPerPath);
       for (const point of arrowPoints) {
@@ -372,7 +409,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
         totalArrowsCount++;
       }
     }
-  }, [selectedDay, showDirectionArrows]);
+  }, [selectedDay, showDirectionArrows, routeColors]);
 
   // Handle Focus Item (Pan/Zoom on click from feed)
   useEffect(() => {
@@ -449,8 +486,17 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           })}
         </div>
 
-        {/* Toggles: Direction Arrows & Raw GPS */}
+        {/* Toggles: Shuffle Road Colors, Direction Arrows & Raw GPS */}
         <div className="glass-panel p-1 rounded-2xl shadow-2xl flex items-center justify-end gap-1.5 border border-white/10 backdrop-blur-2xl">
+          <button
+            onClick={() => setColorSeed((s) => s + 1)}
+            title="Randomize road colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border border-white/10 active:scale-95 group"
+          >
+            <Shuffle className="w-3.5 h-3.5 text-lime-400 group-hover:rotate-180 transition-transform duration-300" />
+            <span>Shuffle Colors</span>
+          </button>
+
           <button
             onClick={() => setShowDirectionArrows(!showDirectionArrows)}
             title="Toggle Visited Direction Arrows"
