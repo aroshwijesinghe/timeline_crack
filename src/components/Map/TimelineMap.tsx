@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import {
-  LatLng,
   TimelineDay,
   TimelinePlaceVisit,
   TimelineActivity,
@@ -15,14 +14,11 @@ import {
   computePathArrowPoints,
   analyzeActivityDirections
 } from '../../utils/geoUtils';
-import { Crosshair, Eye, EyeOff, Navigation } from 'lucide-react';
+import { Eye, EyeOff, Navigation } from 'lucide-react';
 
 interface TimelineMapProps {
   selectedDay: TimelineDay | null;
   focusedItemId?: string | null;
-  playbackPosition?: LatLng | null;
-  playbackStatus?: string;
-  playbackActivityType?: string | null;
   rawSignals: RawSignalPoint[];
   onSelectVisit?: (visit: TimelinePlaceVisit) => void;
   onSelectActivity?: (activity: TimelineActivity) => void;
@@ -31,9 +27,6 @@ interface TimelineMapProps {
 export const TimelineMap: React.FC<TimelineMapProps> = ({
   selectedDay,
   focusedItemId,
-  playbackPosition,
-  playbackStatus,
-  playbackActivityType,
   rawSignals,
   onSelectVisit,
   onSelectActivity
@@ -45,13 +38,11 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
   const routesLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const arrowsLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const rawSignalsLayerGroupRef = useRef<L.LayerGroup | null>(null);
-  const playbackMarkerRef = useRef<L.Marker | null>(null);
 
   const [tileProvider, setTileProvider] = useState<MapTileProvider>('esri-dark');
   const [showRawSignals, setShowRawSignals] = useState(false);
   const [showDirectionArrows, setShowDirectionArrows] = useState(true);
   const [hasBidirectional, setHasBidirectional] = useState(false);
-  const [autoFollow, setAutoFollow] = useState(false);
 
   // Initialize Map
   useEffect(() => {
@@ -407,80 +398,6 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     }
   }, [showRawSignals, rawSignals]);
 
-  // Handle Playback Animated Marker
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    if (!playbackPosition) {
-      if (playbackMarkerRef.current) {
-        map.removeLayer(playbackMarkerRef.current);
-        playbackMarkerRef.current = null;
-      }
-      return;
-    }
-
-    const actStyle = getActivityStyle(playbackActivityType || 'TRAVEL');
-    const type = (playbackActivityType || '').toUpperCase();
-
-    // Context-sensitive SVG icon inside the moving symbol
-    let iconSvg = '';
-    if (type.includes('VEHICLE') || type.includes('CAR') || type === 'TRAVEL' || type.includes('DRIVE') || type.includes('MOTORCYCLE')) {
-      // Car Icon
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>`;
-    } else if (type.includes('WALK') || type.includes('FOOT')) {
-      // Walker Icon
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 4 3 4-3 5-4-1-2 4"/><circle cx="12" cy="4" r="1.5"/><path d="m9 13-3 7"/><path d="m13 13 3 7"/></svg>`;
-    } else if (type.includes('RUN')) {
-      // Runner Icon
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="4" r="2"/><path d="m15 8-4 3 2 4-5-1-1 4"/><path d="m18 17 2 4"/><path d="m8 10-3 3 4 2"/></svg>`;
-    } else if (type.includes('BIKE') || type.includes('CYCLE')) {
-      // Bicycle Icon
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>`;
-    } else if (type.includes('BUS')) {
-      // Bus Icon
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M4 11h16"/><path d="M2 15h20"/><path d="M19 19H5a2 2 0 0 1-2-2V7c0-2.2 2-4 5-4h8c3 0 5 1.8 5 4v10a2 2 0 0 1-2 2z"/><circle cx="6.5" cy="16" r="1.5"/><circle cx="17.5" cy="16" r="1.5"/></svg>`;
-    } else if (type.includes('TRAIN') || type.includes('SUBWAY')) {
-      // Train Icon
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>`;
-    } else {
-      // Pin / Stationary
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
-    }
-
-    const playbackHtml = `
-      <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;">
-        <!-- Pulsing radar halo -->
-        <div style="position: absolute; inset: 0; border-radius: 50%; background: ${actStyle.color}; opacity: 0.35; animation: ping-slow 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
-        <!-- Center glowing circle with symbol -->
-        <div style="position: relative; width: 34px; height: 34px; border-radius: 50%; background: ${actStyle.color}; border: 2.5px solid #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.6), 0 0 14px ${actStyle.color}; display: flex; align-items: center; justify-content: center; color: #ffffff; z-index: 10;">
-          ${iconSvg}
-        </div>
-      </div>
-    `;
-
-    const playbackIcon = L.divIcon({
-      html: playbackHtml,
-      className: '',
-      iconSize: [44, 44],
-      iconAnchor: [22, 22]
-    });
-
-    if (!playbackMarkerRef.current) {
-      playbackMarkerRef.current = L.marker(playbackPosition, {
-        icon: playbackIcon,
-        zIndexOffset: 3000
-      }).addTo(map);
-    } else {
-      playbackMarkerRef.current.setLatLng(playbackPosition);
-      playbackMarkerRef.current.setIcon(playbackIcon);
-    }
-
-    if (autoFollow) {
-      map.panTo(playbackPosition, { animate: false });
-    }
-  }, [playbackPosition, playbackActivityType, autoFollow]);
-
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainerRef} className="w-full h-full" />
@@ -513,7 +430,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
           })}
         </div>
 
-        {/* Toggles: Arrows, Raw GPS & Auto-Follow */}
+        {/* Toggles: Direction Arrows & Raw GPS */}
         <div className="glass-panel p-1 rounded-2xl shadow-2xl flex items-center justify-end gap-1.5 border border-white/10 backdrop-blur-2xl">
           <button
             onClick={() => setShowDirectionArrows(!showDirectionArrows)}
@@ -540,41 +457,8 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
             {showRawSignals ? <Eye className="w-3.5 h-3.5 text-rose-400" /> : <EyeOff className="w-3.5 h-3.5" />}
             <span>GPS {rawSignals.length > 0 ? `(${rawSignals.length})` : ''}</span>
           </button>
-
-          <button
-            onClick={() => setAutoFollow(!autoFollow)}
-            title={autoFollow ? "Camera Auto-Follow ON (Click to lock map)" : "Camera Locked (Click to track moving vehicle)"}
-            className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              autoFollow
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            <Crosshair className="w-3.5 h-3.5" />
-          </button>
         </div>
       </div>
-
-      {/* Floating HUD status during playback (cleanly positioned under top bar) */}
-      {playbackPosition && (
-        <div className="absolute top-20 left-4 sm:left-6 z-[400] glass-panel px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-indigo-500/40 animate-fade-in pointer-events-none">
-          <div className="relative flex items-center justify-center">
-            <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping absolute"></div>
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 relative"></div>
-          </div>
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-300">Live Journey Position</div>
-            <div className="text-xs font-extrabold text-white flex items-center gap-1.5">
-              <span>{playbackStatus}</span>
-              {playbackActivityType && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">
-                  {playbackActivityType}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Bidirectional Route Legend */}
       {hasBidirectional && (
