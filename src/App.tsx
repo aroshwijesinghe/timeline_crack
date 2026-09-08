@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   ParsedTimeline,
   LatLng,
@@ -9,6 +9,7 @@ import { interpolatePosition } from './utils/geoUtils';
 import { TimelineMap } from './components/Map/TimelineMap';
 import { PlaybackControls } from './components/Playback/PlaybackControls';
 import { StatsModal } from './components/Stats/StatsModal';
+import { CalendarModal } from './components/Calendar/CalendarModal';
 import { sampleTimelineJSON } from './demo/sampleTimeline';
 import {
   UploadCloud,
@@ -19,6 +20,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Calendar,
   BarChart3,
   Smartphone,
@@ -30,6 +32,7 @@ export const App: React.FC = () => {
   const [timelineData, setTimelineData] = useState<ParsedTimeline | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Initial upload screen state
   const [isDragging, setIsDragging] = useState(false);
@@ -160,13 +163,13 @@ export const App: React.FC = () => {
     handleDataLoaded(sampleTimelineJSON);
   };
 
-  // Selected Day object (supports individual dates or 'all' for full lifetime view)
+  // Selected Day object (supports individual dates, range period 'YYYY-MM-DD..YYYY-MM-DD', or 'all')
   const selectedDay: TimelineDay | null = React.useMemo(() => {
     if (!timelineData) return null;
     if (selectedDate === 'all') {
-      const allSegments = Object.values(timelineData.days).flatMap(d => d.segments);
-      const allVisits = Object.values(timelineData.days).flatMap(d => d.visits);
-      const allActivities = Object.values(timelineData.days).flatMap(d => d.activities);
+      const allSegments = Object.values(timelineData.days).flatMap((d) => d.segments);
+      const allVisits = Object.values(timelineData.days).flatMap((d) => d.visits);
+      const allActivities = Object.values(timelineData.days).flatMap((d) => d.activities);
       return {
         dateStr: 'all',
         displayDate: 'All Recorded Dates Combined',
@@ -179,6 +182,46 @@ export const App: React.FC = () => {
         bounds: timelineData.overallBounds
       };
     }
+
+    if (selectedDate.includes('..')) {
+      const [start, end] = selectedDate.split('..');
+      const matchingDates = Object.keys(timelineData.days)
+        .filter((d) => d >= start && d <= end)
+        .sort();
+
+      const matchingDays = matchingDates.map((d) => timelineData.days[d]);
+      const segments = matchingDays
+        .flatMap((d) => d.segments)
+        .sort((a, b) => a.timestamp - b.timestamp);
+      const visits = matchingDays.flatMap((d) => d.visits);
+      const activities = matchingDays.flatMap((d) => d.activities);
+      const totalDist = matchingDays.reduce((acc, d) => acc + d.totalDistanceKm, 0);
+
+      let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+      let hasCoords = false;
+      matchingDays.forEach((d) => {
+        if (d.bounds) {
+          minLat = Math.min(minLat, d.bounds[0][0], d.bounds[1][0]);
+          maxLat = Math.max(maxLat, d.bounds[0][0], d.bounds[1][0]);
+          minLng = Math.min(minLng, d.bounds[0][1], d.bounds[1][1]);
+          maxLng = Math.max(maxLng, d.bounds[0][1], d.bounds[1][1]);
+          hasCoords = true;
+        }
+      });
+
+      return {
+        dateStr: selectedDate,
+        displayDate: `${start} to ${end} (${matchingDays.length} active days)`,
+        segments,
+        visits,
+        activities,
+        totalDistanceMeters: Math.round(totalDist * 1000),
+        totalDistanceKm: Number(totalDist.toFixed(1)),
+        totalActiveDurationMs: 0,
+        bounds: hasCoords ? [[minLat, minLng], [maxLat, maxLng]] : timelineData.overallBounds
+      };
+    }
+
     return selectedDate ? timelineData.days[selectedDate] || null : null;
   }, [timelineData, selectedDate]);
 
@@ -197,12 +240,14 @@ export const App: React.FC = () => {
     return { minTimestamp: minTs, maxTimestamp: Math.max(minTs + 1000, maxTs) };
   }, [selectedDay]);
 
-  const handleSelectDate = (date: string) => {
-    setSelectedDate(date);
-    if (date === 'all' && timelineData) {
-      const allSegments = Object.values(timelineData.days).flatMap(d => d.segments);
-      const allVisits = Object.values(timelineData.days).flatMap(d => d.visits);
-      const allActivities = Object.values(timelineData.days).flatMap(d => d.activities);
+  const handleSelectDate = (dateOrPeriod: string) => {
+    setSelectedDate(dateOrPeriod);
+    if (!timelineData) return;
+
+    if (dateOrPeriod === 'all') {
+      const allSegments = Object.values(timelineData.days).flatMap((d) => d.segments);
+      const allVisits = Object.values(timelineData.days).flatMap((d) => d.visits);
+      const allActivities = Object.values(timelineData.days).flatMap((d) => d.activities);
       setupDayPlayback({
         dateStr: 'all',
         displayDate: 'All Recorded Dates Combined',
@@ -214,10 +259,63 @@ export const App: React.FC = () => {
         totalActiveDurationMs: 0,
         bounds: timelineData.overallBounds
       });
-    } else if (timelineData?.days[date]) {
-      setupDayPlayback(timelineData.days[date]);
+    } else if (dateOrPeriod.includes('..')) {
+      const [start, end] = dateOrPeriod.split('..');
+      const matchingDates = Object.keys(timelineData.days)
+        .filter((d) => d >= start && d <= end)
+        .sort();
+      const matchingDays = matchingDates.map((d) => timelineData.days[d]);
+      const segments = matchingDays
+        .flatMap((d) => d.segments)
+        .sort((a, b) => a.timestamp - b.timestamp);
+      const visits = matchingDays.flatMap((d) => d.visits);
+      const activities = matchingDays.flatMap((d) => d.activities);
+      const totalDist = matchingDays.reduce((acc, d) => acc + d.totalDistanceKm, 0);
+
+      let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+      let hasCoords = false;
+      matchingDays.forEach((d) => {
+        if (d.bounds) {
+          minLat = Math.min(minLat, d.bounds[0][0], d.bounds[1][0]);
+          maxLat = Math.max(maxLat, d.bounds[0][0], d.bounds[1][0]);
+          minLng = Math.min(minLng, d.bounds[0][1], d.bounds[1][1]);
+          maxLng = Math.max(maxLng, d.bounds[0][1], d.bounds[1][1]);
+          hasCoords = true;
+        }
+      });
+
+      setupDayPlayback({
+        dateStr: dateOrPeriod,
+        displayDate: `${start} to ${end} (${matchingDays.length} active days)`,
+        segments,
+        visits,
+        activities,
+        totalDistanceMeters: Math.round(totalDist * 1000),
+        totalDistanceKm: Number(totalDist.toFixed(1)),
+        totalActiveDurationMs: 0,
+        bounds: hasCoords ? [[minLat, minLng], [maxLat, maxLng]] : timelineData.overallBounds
+      });
+    } else if (timelineData.days[dateOrPeriod]) {
+      setupDayPlayback(timelineData.days[dateOrPeriod]);
     }
   };
+
+  // User-friendly label for current time period
+  const periodLabel = useMemo(() => {
+    if (!timelineData) return '';
+    if (selectedDate === 'all') {
+      return `🌟 All Dates (${timelineData.sortedDates.length} days, ${timelineData.stats.totalDistanceKm} km)`;
+    }
+    if (selectedDate.includes('..')) {
+      const [start, end] = selectedDate.split('..');
+      return `📅 ${start} → ${end} (${selectedDay?.totalDistanceKm || 0} km)`;
+    }
+    if (timelineData.days[selectedDate]) {
+      const d = timelineData.days[selectedDate];
+      return `📅 ${selectedDate} (${d.totalDistanceKm} km, ${d.visits.length} stops)`;
+    }
+    return selectedDate ? `📅 ${selectedDate}` : 'Select Date';
+  }, [selectedDate, timelineData, selectedDay]);
 
   // Interpolate / locate position for a specific timestamp
   const evaluatePlaybackAt = useCallback(
@@ -537,40 +635,35 @@ export const App: React.FC = () => {
           </div>
           <span className="font-bold text-sm text-white hidden sm:inline">Timeline Crack</span>
 
-          {/* Selected Time Period / Date Selector */}
+          {/* Selected Time Period: Interactive Calendar Button + Steppers */}
           {dates.length > 0 && (
             <div className="flex items-center gap-1 border-l border-slate-700/60 pl-2 ml-1">
               <button
                 onClick={() => hasPrev && handleSelectDate(dates[currentIndex - 1])}
                 disabled={!hasPrev}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20 transition"
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20 transition cursor-pointer"
                 title="Previous recorded date"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
 
-              <div className="flex items-center gap-1.5 px-1">
-                <Calendar className="w-3.5 h-3.5 text-indigo-400" />
-                <select
-                  value={selectedDate}
-                  onChange={(e) => handleSelectDate(e.target.value)}
-                  className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer"
-                >
-                  <option value="all" className="bg-slate-900 text-indigo-400 font-bold">
-                    🌟 All Dates Combined ({timelineData.stats.totalDistanceKm} km, {timelineData.stats.totalVisits} stops)
-                  </option>
-                  {dates.map((d) => (
-                    <option key={d} value={d} className="bg-slate-900 text-white">
-                      {d} ({timelineData.days[d]?.totalDistanceKm || 0} km, {timelineData.days[d]?.visits.length || 0} stops)
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* Interactive Calendar Trigger Button */}
+              <button
+                onClick={() => setIsCalendarOpen(true)}
+                className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 hover:border-indigo-500/50 transition shadow-sm cursor-pointer group"
+                title="Open calendar to select date or time period"
+              >
+                <Calendar className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition" />
+                <span className="font-bold text-xs text-white max-w-[180px] sm:max-w-[320px] truncate">
+                  {periodLabel}
+                </span>
+                <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-white transition" />
+              </button>
 
               <button
                 onClick={() => hasNext && handleSelectDate(dates[currentIndex + 1])}
                 disabled={!hasNext}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20 transition"
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20 transition cursor-pointer"
                 title="Next recorded date"
               >
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -631,6 +724,15 @@ export const App: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Interactive Calendar Time Period Selector Modal */}
+      <CalendarModal
+        isOpen={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
+        timelineData={timelineData}
+        selectedDate={selectedDate}
+        onSelectPeriod={handleSelectDate}
+      />
 
       {/* Analytics Modal */}
       <StatsModal
