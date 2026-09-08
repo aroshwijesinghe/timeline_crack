@@ -199,40 +199,40 @@ export const App: React.FC = () => {
     setIsStatsOpen(true);
   };
 
-  // --- 1. INITIAL LOADING STATE: Eco-Dark Studio Screen ---
+  // --- 1. INITIAL LOADING STATE: Obsidian & Electric Lime Studio Screen ---
   if (!timelineData) {
     return (
-      <div className="min-h-screen w-full bg-[#040704] text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 relative selection:bg-lime-500 selection:text-black font-sans overflow-x-hidden">
+      <div className="min-h-screen w-full bg-[#070908] text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 relative selection:bg-[#bef264] selection:text-black font-sans overflow-x-hidden">
         {/* Subtle Geometric Cartographic Grid Pattern */}
-        <div className="fixed inset-0 opacity-[0.035] pointer-events-none bg-[radial-gradient(#a3e635_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div className="fixed inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#bef264_1px,transparent_1px)] [background-size:28px_28px]" />
 
-        {/* Luminous Organic Green Ambient Glows */}
-        <div className="fixed w-[650px] h-[650px] rounded-full bg-lime-500/10 blur-[160px] pointer-events-none -top-24 -left-20 animate-eco-glow" />
-        <div className="fixed w-[600px] h-[600px] rounded-full bg-emerald-500/8 blur-[160px] pointer-events-none top-1/3 right-0 animate-eco-glow" style={{ animationDelay: '2s' }} />
-        <div className="fixed w-[500px] h-[500px] rounded-full bg-lime-400/6 blur-[140px] pointer-events-none -bottom-20 left-1/4" />
+        {/* Crisp Electric Lime & Cyan Ambient Glows */}
+        <div className="fixed w-[600px] h-[600px] rounded-full bg-[#a3e635]/8 blur-[180px] pointer-events-none -top-28 -left-20 animate-eco-glow" />
+        <div className="fixed w-[550px] h-[550px] rounded-full bg-[#34d399]/6 blur-[180px] pointer-events-none top-1/3 right-0 animate-eco-glow" style={{ animationDelay: '2.5s' }} />
+        <div className="fixed w-[450px] h-[450px] rounded-full bg-[#bef264]/5 blur-[160px] pointer-events-none -bottom-20 left-1/3" />
 
         {/* Sleek Top Navigation Bar */}
-        <header className="relative z-10 w-full max-w-[1540px] mx-auto flex items-center justify-between py-3.5 sm:py-4 border-b border-white/10">
+        <header className="relative z-10 w-full max-w-[1540px] mx-auto flex items-center justify-between py-3.5 sm:py-4 border-b border-white/[0.08]">
           <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#a3e635] shadow-[0_0_10px_#a3e635] animate-pulse" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#bef264] shadow-[0_0_12px_#bef264] animate-pulse" />
             <span className="font-heading font-black tracking-wider uppercase text-sm sm:text-base text-white">
               Timeline Studio
             </span>
-            <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-lime-500/15 border border-lime-500/30 text-[#bef264]">
+            <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#bef264]/10 border border-[#bef264]/25 text-[#bef264]">
               v2.4 Live
             </span>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 text-xs">
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-slate-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-lime-400" />
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-slate-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#bef264]" />
               <span className="hidden sm:inline font-medium">100% In-Browser Privacy</span>
               <span className="sm:hidden font-medium">Private</span>
             </div>
             <button
               onClick={handleLoadDemo}
               disabled={loading}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-lime-500/20 to-emerald-500/20 hover:from-lime-500/30 hover:to-emerald-500/30 border border-lime-500/40 text-xs font-bold text-[#bef264] hover:text-white transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#bef264] to-[#a3e635] hover:brightness-110 text-black font-black text-xs transition-all cursor-pointer active:scale-95 shadow-[0_0_15px_rgba(190,242,100,0.3)] flex items-center gap-1.5"
             >
               <span>Quick Demo</span>
             </button>
@@ -249,21 +249,21 @@ export const App: React.FC = () => {
                 {/* Animated Logo Beacon & Studio Badge */}
                 <div className="flex items-center gap-3.5 mb-6">
                   <div className="relative group cursor-pointer select-none">
-                    <div className="absolute -inset-2.5 rounded-2xl bg-lime-400/25 blur-xl group-hover:bg-lime-400/45 transition duration-500 animate-pulse" />
-                    <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#243623] via-[#142012] to-[#070c06] border border-lime-500/50 flex items-center justify-center overflow-hidden shadow-[0_0_25px_rgba(132,204,22,0.4)] transition-transform duration-300 group-hover:scale-105">
+                    <div className="absolute -inset-2.5 rounded-2xl bg-[#bef264]/20 blur-xl group-hover:bg-[#bef264]/40 transition duration-500 animate-pulse" />
+                    <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#182218] via-[#0d140e] to-[#050805] border border-[#bef264]/40 flex items-center justify-center overflow-hidden shadow-[0_0_25px_rgba(190,242,100,0.25)] transition-transform duration-300 group-hover:scale-105">
                       {/* Rotating Radar Sweep Beam */}
                       <div
                         className="absolute -inset-3 rounded-full animate-radar-sweep pointer-events-none opacity-40"
                         style={{
-                          background: 'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(163, 230, 53, 0.5) 360deg)',
+                          background: 'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(190, 242, 100, 0.5) 360deg)',
                         }}
                       />
 
                       {/* Concentric GPS Radar Ping Waves */}
                       <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 pointer-events-none flex items-center justify-center">
-                        <span className="absolute w-7 h-7 rounded-full border border-lime-400/70 animate-ripple-1 pointer-events-none" />
-                        <span className="absolute w-7 h-7 rounded-full border border-emerald-400/50 animate-ripple-2 pointer-events-none" />
-                        <span className="w-1.5 h-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_#bef264]" />
+                        <span className="absolute w-7 h-7 rounded-full border border-[#bef264]/70 animate-ripple-1 pointer-events-none" />
+                        <span className="absolute w-7 h-7 rounded-full border border-[#34d399]/50 animate-ripple-2 pointer-events-none" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#bef264] shadow-[0_0_8px_#bef264]" />
                       </div>
 
                       {/* Orbiting Satellite Dot */}
@@ -283,7 +283,7 @@ export const App: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-950/70 border border-lime-500/35 text-[#a3e635] text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(132,204,22,0.15)] backdrop-blur-md">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] text-[#bef264] text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(190,242,100,0.1)] backdrop-blur-md">
                     <span>Personal Timeline Studio</span>
                   </div>
                 </div>
@@ -291,7 +291,7 @@ export const App: React.FC = () => {
                 {/* Impactful Headline */}
                 <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black tracking-tight text-white mb-5 font-heading uppercase leading-[1.05]">
                   Welcome to <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3e635] via-[#bef264] to-[#34d399] drop-shadow-[0_0_25px_rgba(163,230,53,0.35)]">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#bef264] via-[#a3e635] to-[#34d399] drop-shadow-[0_0_25px_rgba(190,242,100,0.35)]">
                     Timeline
                   </span>
                 </h1>
@@ -305,7 +305,7 @@ export const App: React.FC = () => {
 
             {/* Part 2 (Center): File Drop Part & Privacy Guarantee */}
             <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group h-full">
-              <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
+              <div className="absolute top-0 left-1/4 w-56 h-28 rounded-full bg-[#bef264]/5 blur-3xl pointer-events-none" />
 
               <div>
                 {/* Tactile Large Interactive Dropzone */}
@@ -316,8 +316,8 @@ export const App: React.FC = () => {
                   onClick={() => fileInputRef.current?.click()}
                   className={`border-2 border-dashed rounded-3xl p-6 sm:p-7 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 relative group/drop ${
                     isDragging
-                      ? 'border-[#a3e635] bg-lime-500/15 scale-[1.01] shadow-[0_0_40px_rgba(132,204,22,0.3)]'
-                      : 'border-lime-500/30 bg-black/40 hover:border-lime-400/80 hover:bg-black/60 hover:shadow-[0_0_35px_rgba(132,204,22,0.2)]'
+                      ? 'border-[#bef264] bg-[#bef264]/10 scale-[1.01] shadow-[0_0_40px_rgba(190,242,100,0.25)]'
+                      : 'border-white/[0.12] bg-black/40 hover:border-[#bef264]/70 hover:bg-black/60 hover:shadow-[0_0_30px_rgba(190,242,100,0.15)]'
                   }`}
                 >
                   <input
@@ -329,20 +329,20 @@ export const App: React.FC = () => {
                   />
 
                   {/* Icon with glowing halo */}
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-[#2b3929] to-[#0c120b] text-[#a3e635] border border-lime-500/40 flex items-center justify-center mb-3 shadow-[0_0_25px_rgba(132,204,22,0.3)] group-hover/drop:scale-110 group-hover/drop:border-lime-400 transition-all duration-300">
+                  <div className="w-14 h-14 rounded-2xl bg-white/[0.04] text-[#bef264] border border-white/[0.1] flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(0,0,0,0.5)] group-hover/drop:scale-110 group-hover/drop:border-[#bef264]/60 group-hover/drop:bg-[#bef264]/10 transition-all duration-300">
                     <UploadCloud className="w-7 h-7 text-[#bef264]" />
                   </div>
 
                   <p className="text-base sm:text-lg font-black text-white mb-1 font-heading uppercase tracking-wide">
-                    Drop your <span className="text-[#a3e635] drop-shadow-[0_0_10px_rgba(163,230,53,0.4)]">Timeline.json</span> here
+                    Drop your <span className="text-[#bef264] drop-shadow-[0_0_10px_rgba(190,242,100,0.4)]">Timeline.json</span> here
                   </p>
                   <p className="text-xs text-slate-400 max-w-xs">
                     Drag & drop your file, or click anywhere inside to browse
                   </p>
 
                   <div className="mt-3.5 flex flex-wrap items-center justify-center gap-1.5">
-                    <span className="text-[11px] px-3.5 py-1 rounded-full bg-black/70 text-slate-300 font-mono border border-white/15 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
+                    <span className="text-[11px] px-3.5 py-1 rounded-full bg-white/[0.04] text-slate-300 font-mono border border-white/[0.1] flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#bef264] animate-pulse" />
                       Google Maps Export (.json)
                     </span>
                   </div>
@@ -357,9 +357,9 @@ export const App: React.FC = () => {
               </div>
 
               {/* Bottom Section inside the Box */}
-              <div className="mt-4 space-y-2.5 pt-3.5 border-t border-white/10">
+              <div className="mt-4 space-y-2.5 pt-3.5 border-t border-white/[0.08]">
                 {/* Demo Quick-Start */}
-                <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-white font-heading">Don't have your file?</span>
                     <span className="text-[10px] text-slate-400">Explore with sample trip data</span>
@@ -368,22 +368,23 @@ export const App: React.FC = () => {
                   <button
                     onClick={handleLoadDemo}
                     disabled={loading}
-                    className="py-2 px-4 rounded-xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-black font-black text-xs transition-all flex items-center gap-2 shadow-[0_0_18px_rgba(132,204,22,0.35)] cursor-pointer active:scale-95 uppercase tracking-wider font-heading hover:shadow-lime-500/40 shrink-0"
+                    className="py-2 px-4 rounded-xl bg-gradient-to-r from-[#bef264] to-[#a3e635] hover:brightness-110 text-black font-black text-xs transition-all flex items-center gap-2 shadow-[0_0_18px_rgba(190,242,100,0.3)] cursor-pointer active:scale-95 uppercase tracking-wider font-heading hover:shadow-lime-500/40 shrink-0"
                   >
                     <span>Try Demo Timeline</span>
                   </button>
                 </div>
 
                 {/* 100% Client-Side Privacy Guarantee */}
-                <div className="flex items-start gap-3 p-3 rounded-2xl bg-black/50 border border-lime-500/20 text-slate-300 text-xs">
-                  <div className="p-1.5 rounded-xl bg-lime-500/20 text-[#a3e635] shrink-0 mt-0.5 border border-lime-500/30">
+                <div className="flex items-start gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-slate-300 text-xs">
+                  <div className="p-1.5 rounded-xl bg-[#bef264]/10 text-[#bef264] shrink-0 mt-0.5 border border-[#bef264]/25">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="text-[#a3e635] block mb-0.5 font-black uppercase tracking-wide font-heading text-xs">
-                       Client-Side Privacy Guarantee
+                    <strong className="text-white block mb-0.5 font-black uppercase tracking-wide font-heading text-xs flex items-center gap-1.5">
+                      <span>Client-Side Privacy Guarantee</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#bef264]" />
                     </strong>
-                    <p className="text-[11px] text-slate-300 leading-snug">
+                    <p className="text-[11px] text-slate-400 leading-snug">
                       Your location history never leaves your device. All calculations, route visualizations, and analytics run entirely in your local browser with zero cloud storage.
                     </p>
                   </div>
@@ -395,21 +396,21 @@ export const App: React.FC = () => {
             <div className="glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden h-full">
               <div className="flex flex-col h-full justify-between">
                 {/* Guide Header & Platform Switcher */}
-                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 border-b border-white/10 pb-3.5">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 border-b border-white/[0.08] pb-3.5">
                   <div className="flex items-center gap-2">
-                    <HelpCircle className="w-4 h-4 text-[#a3e635]" />
+                    <HelpCircle className="w-4 h-4 text-[#bef264]" />
                     <h2 className="text-sm font-black text-white font-heading uppercase tracking-wide">
                       How to Export Timeline
                     </h2>
                   </div>
 
                   {/* Platform Switcher Tabs */}
-                  <div className="flex gap-1 bg-black/60 p-1 rounded-xl border border-white/10 text-xs font-bold font-heading">
+                  <div className="flex gap-1 bg-black/60 p-1 rounded-xl border border-white/[0.08] text-xs font-bold font-heading">
                     <button
                       onClick={() => setGuideTab('android')}
                       className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                         guideTab === 'android'
-                          ? 'bg-gradient-to-b from-[#2f3b2d] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm font-extrabold'
+                          ? 'bg-white/[0.1] text-[#bef264] border border-[#bef264]/40 shadow-sm font-extrabold'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
@@ -420,7 +421,7 @@ export const App: React.FC = () => {
                       onClick={() => setGuideTab('ios')}
                       className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                         guideTab === 'ios'
-                          ? 'bg-gradient-to-b from-[#2f3b2d] to-[#121911] text-[#a3e635] border border-lime-500/40 shadow-sm font-extrabold'
+                          ? 'bg-white/[0.1] text-[#bef264] border border-[#bef264]/40 shadow-sm font-extrabold'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
@@ -433,35 +434,35 @@ export const App: React.FC = () => {
                 {/* Android Steps with comfortable vertical distribution */}
                 {guideTab === 'android' && (
                   <div className="space-y-2.5 animate-fade-in text-xs text-slate-300 flex-1 flex flex-col justify-between">
-                    <div className="font-black text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
-                      <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
+                    <div className="font-black text-[#bef264] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                      <span className="w-2 h-2 rounded-full bg-[#bef264] shadow-[0_0_8px_rgba(190,242,100,0.8)]" />
                       <span>Android Settings Export</span>
                     </div>
 
                     <div className="space-y-2 flex-1 flex flex-col justify-between my-1">
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">01</span>
-                        <p className="leading-snug text-xs">Open your phone's <strong className="text-white">Settings</strong> (gear icon).</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">01</span>
+                        <p className="leading-snug text-xs text-slate-300">Open your phone's <strong className="text-white">Settings</strong> (gear icon).</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">02</span>
-                        <p className="leading-snug text-xs">Go to <strong className="text-white">Location</strong> &gt; <strong className="text-white">Location Services</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">02</span>
+                        <p className="leading-snug text-xs text-slate-300">Go to <strong className="text-white">Location</strong> &gt; <strong className="text-white">Location Services</strong>.</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">03</span>
-                        <p className="leading-snug text-xs">Select <strong className="text-white">Timeline</strong> (choose Google account).</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">03</span>
+                        <p className="leading-snug text-xs text-slate-300">Select <strong className="text-white">Timeline</strong> (choose Google account).</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">04</span>
-                        <p className="leading-snug text-xs">Scroll down and tap <strong className="text-white">Export Timeline data</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">04</span>
+                        <p className="leading-snug text-xs text-slate-300">Scroll down and tap <strong className="text-white">Export Timeline data</strong>.</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">05</span>
-                        <p className="leading-snug text-xs">Tap <strong className="text-white">Continue</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">05</span>
+                        <p className="leading-snug text-xs text-slate-300">Tap <strong className="text-white">Continue</strong> to download <code className="text-[#bef264] bg-black/60 px-1.5 py-0.5 rounded border border-[#bef264]/30">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
@@ -470,30 +471,30 @@ export const App: React.FC = () => {
                 {/* iOS Steps */}
                 {guideTab === 'ios' && (
                   <div className="space-y-2.5 animate-fade-in text-xs text-slate-300 flex-1 flex flex-col justify-between">
-                    <div className="font-black text-[#a3e635] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
-                      <span className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
+                    <div className="font-black text-[#bef264] text-xs uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                      <span className="w-2 h-2 rounded-full bg-[#bef264] shadow-[0_0_8px_rgba(190,242,100,0.8)]" />
                       <span>Google Maps iOS App Export</span>
                     </div>
 
                     <div className="space-y-2 flex-1 flex flex-col justify-between my-1">
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">01</span>
-                        <p className="leading-snug text-xs">Open <strong className="text-white">Google Maps</strong> app on your iPhone.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">01</span>
+                        <p className="leading-snug text-xs text-slate-300">Open <strong className="text-white">Google Maps</strong> app on your iPhone.</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">02</span>
-                        <p className="leading-snug text-xs">Tap your <strong className="text-white">Profile avatar</strong> &gt; <strong className="text-white">Settings</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">02</span>
+                        <p className="leading-snug text-xs text-slate-300">Tap your <strong className="text-white">Profile avatar</strong> &gt; <strong className="text-white">Settings</strong>.</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">03</span>
-                        <p className="leading-snug text-xs">Scroll down and tap <strong className="text-white">Personal content</strong>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">03</span>
+                        <p className="leading-snug text-xs text-slate-300">Scroll down and tap <strong className="text-white">Personal content</strong>.</p>
                       </div>
 
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-lime-500/25 transition-all">
-                        <span className="w-6 h-6 rounded-xl bg-lime-500/20 text-[#bef264] border border-lime-500/40 flex items-center justify-center font-mono font-black text-[11px] shrink-0">04</span>
-                        <p className="leading-snug text-xs">Tap <strong className="text-white">Export Timeline data</strong> to download <code className="text-[#bef264] bg-black px-1.5 py-0.5 rounded border border-lime-900/50">Timeline.json</code>.</p>
+                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#bef264]/30 transition-all">
+                        <span className="w-6 h-6 rounded-xl bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 flex items-center justify-center font-mono font-black text-[11px] shrink-0">04</span>
+                        <p className="leading-snug text-xs text-slate-300">Tap <strong className="text-white">Export Timeline data</strong> to download <code className="text-[#bef264] bg-black/60 px-1.5 py-0.5 rounded border border-[#bef264]/30">Timeline.json</code>.</p>
                       </div>
                     </div>
                   </div>
