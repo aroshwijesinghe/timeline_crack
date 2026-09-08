@@ -85,7 +85,7 @@ export interface ParsedTimeline {
   overallBounds: [LatLng, LatLng] | null;
 }
 
-export type MapTileProvider = 'carto-dark' | 'carto-voyager' | 'osm' | 'satellite';
+export type MapTileProvider = 'esri-dark' | 'esri-streets' | 'osm' | 'satellite';
 
 export interface PlaybackState {
   isPlaying: boolean;

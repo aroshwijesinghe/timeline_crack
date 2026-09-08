@@ -84,9 +84,19 @@ export const App: React.FC = () => {
       setTimelineData(parsed);
 
       if (parsed.sortedDates.length > 0) {
-        const initialDate = parsed.sortedDates[0];
-        setSelectedDate(initialDate);
-        setupDayPlayback(parsed.days[initialDate]);
+        // Automatically select the most active day (highest distance & activities)
+        let bestDate = parsed.sortedDates[0];
+        let maxScore = -1;
+        for (const d of parsed.sortedDates) {
+          const day = parsed.days[d];
+          const score = day.totalDistanceKm * 10 + day.activities.length * 5 + day.visits.length;
+          if (score > maxScore) {
+            maxScore = score;
+            bestDate = d;
+          }
+        }
+        setSelectedDate(bestDate);
+        setupDayPlayback(parsed.days[bestDate]);
       }
     } catch (err: any) {
       setUploadError(`Failed to parse timeline JSON: ${err.message}`);
@@ -165,9 +175,27 @@ export const App: React.FC = () => {
     }
   };
 
-  // Selected Day object
-  const selectedDay: TimelineDay | null =
-    timelineData && selectedDate ? timelineData.days[selectedDate] || null : null;
+  // Selected Day object (supports individual dates or 'all' for full lifetime view)
+  const selectedDay: TimelineDay | null = React.useMemo(() => {
+    if (!timelineData) return null;
+    if (selectedDate === 'all') {
+      const allSegments = Object.values(timelineData.days).flatMap(d => d.segments);
+      const allVisits = Object.values(timelineData.days).flatMap(d => d.visits);
+      const allActivities = Object.values(timelineData.days).flatMap(d => d.activities);
+      return {
+        dateStr: 'all',
+        displayDate: 'All Recorded Dates Combined',
+        segments: allSegments,
+        visits: allVisits,
+        activities: allActivities,
+        totalDistanceMeters: Math.round(timelineData.stats.totalDistanceKm * 1000),
+        totalDistanceKm: timelineData.stats.totalDistanceKm,
+        totalActiveDurationMs: 0,
+        bounds: timelineData.overallBounds
+      };
+    }
+    return selectedDate ? timelineData.days[selectedDate] || null : null;
+  }, [timelineData, selectedDate]);
 
   // Day Min and Max timestamps
   const { minTimestamp, maxTimestamp } = React.useMemo(() => {
@@ -186,7 +214,22 @@ export const App: React.FC = () => {
 
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    if (timelineData?.days[date]) {
+    if (date === 'all' && timelineData) {
+      const allSegments = Object.values(timelineData.days).flatMap(d => d.segments);
+      const allVisits = Object.values(timelineData.days).flatMap(d => d.visits);
+      const allActivities = Object.values(timelineData.days).flatMap(d => d.activities);
+      setupDayPlayback({
+        dateStr: 'all',
+        displayDate: 'All Recorded Dates Combined',
+        segments: allSegments,
+        visits: allVisits,
+        activities: allActivities,
+        totalDistanceMeters: Math.round(timelineData.stats.totalDistanceKm * 1000),
+        totalDistanceKm: timelineData.stats.totalDistanceKm,
+        totalActiveDurationMs: 0,
+        bounds: timelineData.overallBounds
+      });
+    } else if (timelineData?.days[date]) {
       setupDayPlayback(timelineData.days[date]);
     }
   };
@@ -525,6 +568,9 @@ export const App: React.FC = () => {
                   onChange={(e) => handleSelectDate(e.target.value)}
                   className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer"
                 >
+                  <option value="all" className="bg-slate-900 text-indigo-400 font-bold">
+                    🌟 All Dates Combined ({timelineData.stats.totalDistanceKm} km, {timelineData.stats.totalVisits} stops)
+                  </option>
                   {dates.map((d) => (
                     <option key={d} value={d} className="bg-slate-900 text-white">
                       {d} ({timelineData.days[d]?.totalDistanceKm || 0} km, {timelineData.days[d]?.visits.length || 0} stops)

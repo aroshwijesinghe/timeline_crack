@@ -64,7 +64,40 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
     return daysMap[dateStr];
   }
 
-  // --- 1. Modern Format: semanticSegments ---
+  // --- Step 1. Parse Raw Signals First (to allow fast correlation with activities) ---
+  if (jsonData && Array.isArray(jsonData.rawSignals)) {
+    for (let i = 0; i < jsonData.rawSignals.length; i++) {
+      const sig = jsonData.rawSignals[i];
+      if (sig.position) {
+        const p = sig.position;
+        const loc = parseLatLng(p.LatLng || p.latLng);
+        if (loc && p.timestamp) {
+          const ts = new Date(p.timestamp).getTime();
+          if (!isNaN(ts)) {
+            rawSignalsList.push({
+              lat: loc[0],
+              lng: loc[1],
+              timestamp: ts,
+              timeStr: p.timestamp,
+              accuracyMeters: p.accuracyMeters,
+              altitudeMeters: p.altitudeMeters,
+              speedMetersPerSecond: p.speedMetersPerSecond
+            });
+            updateBounds(loc[0], loc[1]);
+          }
+        }
+      }
+    }
+    rawSignalsList.sort((a, b) => a.timestamp - b.timestamp);
+  }
+
+  // Helper to find raw GPS points between two timestamps
+  function findRawPointsInRange(startTs: number, endTs: number): RawSignalPoint[] {
+    if (rawSignalsList.length === 0 || startTs >= endTs) return [];
+    return rawSignalsList.filter(p => p.timestamp >= startTs && p.timestamp <= endTs);
+  }
+
+  // --- Step 2. Modern Format: semanticSegments ---
   if (jsonData && Array.isArray(jsonData.semanticSegments)) {
     for (let i = 0; i < jsonData.semanticSegments.length; i++) {
       const seg = jsonData.semanticSegments[i];
@@ -83,7 +116,7 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
       const day = getOrCreateDay(dateStr);
       const durationMs = Math.max(0, endTs - startTs);
 
-      // 1.A Place Visit
+      // 2.A Place Visit
       if (seg.visit) {
         const v = seg.visit;
         const candidate = v.topCandidate || {};
@@ -119,7 +152,7 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
         }
       }
 
-      // 1.B Activity Segment
+      // 2.B Activity Segment
       if (seg.activity) {
         const a = seg.activity;
         const top = a.topCandidate || {};
@@ -130,15 +163,14 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
         const waypoints: TimelineWaypoint[] = [];
         const path: LatLng[] = [];
 
-        // Add start location
         if (startLoc) {
           waypoints.push({ point: startLoc, time: startStr, timestamp: startTs });
           path.push(startLoc);
           updateBounds(startLoc[0], startLoc[1]);
         }
 
-        // Timeline path waypoints if available
-        if (Array.isArray(seg.timelinePath)) {
+        // Check if internal timelinePath exists
+        if (Array.isArray(seg.timelinePath) && seg.timelinePath.length > 0) {
           for (const wp of seg.timelinePath) {
             const p = parseLatLng(wp.point || wp.latLng);
             if (p) {
@@ -149,9 +181,17 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
               updateBounds(p[0], p[1]);
             }
           }
+        } else {
+          // Check matching rawSignals to form a high-fidelity path
+          const matchingRaw = findRawPointsInRange(startTs, endTs);
+          for (const rawPt of matchingRaw) {
+            const p: LatLng = [rawPt.lat, rawPt.lng];
+            waypoints.push({ point: p, time: rawPt.timeStr, timestamp: rawPt.timestamp });
+            path.push(p);
+            updateBounds(p[0], p[1]);
+          }
         }
 
-        // Add end location
         if (endLoc && (!startLoc || endLoc[0] !== startLoc[0] || endLoc[1] !== startLoc[1])) {
           waypoints.push({ point: endLoc, time: endStr || startStr, timestamp: endTs });
           path.push(endLoc);
@@ -201,36 +241,68 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
         stats.activityDurationByType[actType] = (stats.activityDurationByType[actType] || 0) + durationMs;
         stats.activityCountByType[actType] = (stats.activityCountByType[actType] || 0) + 1;
       }
-    }
-  }
 
-  // --- 2. Modern Format: rawSignals ---
-  if (jsonData && Array.isArray(jsonData.rawSignals)) {
-    for (let i = 0; i < jsonData.rawSignals.length; i++) {
-      const sig = jsonData.rawSignals[i];
-      if (sig.position) {
-        const p = sig.position;
-        const loc = parseLatLng(p.LatLng || p.latLng);
-        if (loc && p.timestamp) {
-          const ts = new Date(p.timestamp).getTime();
-          if (!isNaN(ts)) {
-            rawSignalsList.push({
-              lat: loc[0],
-              lng: loc[1],
-              timestamp: ts,
-              timeStr: p.timestamp,
-              accuracyMeters: p.accuracyMeters,
-              altitudeMeters: p.altitudeMeters,
-              speedMetersPerSecond: p.speedMetersPerSecond
-            });
-            updateBounds(loc[0], loc[1]);
+      // 2.C Standalone timelinePath Segment (when no activity or visit is present in semanticSegment)
+      if (!seg.activity && !seg.visit && Array.isArray(seg.timelinePath) && seg.timelinePath.length > 0) {
+        const waypoints: TimelineWaypoint[] = [];
+        const path: LatLng[] = [];
+
+        for (const wp of seg.timelinePath) {
+          const p = parseLatLng(wp.point || wp.latLng);
+          if (p) {
+            const wpTime = wp.time || startStr;
+            const wpTs = new Date(wpTime).getTime();
+            waypoints.push({ point: p, time: wpTime, timestamp: isNaN(wpTs) ? startTs : wpTs });
+            path.push(p);
+            updateBounds(p[0], p[1]);
           }
+        }
+
+        if (path.length > 0) {
+          let dist = 0;
+          for (let k = 0; k < path.length - 1; k++) {
+            dist += calculateDistanceMeters(path[k], path[k + 1]);
+          }
+
+          const pathObj: TimelineActivity = {
+            id: `path-${i}-${startTs}`,
+            startTime: startStr,
+            endTime: endStr || startStr,
+            startTimestamp: startTs,
+            endTimestamp: endTs,
+            durationMs,
+            durationFormatted: formatDuration(durationMs),
+            distanceMeters: Math.round(dist),
+            distanceKm: parseFloat((dist / 1000).toFixed(2)),
+            type: 'TRAVEL',
+            startLocation: path[0],
+            endLocation: path[path.length - 1],
+            path,
+            waypoints
+          };
+
+          day.activities.push(pathObj);
+          day.segments.push({
+            type: 'activity',
+            id: pathObj.id,
+            timestamp: startTs,
+            data: pathObj
+          });
+
+          day.totalDistanceMeters += dist;
+          day.totalActiveDurationMs += durationMs;
+
+          stats.totalActivities++;
+          stats.totalDistanceKm += dist / 1000;
+          stats.activityDistanceByType['TRAVEL'] = (stats.activityDistanceByType['TRAVEL'] || 0) + (dist / 1000);
+          stats.activityDurationByType['TRAVEL'] = (stats.activityDurationByType['TRAVEL'] || 0) + durationMs;
+          stats.activityCountByType['TRAVEL'] = (stats.activityCountByType['TRAVEL'] || 0) + 1;
         }
       }
     }
   }
 
-  // --- 3. Legacy Format: timelineObjects ---
+  // --- Step 3. Legacy Format: timelineObjects ---
   if (jsonData && Array.isArray(jsonData.timelineObjects)) {
     for (let i = 0; i < jsonData.timelineObjects.length; i++) {
       const obj = jsonData.timelineObjects[i];
@@ -364,18 +436,16 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
     }
   }
 
-  // --- Post-processing: Sort and compute daily bounds ---
+  // --- Step 4. Post-processing: Sort and compute daily bounds ---
   const sortedDates = Object.keys(daysMap).sort();
 
   for (const dateStr of sortedDates) {
     const day = daysMap[dateStr];
-    // Sort segments chronologically
     day.segments.sort((a, b) => a.timestamp - b.timestamp);
     day.visits.sort((a, b) => a.startTimestamp - b.startTimestamp);
     day.activities.sort((a, b) => a.startTimestamp - b.startTimestamp);
     day.totalDistanceKm = parseFloat((day.totalDistanceMeters / 1000).toFixed(2));
 
-    // Calculate day bounds
     let dMinLat = 90, dMaxLat = -90, dMinLng = 180, dMaxLng = -180;
     let dHasCoords = false;
 
@@ -413,9 +483,6 @@ export function parseTimelineJSON(jsonData: any): ParsedTimeline {
       end: sortedDates[sortedDates.length - 1]
     };
   }
-
-  // Sort raw signals chronologically
-  rawSignalsList.sort((a, b) => a.timestamp - b.timestamp);
 
   const overallBounds: [LatLng, LatLng] | null = hasValidCoords
     ? [[minLat, minLng], [maxLat, maxLng]]

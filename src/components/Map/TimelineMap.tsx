@@ -44,7 +44,7 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
   const rawSignalsLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const playbackMarkerRef = useRef<L.Marker | null>(null);
 
-  const [tileProvider, setTileProvider] = useState<MapTileProvider>('carto-dark');
+  const [tileProvider, setTileProvider] = useState<MapTileProvider>('esri-dark');
   const [showRawSignals, setShowRawSignals] = useState(false);
   const [autoFollow, setAutoFollow] = useState(true);
 
@@ -62,6 +62,13 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
+    // Initial tile layer: Esri World Dark Gray (free, no API key, no watermark)
+    const initialUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    tileLayerRef.current = L.tileLayer(initialUrl, {
+      attribution: 'Tiles &copy; Esri',
+      maxZoom: 16
+    }).addTo(map);
+
     markersLayerGroupRef.current = L.layerGroup().addTo(map);
     routesLayerGroupRef.current = L.layerGroup().addTo(map);
     rawSignalsLayerGroupRef.current = L.layerGroup().addTo(map);
@@ -74,43 +81,36 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
     };
   }, []);
 
-  // Handle Tile Provider Switch
+  // Handle Tile Provider Switch (seamless with setUrl - zero black squares)
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map) return;
-
-    if (tileLayerRef.current) {
-      map.removeLayer(tileLayerRef.current);
-    }
+    if (!map || !tileLayerRef.current) return;
 
     let url = '';
-    let attribution = '';
-    let maxZoom = 19;
+    let maxZoom = 18;
 
     switch (tileProvider) {
-      case 'carto-dark':
-        url = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-        attribution = '&copy; OpenStreetMap &copy; CARTO';
-        maxZoom = 20;
+      case 'esri-dark':
+        url = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+        maxZoom = 16;
         break;
-      case 'carto-voyager':
-        url = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-        attribution = '&copy; OpenStreetMap &copy; CARTO';
-        maxZoom = 20;
-        break;
-      case 'osm':
-        url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        attribution = '&copy; OpenStreetMap contributors';
+      case 'esri-streets':
+        url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
         maxZoom = 19;
         break;
       case 'satellite':
         url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-        attribution = 'Tiles &copy; Esri';
         maxZoom = 18;
+        break;
+      case 'osm':
+        url = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+        maxZoom = 19;
         break;
     }
 
-    tileLayerRef.current = L.tileLayer(url, { attribution, maxZoom, subdomains: 'abcd' }).addTo(map);
+    tileLayerRef.current.setUrl(url);
+    tileLayerRef.current.options.maxZoom = maxZoom;
+    map.invalidateSize();
   }, [tileProvider]);
 
   // Render Day's Elements (Visits & Routes)
@@ -331,10 +331,10 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
         {/* Layer Selector */}
         <div className="glass-panel p-1 rounded-xl shadow-xl flex items-center gap-1">
           <button
-            onClick={() => setTileProvider('carto-dark')}
-            title="Dark Theme"
+            onClick={() => setTileProvider('esri-dark')}
+            title="Esri Dark Theme (No API Key)"
             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              tileProvider === 'carto-dark'
+              tileProvider === 'esri-dark'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
@@ -342,10 +342,10 @@ export const TimelineMap: React.FC<TimelineMapProps> = ({
             Dark
           </button>
           <button
-            onClick={() => setTileProvider('carto-voyager')}
+            onClick={() => setTileProvider('esri-streets')}
             title="Clean Street Map"
             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              tileProvider === 'carto-voyager'
+              tileProvider === 'esri-streets'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
